@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="error">Error :(</div>
+    <div *ngIf="users">
+      <div *ngFor="let user of users">
+        <p>{{ user.id }}: {{ user.email }}</p>
+      </div>
+    </div>
+  </div>
+</div>
