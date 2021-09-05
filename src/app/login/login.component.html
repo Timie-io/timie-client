@@ -1,0 +1,45 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Icon -->
+    <div class="fadeIn first">
+      <img src="assets/logo.svg" id="logo" alt="Logo" />
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" method="POST">
+      <input
+        type="text"
+        id="username"
+        class="fadeIn second"
+        name="email"
+        placeholder="email"
+        formControlName="email"
+        required
+      />
+      <input
+        type="password"
+        id="password"
+        class="fadeIn third"
+        name="password"
+        placeholder="password"
+        formControlName="password"
+        required
+      />
+      <input
+        [disabled]="loading"
+        type="submit"
+        class="fadeIn fourth"
+        value="Log In"
+      />
+    </form>
+
+    <p *ngIf="error" class="text-danger">{{ error }}</p>
+
+    <!-- Footer -->
+    <div id="formFooter">
+      <p class="m-0 text-center text-secondary">
+        Copyright &copy; Timie {{ currentYear }}
+      </p>
+    </div>
+  </div>
+</div>
