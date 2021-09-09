@@ -5,7 +5,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AssignmentsComponent } from './dashboard/assignments/assignments.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { EntriesComponent } from './dashboard/entries/entries.component';
+import { ProjectsComponent } from './dashboard/projects/projects.component';
+import { TasksComponent } from './dashboard/tasks/tasks.component';
+import { TeamsComponent } from './dashboard/teams/teams.component';
 import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { TopMenuComponent } from './top-menu/top-menu.component';
@@ -21,6 +26,11 @@ import { AuthService } from './_services/auth.service';
     LoginComponent,
     TopMenuComponent,
     SideMenuComponent,
+    AssignmentsComponent,
+    TasksComponent,
+    ProjectsComponent,
+    TeamsComponent,
+    EntriesComponent,
   ],
   imports: [
     BrowserModule,
