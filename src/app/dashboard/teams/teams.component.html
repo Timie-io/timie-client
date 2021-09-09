@@ -1,1 +1,48 @@
-<p>teams works!</p>
+<div id="teams-component">
+  <div class="row">
+    <div class="col-md-10">
+      <table class="table table-hover">
+        <caption>
+          {{
+            total
+          }}
+          teams found
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Owner</th>
+            <th scope="col">Details</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let team of teams">
+            <td>{{ team.name }}</td>
+            <td>{{ team.description }}</td>
+            <td>{{ team.owner?.name }}</td>
+            <td><button class="btn btn-link">Show Details</button></td>
+            <td>
+              <div
+                *ngIf="team.owner?.email === currentUser?.email"
+                class="btn-group"
+                role="group"
+              >
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  (click)="editTeam(team)"
+                >
+                  Edit
+                </button>
+                <button type="button" class="btn btn-danger">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>

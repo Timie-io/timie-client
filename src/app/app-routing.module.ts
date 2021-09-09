@@ -10,6 +10,7 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './_helpers/auth.guard';
 
 const routes: Routes = [
+  { path: 'login', component: LoginComponent },
   {
     path: '',
     component: DashboardComponent,
@@ -23,7 +24,6 @@ const routes: Routes = [
       { path: 'entries', component: EntriesComponent },
     ],
   },
-  { path: 'login', component: LoginComponent },
 
   // otherwise redirect to home
   { path: '**', redirectTo: '' },

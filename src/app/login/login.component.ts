@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.error = '';
     this.authService
-      .login(this.f.email.value, this.f.password.value)
+      .login$(this.f.email.value, this.f.password.value)
       .pipe(first())
       .subscribe({
         next: () => {

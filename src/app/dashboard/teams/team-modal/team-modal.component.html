@@ -1,0 +1,45 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ id ? "Editing team " + name : "New Team" }}</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" method="POST">
+    <div class="form-group">
+      <label for="teamName">Team Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="teamName"
+        placeholder="Your team name"
+        formControlName="name"
+        [ngClass]="{ 'is-invalid': submitted && f.name.errors }"
+      />
+      <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+        <div *ngIf="f.name.errors.required">Team name is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="teamDescription">Team Description</label>
+      <input
+        type="text"
+        class="form-control"
+        id="teamDescription"
+        placeholder="Team short description"
+        formControlName="description"
+        [ngClass]="{ 'is-invalid': submitted && f.description.errors }"
+      />
+      <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+        <div *ngIf="f.description.errors.required">Team name is required</div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-outline-dark mt-3">Save</button>
+    <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{ error }}</div>
+  </form>
+</div>
