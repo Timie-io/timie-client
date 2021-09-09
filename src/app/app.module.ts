@@ -14,6 +14,7 @@ import { TeamsComponent } from './dashboard/teams/teams.component';
 import { LoginComponent } from './login/login.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { TopMenuComponent } from './top-menu/top-menu.component';
+import { GraphQLModule } from './_graphql/graphql.module';
 import { appInitializer } from './_helpers/app.initializer';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
@@ -36,7 +37,7 @@ import { AuthService } from './_services/auth.service';
     BrowserModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    // GraphQLModule,
+    GraphQLModule,
     HttpClientModule,
     NgbModule,
   ],

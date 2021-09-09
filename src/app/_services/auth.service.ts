@@ -56,7 +56,7 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  refreshToken() {
+  refreshToken(): Observable<Auth> {
     const auth = this.storage.getAuth();
     return this.http
       .post<any>(`${environment.apiUrl}/auth/refresh`, {
