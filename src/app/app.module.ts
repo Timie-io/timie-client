@@ -2,23 +2,33 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { SideMenuComponent } from './side-menu/side-menu.component';
+import { TopMenuComponent } from './top-menu/top-menu.component';
 import { appInitializer } from './_helpers/app.initializer';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { AuthService } from './_services/auth.service';
 
 @NgModule({
-  declarations: [AppComponent, DashboardComponent, LoginComponent],
+  declarations: [
+    AppComponent,
+    DashboardComponent,
+    LoginComponent,
+    TopMenuComponent,
+    SideMenuComponent,
+  ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     AppRoutingModule,
     // GraphQLModule,
     HttpClientModule,
+    NgbModule,
   ],
   providers: [
     {
