@@ -21,6 +21,7 @@
     "@apollo/client": "^3.0.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "apollo-angular": "2.6.0",
+    "bootstrap": "^5.1.1",
     "graphql": "^15.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
