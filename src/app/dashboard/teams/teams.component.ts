@@ -33,7 +33,6 @@ export class TeamsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Fetch teams');
     this.allTeamsGQL
       .fetch()
       .pipe(first())
@@ -41,6 +40,12 @@ export class TeamsComponent implements OnInit {
         this.total = data.teams.total;
         this.teams = data.teams.result;
       });
+    this.lastTeam.forEach((result) => {
+      const teamAdded = result.data?.teamAdded;
+      if (teamAdded) {
+        this.teams = [...this.teams, teamAdded];
+      }
+    });
   }
 
   newTeam() {

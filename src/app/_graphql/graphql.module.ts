@@ -8,44 +8,6 @@ import { HttpLink } from 'apollo-angular/http';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { environment } from '../../environments/environment';
 
-// export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
-//   const http = httpLink.create({ uri: environment.gqlHttpUrl });
-//   const ws = new WebSocketLink({
-//     uri: environment.gqlWsUrl,
-//     options: {
-//       reconnect: true,
-//     },
-//   });
-//   const link = split(
-//     // split based on operation type
-//     ({ query }) => {
-//       const definition = getMainDefinition(query);
-//       return (
-//         definition.kind === 'OperationDefinition' &&
-//         definition.operation === 'subscription'
-//       );
-//     },
-//     ws,
-//     http
-//   );
-//   const auth = setContext((operation, context) => {
-//     const token = localStorage.getItem('access-token');
-
-//     if (token === null) {
-//       return {};
-//     }
-//     return {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     };
-//   });
-//   return {
-//     link: ApolloLink.from([auth, link]),
-//     cache: new InMemoryCache(),
-//   };
-// }
-
 @NgModule({})
 export class GraphQLModule {
   public subscriptionClient?: SubscriptionClient;
