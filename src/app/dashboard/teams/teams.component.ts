@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SubscriptionResult } from 'apollo-angular';
+import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { Team } from '../../_models/team.model';
 import { AuthService } from './../../_services/auth.service';
 import { AllTeamsGQL } from './graphql/teams-query.graphql';
+import {
+  TeamAddedGQL,
+  TeamAddedResponse,
+} from './graphql/teams-subscription.graphql';
 import { TeamModalComponent } from './team-modal/team-modal.component';
 
 @Component({
@@ -15,12 +21,16 @@ export class TeamsComponent implements OnInit {
   public loading = true;
   public teams: Team[] = [];
   public total: number = 0;
+  public lastTeam: Observable<SubscriptionResult<TeamAddedResponse>>;
 
   constructor(
     private readonly allTeamsGQL: AllTeamsGQL,
+    private readonly teamAddedGQL: TeamAddedGQL,
     private readonly modalService: NgbModal,
     private readonly authService: AuthService
-  ) {}
+  ) {
+    this.lastTeam = this.teamAddedGQL.subscribe();
+  }
 
   ngOnInit() {
     console.log('Fetch teams');

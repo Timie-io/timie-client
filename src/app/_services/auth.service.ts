@@ -8,6 +8,7 @@ import { first, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Auth } from '../_models/auth.model';
 import { User } from '../_models/user.model';
+import { GraphQLModule } from './../_graphql/graphql.module';
 import { TokenStorageService } from './token-storage.service';
 
 const GET_USER = gql`
@@ -31,6 +32,7 @@ export class AuthService {
     private readonly apollo: Apollo,
     private router: Router,
     private http: HttpClient,
+    private graphQLModule: GraphQLModule,
     private storage: TokenStorageService
   ) {
     this.authSubject = new BehaviorSubject<Auth>(this.storage.getAuth());
@@ -41,8 +43,17 @@ export class AuthService {
     return this.authSubject.value;
   }
 
+  private restartSubscriptionsClient() {
+    const client = this.graphQLModule.subscriptionClient;
+    if (client) {
+      client.close(true, true);
+      (<any>client).connect();
+    }
+  }
+
   updateAuth(auth: Auth) {
     this.authSubject.next(auth);
+    this.restartSubscriptionsClient();
     this.apollo
       .watchQuery<any>({
         query: GET_USER,

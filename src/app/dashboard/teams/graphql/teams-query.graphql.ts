@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
 import { Team } from '../../../_models/team.model';
 
-export interface Result {
+export interface AllTeamsResult {
   total: number;
   result: Team[];
 }
 
-export interface Response {
-  teams: Result;
+export interface AllTeamsResponse {
+  teams: AllTeamsResult;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class AllTeamsGQL extends Query<Response> {
+export class AllTeamsGQL extends Query<AllTeamsResponse> {
   document = gql`
     query AllTeams {
       teams {
