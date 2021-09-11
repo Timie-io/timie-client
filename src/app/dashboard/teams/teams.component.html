@@ -1,4 +1,18 @@
 <div id="teams-component">
+  <div class="row mt-3">
+    <div class="col-md-2">
+      <input type="text" class="form-control" placeholder="Search" />
+    </div>
+    <div class="col-md-8">
+      <button
+        class="btn btn-light float-end"
+        title="Create"
+        (click)="newTeam()"
+      >
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-10">
       <table class="table table-hover">
