@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SubscriptionResult } from 'apollo-angular';
-import { Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { QueryRef } from 'apollo-angular';
 import { Team } from '../../_models/team.model';
 import { AuthService } from './../../_services/auth.service';
-import { AllTeamsGQL } from './graphql/teams-query.graphql';
-import {
-  TeamAddedGQL,
-  TeamAddedResponse,
-} from './graphql/teams-subscription.graphql';
+import { AllTeamsGQL, AllTeamsResponse } from './graphql/teams-query.graphql';
+import { TeamAddedGQL } from './graphql/teams-subscription.graphql';
 import { TeamModalComponent } from './team-modal/team-modal.component';
 
 @Component({
@@ -19,9 +14,9 @@ import { TeamModalComponent } from './team-modal/team-modal.component';
 })
 export class TeamsComponent implements OnInit {
   public loading = true;
+  private teamsQuery: QueryRef<AllTeamsResponse>;
   public teams: Team[] = [];
   public total: number = 0;
-  public lastTeam: Observable<SubscriptionResult<TeamAddedResponse>>;
 
   constructor(
     private readonly allTeamsGQL: AllTeamsGQL,
@@ -29,22 +24,33 @@ export class TeamsComponent implements OnInit {
     private readonly modalService: NgbModal,
     private readonly authService: AuthService
   ) {
-    this.lastTeam = this.teamAddedGQL.subscribe();
+    this.teamsQuery = this.allTeamsGQL.watch();
   }
 
   ngOnInit() {
-    this.allTeamsGQL
-      .fetch()
-      .pipe(first())
-      .subscribe(({ data }) => {
-        this.total = data.teams.total;
-        this.teams = data.teams.result;
-      });
-    this.lastTeam.forEach((result) => {
-      const teamAdded = result.data?.teamAdded;
-      if (teamAdded) {
-        this.teams = [...this.teams, teamAdded];
-      }
+    this.teamsQuery.valueChanges.subscribe(({ data }) => {
+      console.log(data);
+      this.total = data.teams.total;
+      this.teams = data.teams.result;
+    });
+    this.teamsQuery.subscribeToMore({
+      document: this.teamAddedGQL.document,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        const teamAdded = subscriptionData.data.teamAdded;
+
+        console.log('New team added', teamAdded);
+
+        return {
+          ...prev,
+          teams: {
+            total: prev.teams.total + 1,
+            result: [teamAdded, ...prev.teams.result],
+          },
+        };
+      },
     });
   }
 
