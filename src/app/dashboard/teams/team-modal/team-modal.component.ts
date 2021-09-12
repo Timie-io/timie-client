@@ -73,7 +73,6 @@ export class TeamModalComponent implements OnInit, OnDestroy {
         .pipe(first())
         .subscribe({
           next: (data) => {
-            console.log(data);
             this.modal.close('Team saved');
           },
           error: (error) => {
@@ -88,7 +87,6 @@ export class TeamModalComponent implements OnInit, OnDestroy {
         .pipe(first())
         .subscribe({
           next: (data) => {
-            console.log(data);
             this.modal.close('Team saved');
           },
           error: (error) => {

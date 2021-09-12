@@ -29,7 +29,6 @@ export class TeamsComponent implements OnInit {
 
   ngOnInit() {
     this.teamsQuery.valueChanges.subscribe(({ data }) => {
-      console.log(data);
       this.total = data.teams.total;
       this.teams = data.teams.result;
     });
@@ -41,11 +40,10 @@ export class TeamsComponent implements OnInit {
         }
         const teamAdded = subscriptionData.data.teamAdded;
 
-        console.log('New team added', teamAdded);
-
         return {
           ...prev,
           teams: {
+            __typename: 'TeamsResult',
             total: prev.teams.total + 1,
             result: [teamAdded, ...prev.teams.result],
           },
