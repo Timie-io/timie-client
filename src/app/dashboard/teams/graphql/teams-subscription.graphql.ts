@@ -6,6 +6,10 @@ export interface TeamAddedResponse {
   teamAdded: Team;
 }
 
+export interface TeamRemovedResponse {
+  teamRemoved: Team;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,6 +24,19 @@ export class TeamAddedGQL extends Subscription<TeamAddedResponse> {
           email
           name
         }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TeamRemovedGQL extends Subscription<TeamRemovedResponse> {
+  document = gql`
+    subscription TeamRemoved {
+      teamRemoved {
+        id
       }
     }
   `;

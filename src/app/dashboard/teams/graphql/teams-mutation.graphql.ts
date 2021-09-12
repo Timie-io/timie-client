@@ -20,6 +20,10 @@ export interface NewTeamInput {
   description: string;
 }
 
+export interface RemoveTeamResponse {
+  removeTeam: Team;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -53,6 +57,19 @@ export class CreateTeamGQL extends Mutation<CreateTeamResponse> {
           name
           email
         }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class RemoveTeamGQL extends Mutation<RemoveTeamResponse> {
+  document = gql`
+    mutation RemoveTeam($id: ID!) {
+      removeTeam(id: $id) {
+        id
       }
     }
   `;
