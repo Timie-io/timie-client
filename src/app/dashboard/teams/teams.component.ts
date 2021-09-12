@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Team } from '../../_models/team.model';
 import { AuthService } from './../../_services/auth.service';
 import { RemoveTeamGQL } from './graphql/teams-mutation.graphql';
@@ -9,7 +9,6 @@ import {
   TeamAddedGQL,
   TeamRemovedGQL,
 } from './graphql/teams-subscription.graphql';
-import { TeamsStoreService } from './services/teams-store.service';
 import { TeamModalComponent } from './team-modal/team-modal.component';
 
 @Component({
@@ -26,16 +25,15 @@ export class TeamsComponent implements OnInit {
   public search = '';
 
   constructor(
+    private apollo: Apollo,
     private readonly allTeamsGQL: AllTeamsGQL,
     private readonly removeTeamGQL: RemoveTeamGQL,
     private readonly teamAddedGQL: TeamAddedGQL,
     private readonly teamRemovedGQL: TeamRemovedGQL,
     private readonly modalService: NgbModal,
-    private readonly authService: AuthService,
-    private readonly storeService: TeamsStoreService
+    private readonly authService: AuthService
   ) {
     this.teamsQuery = this.allTeamsGQL.watch();
-    this.search = this.storeService.search;
   }
 
   ngOnInit() {
@@ -114,18 +112,7 @@ export class TeamsComponent implements OnInit {
 
   onSearchChange() {
     if (this.search.length > 3 || !this.search) {
-      this.storeService.search = this.search;
-      this.teamsQuery.fetchMore({
-        variables: {
-          name: this.search,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return fetchMoreResult;
-        },
-      });
+      this.teamsQuery.setVariables({ name: this.search });
     }
   }
 }
