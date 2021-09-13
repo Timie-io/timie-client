@@ -9,6 +9,7 @@ import {
   TeamAddedGQL,
   TeamRemovedGQL,
 } from './graphql/teams-subscription.graphql';
+import { TeamMembersComponent } from './team-members/team-members.component';
 import { TeamModalComponent } from './team-modal/team-modal.component';
 
 @Component({
@@ -95,6 +96,12 @@ export class TeamsComponent implements OnInit {
     modal.componentInstance.id = team.id;
     modal.componentInstance.name = team.name;
     modal.componentInstance.description = team.description;
+  }
+
+  editMembers(team: Team) {
+    const modal = this.modalService.open(TeamMembersComponent);
+    modal.componentInstance.id = team.id;
+    modal.componentInstance.name = team.name;
   }
 
   removeTeam(id: string) {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
 import { Team } from '../../../_models/team.model';
+import { User } from '../../../_models/user.model';
 
 export interface AllTeamsResult {
   total: number;
@@ -16,6 +17,15 @@ export interface AllTeamsArgs {
   take: number;
   name: string;
   ownerId: string;
+}
+
+export interface TeamMembersResult {
+  id: string;
+  members: User[];
+}
+
+export interface TeamMembersResponse {
+  team: TeamMembersResult;
 }
 
 @Injectable({
@@ -39,6 +49,24 @@ export class AllTeamsGQL extends Query<AllTeamsResponse> {
             email
             name
           }
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TeamMembersGQL extends Query<TeamMembersResponse> {
+  document = gql`
+    query GetTeamMembers($id: ID!) {
+      team(id: $id) {
+        id
+        members {
+          id
+          email
+          name
         }
       }
     }

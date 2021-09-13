@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ "Editing team members: " + name }}</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div ngbDropdown class="col-md-10">
+      <input
+        ngbDropdownToggle
+        type="text"
+        class="form-control"
+        placeholder="Search members"
+        [(ngModel)]="filter"
+      />
+      <div ngbDropdownMenu class="dropdown-menu">
+        <li
+          (click)="addMember(user)"
+          *ngFor="let user of users"
+          ngbDropdownItem
+        >
+          {{ user.name }} ({{ user.email }})
+        </li>
+      </div>
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-light ml-2" title="Add member">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <table class="table table-light align-middle mt-1">
+      <tbody>
+        <tr *ngFor="let member of members">
+          <td>{{ member.name }}</td>
+          <td>{{ member.email }}</td>
+          <td>
+            <button class="btn btn-light" (click)="removeMember(member)">
+              <i class="fa fa-times"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

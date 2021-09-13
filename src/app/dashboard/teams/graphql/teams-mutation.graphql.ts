@@ -24,6 +24,14 @@ export interface RemoveTeamResponse {
   removeTeam: Team;
 }
 
+export interface AddTeamMemberResponse {
+  addTeamMember: Team;
+}
+
+export interface RemoveTeamMemberResponse {
+  removeTeamMember: Team;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -70,6 +78,38 @@ export class RemoveTeamGQL extends Mutation<RemoveTeamResponse> {
     mutation RemoveTeam($id: ID!) {
       removeTeam(id: $id) {
         id
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AddTeamMemberGQL extends Mutation<AddTeamMemberResponse> {
+  document = gql`
+    mutation AddTeamMember($userId: ID!, $teamId: ID!) {
+      addTeamMember(userId: $userId, teamId: $teamId) {
+        members {
+          name
+          email
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class RemoveTeamMemberGQL extends Mutation<RemoveTeamMemberResponse> {
+  document = gql`
+    mutation RemoveTeamMember($userId: ID!, $teamId: ID!) {
+      removeTeamMember(userId: $userId, teamId: $teamId) {
+        members {
+          name
+          email
+        }
       }
     }
   `;

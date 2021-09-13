@@ -10,6 +10,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { EntriesComponent } from './dashboard/entries/entries.component';
 import { ProjectsComponent } from './dashboard/projects/projects.component';
 import { TasksComponent } from './dashboard/tasks/tasks.component';
+import { TeamMembersComponent } from './dashboard/teams/team-members/team-members.component';
 import { TeamModalComponent } from './dashboard/teams/team-modal/team-modal.component';
 import { TeamsComponent } from './dashboard/teams/teams.component';
 import { LoginComponent } from './login/login.component';
@@ -34,6 +35,7 @@ import { AuthService } from './_services/auth.service';
     TeamsComponent,
     EntriesComponent,
     TeamModalComponent,
+    TeamMembersComponent,
   ],
   imports: [
     BrowserModule,
