@@ -1,7 +1,9 @@
 <div id="teams-component">
-  <div *ngIf="error" class="alert alert-danger mt-3" role="alert">
+  <ngb-alert *ngIf="error" [type]="'danger'" (closed)="error = ''">
+    <i class="fa fa-exclamation-triangle"></i>
     {{ error }}
-  </div>
+    &nbsp;
+  </ngb-alert>
   <div class="row mt-3">
     <div class="col-md-2">
       <input
@@ -37,7 +39,6 @@
             <th scope="col">Name</th>
             <th scope="col">Description</th>
             <th scope="col">Owner</th>
-            <th scope="col">Details</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
@@ -46,7 +47,6 @@
             <td>{{ team.name }}</td>
             <td>{{ team.description }}</td>
             <td>{{ team.owner?.name }}</td>
-            <td><button class="btn btn-link">Show Details</button></td>
             <td>
               <div
                 *ngIf="team.owner?.email === currentUser?.email"
@@ -70,7 +70,7 @@
                 <button
                   type="button"
                   class="btn btn-light btn-sm"
-                  (click)="removeTeam(team.id)"
+                  (click)="removeTeam(team)"
                 >
                   <i class="fa fa-trash"></i>
                 </button>

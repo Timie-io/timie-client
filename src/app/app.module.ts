@@ -21,6 +21,7 @@ import { appInitializer } from './_helpers/app.initializer';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { AuthService } from './_services/auth.service';
+import { ProjectModalComponent } from './dashboard/projects/project-modal/project-modal.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { AuthService } from './_services/auth.service';
     EntriesComponent,
     TeamModalComponent,
     TeamMembersComponent,
+    ProjectModalComponent,
   ],
   imports: [
     BrowserModule,

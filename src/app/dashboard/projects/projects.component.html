@@ -1,1 +1,82 @@
-<p>projects works!</p>
+<div id="projects-component">
+  <ngb-alert *ngIf="error" [type]="'danger'" (closed)="error = ''">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{ error }}
+    &nbsp;
+  </ngb-alert>
+  <div class="row mt-3">
+    <div class="col-md-2">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search"
+        [(ngModel)]="search"
+        value="{{ search }}"
+        (ngModelChange)="onSearchChange()"
+      />
+    </div>
+    <div class="col-md-8">
+      <button
+        class="btn btn-light float-end"
+        title="Create"
+        (click)="newProject()"
+      >
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <table class="table table-hover">
+        <caption>
+          {{
+            total
+          }}
+          projects found
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Owner</th>
+            <th scope="col">Team</th>
+            <th scope="col">Created</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let project of projects">
+            <td>{{ project.name }}</td>
+            <td>{{ project.description }}</td>
+            <td>{{ project.owner?.name }}</td>
+            <td>{{ project.team?.name }}</td>
+            <td>{{ project.creationDate | date }}</td>
+            <td>
+              <div
+                *ngIf="project.owner?.email === currentUser?.email"
+                class="btn-group"
+                role="group"
+              >
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm"
+                  (click)="editProject(project)"
+                >
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm"
+                  (click)="removeProject(project)"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>

@@ -104,14 +104,23 @@ export class TeamsComponent implements OnInit {
     modal.componentInstance.name = team.name;
   }
 
-  removeTeam(id: string) {
+  removeTeam(team: Team) {
     if (confirm('Are you sure about removing this team?')) {
-      this.removeTeamGQL.mutate({ id: id }).subscribe({
+      this.removeTeamGQL.mutate({ id: team.id }).subscribe({
         next: () => {
           this.error = '';
         },
         error: (error) => {
-          this.error = error;
+          if (
+            error.message.includes(
+              'violates foreign key constraint',
+              'on table "project"'
+            )
+          ) {
+            this.error = 'There are still projects associated with this team';
+          } else {
+            this.error = error;
+          }
         },
       });
     }

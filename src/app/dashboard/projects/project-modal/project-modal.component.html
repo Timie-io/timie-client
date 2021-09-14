@@ -1,5 +1,7 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{ id ? "Editing team " + name : "New Team" }}</h4>
+  <h4 class="modal-title">
+    {{ id ? "Editing project " + name : "New Project" }}
+  </h4>
   <button
     type="button"
     class="close"
@@ -12,34 +14,42 @@
 <div class="modal-body">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" method="POST">
     <div class="form-group">
-      <label for="teamName">Team Name</label>
+      <label for="projectName">Project Name</label>
       <input
         type="text"
         class="form-control"
-        id="teamName"
-        placeholder="Your team name"
+        id="projectName"
+        placeholder="Your project name"
         formControlName="name"
         [ngClass]="{ 'is-invalid': submitted && f.name.errors }"
       />
       <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-        <div *ngIf="f.name.errors.required">Team name is required</div>
+        <div *ngIf="f.name.errors.required">project name is required</div>
       </div>
     </div>
     <div class="form-group">
-      <label for="teamDescription">Team Description</label>
+      <label for="projectDescription">Project Description</label>
       <input
         type="text"
         class="form-control"
-        id="teamDescription"
-        placeholder="Team short description"
+        id="projectDescription"
+        placeholder="Project short description"
         formControlName="description"
         [ngClass]="{ 'is-invalid': submitted && f.description.errors }"
       />
       <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
         <div *ngIf="f.description.errors.required">
-          Team description is required
+          project description is required
         </div>
       </div>
+    </div>
+    <div *ngIf="!id" class="form-group">
+      <label for="projectTeamId">Team (optional)</label>
+      <select id="projectTeamId" class="form-select" formControlName="teamId">
+        <option *ngFor="let team of teams" value="{{ team.id }}">
+          {{ team.name }}
+        </option>
+      </select>
     </div>
     <button type="submit" class="btn btn-outline-dark mt-3">Save</button>
     <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{ error }}</div>
