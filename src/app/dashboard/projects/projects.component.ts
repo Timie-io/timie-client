@@ -28,6 +28,8 @@ export class ProjectsComponent implements OnInit {
   public error = '';
   public search = '';
 
+  onlyActive = true;
+
   constructor(
     private readonly authService: AuthService,
     private readonly modalService: NgbModal,
@@ -36,7 +38,7 @@ export class ProjectsComponent implements OnInit {
     private readonly projectAddedGQL: ProjectAddedGQL,
     private readonly projectRemovedGQL: ProjectRemovedGQL
   ) {
-    this.projectsQuery = this.allProjectsGQL.watch();
+    this.projectsQuery = this.allProjectsGQL.watch(this.filters);
   }
 
   ngOnInit(): void {
@@ -91,10 +93,22 @@ export class ProjectsComponent implements OnInit {
     return this.authService.user;
   }
 
+  private get filters() {
+    const filters: { [id: string]: any } = {};
+    filters['name'] = this.search || undefined;
+    filters['active'] = this.onlyActive || undefined;
+    return filters;
+  }
+
   onSearchChange() {
     if (this.search.length > 3 || !this.search) {
-      this.projectsQuery.setVariables({ name: this.search });
+      this.projectsQuery.setVariables(this.filters);
     }
+  }
+
+  onActiveChange() {
+    this.onlyActive = !this.onlyActive;
+    this.projectsQuery.setVariables(this.filters);
   }
 
   newProject() {
@@ -106,6 +120,7 @@ export class ProjectsComponent implements OnInit {
     modal.componentInstance.id = project.id;
     modal.componentInstance.name = project.name;
     modal.componentInstance.description = project.description;
+    modal.componentInstance.active = project.active;
   }
 
   removeProject(project: Project) {

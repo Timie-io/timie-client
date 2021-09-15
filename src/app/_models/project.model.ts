@@ -8,4 +8,5 @@ export interface Project {
   creationDate?: string;
   owner?: User;
   team?: Team;
+  active?: boolean;
 }

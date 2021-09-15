@@ -1,1 +1,139 @@
-<p>tasks works!</p>
+<div id="tasks-component">
+  <ngb-alert *ngIf="error" [type]="'danger'" (closed)="error = ''">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{ error }}
+    &nbsp;
+  </ngb-alert>
+  <div class="row mt-3">
+    <div class="col-8">
+      <div class="row">
+        <div class="col">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search"
+            [(ngModel)]="search"
+            value="{{ search }}"
+            (ngModelChange)="onSearchChange()"
+          />
+        </div>
+        <div class="col">
+          <select
+            class="form-select"
+            [(ngModel)]="projectSelected"
+            (ngModelChange)="onProjectsChange()"
+          >
+            <option value="">All Projects</option>
+            <option
+              *ngFor="let project of projects | keyvalue"
+              value="{{ project.key }}"
+            >
+              {{ project.value }}
+            </option>
+          </select>
+        </div>
+        <div class="col">
+          <button
+            type="button"
+            class="btn"
+            [ngClass]="{ 'btn-success': onlyActive, 'btn-light': !onlyActive }"
+            (click)="onActiveChange()"
+          >
+            Active
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+      <button
+        class="btn btn-light float-end"
+        title="Create"
+        (click)="newTask()"
+      >
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <table class="table table-hover">
+        <caption>
+          {{
+            total
+          }}
+          tasks found
+        </caption>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Project</th>
+            <th>Active</th>
+            <th>Created</th>
+            <th>Created By</th>
+            <th>Last Modified</th>
+            <th>Priority</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of tasks">
+            <td>{{ task.id }}</td>
+            <td>{{ task.title }}</td>
+            <td>{{ task.project?.name }}</td>
+            <td
+              [ngClass]="{
+                'text-success': task.active,
+                'text-danger': !task.active
+              }"
+            >
+              {{ task.active ? "Yes" : "No" }}
+            </td>
+            <td>{{ task.creationDate | date: "MMM d, y h:mm a" }}</td>
+            <td>{{ task.creator?.name }}</td>
+            <td>{{ task.lastModified | date: "MMM d, y h:mm a" }}</td>
+            <td
+              [ngClass]="{
+                'text-success': task.priority < 3,
+                'text-warning': task.priority > 2 && task.priority < 6,
+                'text-danger': task.priority > 5
+              }"
+            >
+              {{ task.priority }}
+            </td>
+            <td>
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-light btn-sm" title="View">
+                  <i class="fa fa-eye"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm"
+                  title="Edit"
+                  (click)="editTask(task)"
+                >
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm"
+                  title="Remove"
+                  (click)="removeTask(task)"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <ngb-pagination
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [collectionSize]="total"
+        (pageChange)="onPageChange()"
+      ></ngb-pagination>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>

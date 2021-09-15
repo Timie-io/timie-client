@@ -1,51 +1,49 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
-import { Project } from './../../../_models/project.model';
+import { Task } from './../../../_models/task.model';
 
-export interface AllProjectsResult {
+export interface AllTasksResult {
   total: number;
-  result: Project[];
+  result: Task[];
 }
 
-export interface AllProjectsResponse {
-  projects: AllProjectsResult;
+export interface AllTasksResponse {
+  tasks: AllTasksResult;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class AllProjectsGQL extends Query<AllProjectsResponse> {
+export class AllTasksGQL extends Query<AllTasksResponse> {
   document = gql`
-    query GetAllProjects(
+    query GetAllTasks(
       $skip: Int = 0
       $take: Int = 25
-      $name: String
+      $title: String
+      $projectId: ID
       $active: Boolean
-      $ownerId: ID
-      $teamId: ID
     ) {
-      projects(
+      tasks(
         skip: $skip
         take: $take
-        name: $name
+        title: $title
+        projectId: $projectId
         active: $active
-        ownerId: $ownerId
-        teamId: $teamId
       ) {
         total
         result {
           id
-          name
+          title
           description
+          priority
           creationDate
+          lastModified
           active
-          owner {
+          project {
             id
             name
-            email
           }
-          team {
-            id
+          creator {
             name
           }
         }

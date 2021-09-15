@@ -21,6 +21,7 @@ export class ProjectAddedGQL extends Subscription<ProjectAddedResponse> {
         name
         description
         creationDate
+        active
         owner {
           id
           name

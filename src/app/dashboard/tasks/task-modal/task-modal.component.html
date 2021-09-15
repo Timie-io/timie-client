@@ -1,0 +1,89 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ id ? "Editing task " + title : "New Task" }}</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" method="POST">
+    <div *ngIf="!id" class="form-group">
+      <label for="taskProjectId">Project</label>
+      <select
+        id="taskProjectId"
+        class="form-select"
+        formControlName="projectId"
+        [ngClass]="{
+          'is-invalid': submitted && f.projectId.errors,
+          disabled: this.id
+        }"
+      >
+        <option value="">Select a project</option>
+        <option *ngFor="let project of projects" value="{{ project.id }}">
+          {{ project.name }}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.projectId.errors" class="invalid-feedback">
+        <div *ngIf="f.projectId.errors.required">
+          project is required (create a project if empty)
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="taskTitle">Task Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="taskTitle"
+        placeholder="A task title"
+        formControlName="title"
+        [ngClass]="{ 'is-invalid': submitted && f.title.errors }"
+      />
+      <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+        <div *ngIf="f.title.errors.required">title is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="taskDescription">Task Description</label>
+      <textarea
+        type="text"
+        class="form-control"
+        id="taskDescription"
+        formControlName="description"
+        rows="5"
+        [ngClass]="{ 'is-invalid': submitted && f.description.errors }"
+      ></textarea>
+      <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+        <div *ngIf="f.description.errors.required">
+          Team description is required
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="taskPriority" class="form-label">Priority</label>
+      <input
+        id="taskPriority"
+        type="number"
+        class="form-control"
+        min="0"
+        max="10"
+        formControlName="priority"
+      />
+    </div>
+    <div class="form-check mt-3">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="taskActive"
+        formControlName="active"
+      />
+      <label class="form-check-label" for="taskActive">Active</label>
+    </div>
+    <button type="submit" class="btn btn-outline-dark mt-3">Save</button>
+    <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{ error }}</div>
+  </form>
+</div>

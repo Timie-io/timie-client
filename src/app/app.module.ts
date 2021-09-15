@@ -22,6 +22,7 @@ import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { AuthService } from './_services/auth.service';
 import { ProjectModalComponent } from './dashboard/projects/project-modal/project-modal.component';
+import { TaskModalComponent } from './dashboard/tasks/task-modal/task-modal.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ProjectModalComponent } from './dashboard/projects/project-modal/projec
     TeamModalComponent,
     TeamMembersComponent,
     ProjectModalComponent,
+    TaskModalComponent,
   ],
   imports: [
     BrowserModule,

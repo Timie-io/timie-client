@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { first } from 'rxjs/operators';
 import { Team } from './../../../_models/team.model';
-import { AllTeamsGQL } from './../../teams/graphql/teams-query.graphql';
+import { TeamsOptionGQL } from './../../../_services/graphql/teams-query.graphql';
 import {
   CreateProjectGQL,
   NewProjectInput,
@@ -20,6 +20,7 @@ export class ProjectModalComponent implements OnInit {
   @Input() id?: string;
   @Input() name?: string;
   @Input() description?: string;
+  @Input() active: boolean = true;
   @Input() team?: Team;
 
   teams: Team[] = [];
@@ -34,20 +35,22 @@ export class ProjectModalComponent implements OnInit {
     private formBuilder: FormBuilder,
     private createProjectGQL: CreateProjectGQL,
     private updateProjectGQL: UpdateProjectGQL,
-    private allTeamsGQL: AllTeamsGQL
+    private teamsOptionGQL: TeamsOptionGQL
   ) {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       teamId: [''],
+      active: [false],
     });
   }
 
   ngOnInit(): void {
     this.form.controls.name.setValue(this.name);
     this.form.controls.description.setValue(this.description);
+    this.form.controls.active.setValue(this.active);
     this.form.controls.teamId.setValue(this.team?.id);
-    this.allTeamsGQL.watch().valueChanges.subscribe(({ data }) => {
+    this.teamsOptionGQL.watch().valueChanges.subscribe(({ data }) => {
       this.teams = data.teams.result;
     });
   }
@@ -60,6 +63,7 @@ export class ProjectModalComponent implements OnInit {
     return {
       name: this.form.controls.name.value,
       description: this.form.controls.description.value,
+      active: this.form.controls.active.value,
     };
   }
 
@@ -67,6 +71,7 @@ export class ProjectModalComponent implements OnInit {
     return {
       name: this.form.controls.name.value,
       description: this.form.controls.description.value,
+      active: this.form.controls.active.value,
     };
   }
 

@@ -5,11 +5,13 @@ import { Project } from './../../../_models/project.model';
 export interface UpdateProjectInput {
   name?: string;
   description?: string;
+  active?: boolean;
 }
 
 export interface NewProjectInput {
   name: string;
   description: string;
+  active: boolean;
 }
 
 export interface CreateProjectResponse {
@@ -35,6 +37,7 @@ export class CreateProjectGQL extends Mutation<CreateProjectResponse> {
         name
         description
         creationDate
+        active
         owner {
           id
           name
@@ -60,6 +63,7 @@ export class UpdateProjectGQL extends Mutation<UpdateProjectResponse> {
         name
         description
         creationDate
+        active
         owner {
           id
           name
@@ -77,7 +81,7 @@ export class UpdateProjectGQL extends Mutation<UpdateProjectResponse> {
 @Injectable({
   providedIn: 'root',
 })
-export class RemoveProjectGQL extends Mutation<UpdateProjectResponse> {
+export class RemoveProjectGQL extends Mutation<RemoveProjectResponse> {
   document = gql`
     mutation RemoveProject($id: ID!) {
       removeProject(id: $id) {
