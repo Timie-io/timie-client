@@ -7,6 +7,7 @@ import { AllTasksGQL, AllTasksResponse } from './graphql/tasks-query.graphql';
 import {
   TaskAddedGQL,
   TaskRemovedGQL,
+  TaskSubscriptionInput,
 } from './graphql/tasks-subscription.graphql';
 import { TaskModalComponent } from './task-modal/task-modal.component';
 
@@ -17,6 +18,8 @@ import { TaskModalComponent } from './task-modal/task-modal.component';
 })
 export class TasksComponent implements OnInit {
   private tasksQuery: QueryRef<AllTasksResponse>;
+  private unsubscribeAdded = () => {};
+  private unsubscribeRemoved = () => {};
 
   error = '';
   search = '';
@@ -54,6 +57,15 @@ export class TasksComponent implements OnInit {
     return filters;
   }
 
+  private get subscriptionInput(): TaskSubscriptionInput {
+    const input = {
+      title: this.search || undefined,
+      active: this.onlyActive || undefined,
+      projectId: this.projectSelected || undefined,
+    };
+    return input;
+  }
+
   ngOnInit(): void {
     this.tasksQuery.valueChanges.subscribe(({ data }) => {
       this.total = data.tasks.total;
@@ -64,8 +76,26 @@ export class TasksComponent implements OnInit {
         }
       }
     });
-    this.tasksQuery.subscribeToMore({
+    this.unsubscribeAdded = this.subscribeToTaskAdded(this.subscriptionInput);
+    this.unsubscribeRemoved = this.subscribeToTaskRemoved(
+      this.subscriptionInput
+    );
+  }
+
+  private applyFilters() {
+    this.tasksQuery.setVariables(this.filters);
+    this.tasksQuery.refetch();
+    this.unsubscribeAdded = this.subscribeToTaskAdded(this.subscriptionInput);
+    this.unsubscribeRemoved = this.subscribeToTaskRemoved(
+      this.subscriptionInput
+    );
+  }
+
+  private subscribeToTaskAdded(input?: TaskSubscriptionInput) {
+    this.unsubscribeAdded();
+    return this.tasksQuery.subscribeToMore({
       document: this.taskAddedGQL.document,
+      variables: { input: input },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -82,8 +112,13 @@ export class TasksComponent implements OnInit {
         };
       },
     });
-    this.tasksQuery.subscribeToMore({
+  }
+
+  private subscribeToTaskRemoved(input?: TaskSubscriptionInput) {
+    this.unsubscribeRemoved();
+    return this.tasksQuery.subscribeToMore({
       document: this.taskRemovedGQL.document,
+      variables: { input: input },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -107,21 +142,21 @@ export class TasksComponent implements OnInit {
 
   onSearchChange() {
     if (this.search.length > 3 || !this.search) {
-      this.tasksQuery.setVariables(this.filters);
+      this.applyFilters();
     }
   }
 
   onProjectsChange() {
-    this.tasksQuery.setVariables(this.filters);
+    this.applyFilters();
   }
 
   onPageChange() {
-    this.tasksQuery.setVariables(this.filters);
+    this.applyFilters();
   }
 
   onActiveChange() {
     this.onlyActive = !this.onlyActive;
-    this.tasksQuery.setVariables(this.filters);
+    this.applyFilters();
   }
 
   newTask() {

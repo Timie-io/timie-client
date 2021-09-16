@@ -38,6 +38,7 @@ export class CreateTaskGQL extends Mutation<CreateTaskResponse> {
       createTask(data: $data) {
         id
         title
+        description
         priority
         creationDate
         lastModified
@@ -63,6 +64,7 @@ export class UpdateTaskGQL extends Mutation<UpdateTaskResponse> {
       updateTask(id: $id, data: $data) {
         id
         title
+        description
         priority
         creationDate
         lastModified
