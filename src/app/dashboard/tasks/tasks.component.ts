@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Task } from './../../_models/task.model';
@@ -39,7 +40,8 @@ export class TasksComponent implements OnInit {
     private readonly modalService: NgbModal,
     private readonly removeTaskGQL: RemoveTaskGQL,
     private readonly taskAddedGQL: TaskAddedGQL,
-    private readonly taskRemovedGQL: TaskRemovedGQL
+    private readonly taskRemovedGQL: TaskRemovedGQL,
+    private readonly router: Router
   ) {
     this.tasksQuery = allTasksGQL.watch(this.filters);
   }
@@ -157,6 +159,10 @@ export class TasksComponent implements OnInit {
   onActiveChange() {
     this.onlyActive = !this.onlyActive;
     this.applyFilters();
+  }
+
+  viewTask(task: Task) {
+    this.router.navigate(['/tasks', task.id]);
   }
 
   newTask() {

@@ -66,12 +66,7 @@
             <td>{{ project.owner?.name }}</td>
             <td>{{ project.team?.name }}</td>
             <td>{{ project.creationDate | date: "MMM d, y" }}</td>
-            <td
-              [ngClass]="{
-                'text-success': project.active,
-                'text-danger': !project.active
-              }"
-            >
+            <td activeStyle [isActive]="project.active">
               {{ project.active ? "Yes" : "No" }}
             </td>
             <td>

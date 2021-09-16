@@ -11,6 +11,10 @@ export interface AllTasksResponse {
   tasks: AllTasksResult;
 }
 
+export interface TaskResponse {
+  task: Task;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -45,6 +49,52 @@ export class AllTasksGQL extends Query<AllTasksResponse> {
           }
           creator {
             name
+          }
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TaskGQL extends Query<TaskResponse> {
+  document = gql`
+    query GetTask($id: ID!) {
+      task(id: $id) {
+        id
+        title
+        description
+        priority
+        creationDate
+        lastModified
+        active
+        project {
+          id
+          name
+        }
+        creator {
+          name
+        }
+        followers {
+          id
+          name
+        }
+        assignments {
+          id
+          creator {
+            name
+          }
+          creationDate
+          user {
+            name
+          }
+          note
+          deadline
+          status {
+            code
+            label
           }
         }
       }

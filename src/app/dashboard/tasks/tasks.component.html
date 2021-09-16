@@ -81,29 +81,23 @@
             <td>{{ task.id }}</td>
             <td>{{ task.title }}</td>
             <td>{{ task.project?.name }}</td>
-            <td
-              [ngClass]="{
-                'text-success': task.active,
-                'text-danger': !task.active
-              }"
-            >
+            <td activeStyle [isActive]="task.active">
               {{ task.active ? "Yes" : "No" }}
             </td>
             <td>{{ task.creationDate | date: "MMM d, y h:mm a" }}</td>
             <td>{{ task.creator?.name }}</td>
             <td>{{ task.lastModified | date: "MMM d, y h:mm a" }}</td>
-            <td
-              [ngClass]="{
-                'text-success': task.priority < 3,
-                'text-warning': task.priority > 2 && task.priority < 6,
-                'text-danger': task.priority > 5
-              }"
-            >
+            <td taskPriority [priority]="task.priority">
               {{ task.priority }}
             </td>
             <td>
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-light btn-sm" title="View">
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm"
+                  title="View"
+                  (click)="viewTask(task)"
+                >
                   <i class="fa fa-eye"></i>
                 </button>
                 <button

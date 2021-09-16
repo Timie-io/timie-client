@@ -1,0 +1,201 @@
+<div class="row">
+  <ngb-alert *ngIf="error" [type]="'danger'" (closed)="error = ''">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{ error }}
+    &nbsp;
+  </ngb-alert>
+  <div class="col">
+    <div class="row">
+      <div class="col">
+        <button class="btn btn-link" (click)="backToTasks()">
+          << Back to Tasks
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-8">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <strong class="fs-4">{{ task?.title }}</strong>
+              <button class="btn btn-light float-end" (click)="editTask()">
+                <i class="fa fa-edit"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <pre>{{ task?.description }}</pre>
+          </div>
+        </div>
+
+        <!-- Comments -->
+        <div class="card mt-2">
+          <div class="card-header">
+            <div class="card-title">
+              <strong>Comments</strong>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card">
+              <div class="card-body">
+                <textarea
+                  id="taskNewCommentText"
+                  class="form-control"
+                  rows="3"
+                ></textarea>
+                <button class="btn btn-light mt-2 float-end">Send</button>
+              </div>
+            </div>
+            <div class="card mt-2">
+              <div class="card-header">
+                <div class="card-title">
+                  <strong>Merfrei (Sep 16, 2021 12:34 AM)</strong>
+                  <button class="btn btn-light float-end">
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <pre>This is a comment</pre>
+              </div>
+            </div>
+
+            <div class="card mt-2">
+              <div class="card-header">
+                <div class="card-title">
+                  <strong>Pupe (Sep 16, 2021 12:34 AM)</strong>
+                </div>
+              </div>
+              <div class="card-body">
+                <pre>This is not my comment</pre>
+              </div>
+            </div>
+
+            <div class="card mt-2">
+              <div class="card-header">
+                <div class="card-title">
+                  <strong>Merfrei (Sep 16, 2021 12:34 AM)</strong>
+                  <button class="btn btn-light float-end">
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <pre>This is a comment</pre>
+              </div>
+            </div>
+
+            <!-- Comments End -->
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <strong>Creator:</strong>&nbsp;{{ task?.creator?.name }}
+              </li>
+              <li class="list-group-item">
+                <strong>Priority:</strong>&nbsp;<span
+                  taskPriority
+                  [priority]="task?.priority"
+                  >{{ task?.priority }}</span
+                >
+              </li>
+              <li class="list-group-item">
+                <strong>Created:</strong>&nbsp;{{
+                  task?.creationDate | date: "MMM d, y h:mm a"
+                }}
+              </li>
+              <li class="list-group-item">
+                <strong>Modified:</strong>&nbsp;{{
+                  task?.lastModified | date: "MMM d, y h:mm a"
+                }}
+              </li>
+              <li class="list-group-item">
+                <strong>Project:</strong>&nbsp;{{ task?.project?.name }}
+              </li>
+              <li class="list-group-item">
+                <strong>Active:</strong>&nbsp;<span
+                  activeStyle
+                  [isActive]="task?.active"
+                  >{{ task?.active ? "Yes" : "No" }}</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card mt-2">
+          <div class="card-header">
+            <div class="card-title">
+              <strong>Assignments</strong>
+              <button class="btn btn-light float-end">
+                <i class="fa fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">
+                      <strong>Merfrei</strong>
+                      <button class="btn btn-light float-end">
+                        <i class="fa fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">
+                        Should fix everything ASAP
+                      </li>
+                      <li class="list-group-item">
+                        <strong>Assigned by:</strong>&nbsp;Merfrei (Sep 16, 2021
+                        12:34 AM)
+                      </li>
+                      <li class="list-group-item">
+                        <strong>Status:</strong>&nbsp;In Progress
+                      </li>
+                      <li class="list-group-item">
+                        <strong>Deadline:</strong>&nbsp;Sep 17, 2021
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card mt-2">
+          <div class="card-header">
+            <div class="card-title">
+              <strong>Followers</strong>
+              <button class="btn btn-light float-end">
+                <i class="fa fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <strong>Merfrei</strong>
+                <button class="btn btn-light float-end">
+                  <i class="fa fa-times"></i>
+                </button>
+              </li>
+              <li class="list-group-item">
+                <strong>Pupe</strong>
+                <button class="btn btn-light float-end">
+                  <i class="fa fa-times"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

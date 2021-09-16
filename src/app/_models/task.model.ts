@@ -1,3 +1,4 @@
+import { Assignment } from './assignment.model';
 import { Project } from './project.model';
 import { User } from './user.model';
 
@@ -12,4 +13,5 @@ export interface Task {
   active?: boolean;
   creator?: User;
   followers?: User[];
+  assignments?: Assignment[];
 }

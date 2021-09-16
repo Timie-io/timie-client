@@ -4,6 +4,7 @@ import { AssignmentsComponent } from './dashboard/assignments/assignments.compon
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EntriesComponent } from './dashboard/entries/entries.component';
 import { ProjectsComponent } from './dashboard/projects/projects.component';
+import { TaskDetailsComponent } from './dashboard/tasks/task-details/task-details.component';
 import { TasksComponent } from './dashboard/tasks/tasks.component';
 import { TeamsComponent } from './dashboard/teams/teams.component';
 import { LoginComponent } from './login/login.component';
@@ -18,7 +19,11 @@ const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'assignments' },
       { path: 'assignments', component: AssignmentsComponent },
-      { path: 'tasks', component: TasksComponent },
+      {
+        path: 'tasks',
+        component: TasksComponent,
+      },
+      { path: 'tasks/:id', component: TaskDetailsComponent },
       { path: 'projects', component: ProjectsComponent },
       { path: 'teams', component: TeamsComponent },
       { path: 'entries', component: EntriesComponent },
