@@ -26,6 +26,9 @@ import { appInitializer } from './_helpers/app.initializer';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { AuthService } from './_services/auth.service';
+import { TaskFollowersComponent } from './dashboard/tasks/task-followers/task-followers.component';
+import { TaskAssignmentsComponent } from './dashboard/tasks/task-assignments/task-assignments.component';
+import { TaskCommentsComponent } from './dashboard/tasks/task-comments/task-comments.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,9 @@ import { AuthService } from './_services/auth.service';
     TaskDetailsComponent,
     TaskPriorityDirective,
     ActiveDirective,
+    TaskFollowersComponent,
+    TaskAssignmentsComponent,
+    TaskCommentsComponent,
   ],
   imports: [
     BrowserModule,

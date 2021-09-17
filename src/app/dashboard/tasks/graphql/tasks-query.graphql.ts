@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
 import { Task } from './../../../_models/task.model';
+import { User } from './../../../_models/user.model';
 
 export interface AllTasksResult {
   total: number;
@@ -13,6 +14,14 @@ export interface AllTasksResponse {
 
 export interface TaskResponse {
   task: Task;
+}
+
+export interface TaskFollowers {
+  followers: User[];
+}
+
+export interface TaskFollowersResponse {
+  task: TaskFollowers;
 }
 
 @Injectable({
@@ -77,10 +86,6 @@ export class TaskGQL extends Query<TaskResponse> {
         creator {
           name
         }
-        followers {
-          id
-          name
-        }
         assignments {
           id
           creator {
@@ -96,6 +101,23 @@ export class TaskGQL extends Query<TaskResponse> {
             code
             label
           }
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TaskFollowersGQL extends Query<TaskFollowersResponse> {
+  document = gql`
+    query GetTaskFollowers($id: ID!) {
+      task(id: $id) {
+        followers {
+          id
+          name
+          email
         }
       }
     }

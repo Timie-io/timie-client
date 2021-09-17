@@ -17,6 +17,8 @@ export class TaskDetailsComponent implements OnInit {
 
   error = '';
 
+  taskId: string | null = null;
+
   task?: Task;
 
   constructor(
@@ -25,8 +27,11 @@ export class TaskDetailsComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly modalService: NgbModal
   ) {
-    const taskId = route.snapshot.paramMap.get('id');
-    this.taskQuery = taskGQL.watch({ id: taskId }, { errorPolicy: 'ignore' });
+    this.taskId = route.snapshot.paramMap.get('id');
+    this.taskQuery = taskGQL.watch(
+      { id: this.taskId },
+      { errorPolicy: 'ignore' }
+    );
   }
 
   ngOnInit(): void {

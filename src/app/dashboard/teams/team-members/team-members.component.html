@@ -19,7 +19,7 @@
         placeholder="Search members"
         [(ngModel)]="filter"
       />
-      <div ngbDropdownMenu class="dropdown-menu">
+      <ul ngbDropdownMenu class="dropdown-menu">
         <li
           (click)="addMember(user)"
           *ngFor="let user of users"
@@ -27,7 +27,7 @@
         >
           {{ user.name }} ({{ user.email }})
         </li>
-      </div>
+      </ul>
     </div>
     <div class="col-auto">
       <button class="btn btn-light ml-2" title="Add member">
