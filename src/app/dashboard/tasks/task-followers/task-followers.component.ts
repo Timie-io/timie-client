@@ -58,7 +58,13 @@ export class TaskFollowersComponent implements OnInit {
       if (this.followers.find((m) => m.id === user.id)) {
         continue;
       }
-      if (this.filter && !user.name.includes(this.filter)) {
+      if (
+        this.filter &&
+        !(
+          user.name.toLowerCase().includes(this.filter.toLowerCase()) ||
+          user.email.includes(this.filter)
+        )
+      ) {
         continue;
       }
       output.push(user);
