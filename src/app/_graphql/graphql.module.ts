@@ -52,7 +52,13 @@ export class GraphQLModule {
     });
     apollo.create({
       link: ApolloLink.from([auth, link]),
-      cache: new InMemoryCache(),
+      cache: new InMemoryCache({
+        typePolicies: {
+          Task: {
+            keyFields: ['id'],
+          },
+        },
+      }),
     });
   }
 }

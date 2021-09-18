@@ -29,6 +29,7 @@ import { AuthService } from './_services/auth.service';
 import { TaskFollowersComponent } from './dashboard/tasks/task-followers/task-followers.component';
 import { TaskAssignmentsComponent } from './dashboard/tasks/task-assignments/task-assignments.component';
 import { TaskCommentsComponent } from './dashboard/tasks/task-comments/task-comments.component';
+import { TaskAssignmentModalComponent } from './dashboard/tasks/task-assignments/task-assignment-modal/task-assignment-modal.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { TaskCommentsComponent } from './dashboard/tasks/task-comments/task-comm
     TaskFollowersComponent,
     TaskAssignmentsComponent,
     TaskCommentsComponent,
+    TaskAssignmentModalComponent,
   ],
   imports: [
     BrowserModule,

@@ -33,7 +33,7 @@ export class TaskModalComponent implements OnInit {
 
   constructor(
     public modal: NgbActiveModal,
-    private readonly formBuilder: FormBuilder,
+    formBuilder: FormBuilder,
     private readonly projectsOptionGQL: ProjectsOptionGQL,
     private readonly updateTaskGQL: UpdateTaskGQL,
     private readonly createTaskGQL: CreateTaskGQL
@@ -97,7 +97,7 @@ export class TaskModalComponent implements OnInit {
         .pipe(first())
         .subscribe({
           next: (data) => {
-            this.modal.close('Team saved');
+            this.modal.close('Task saved');
           },
           error: (error) => {
             this.error = error;
@@ -111,7 +111,7 @@ export class TaskModalComponent implements OnInit {
         .pipe(first())
         .subscribe({
           next: (data) => {
-            this.modal.close('Team saved');
+            this.modal.close('Task saved');
           },
           error: (error) => {
             this.error = error;

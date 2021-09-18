@@ -1,0 +1,23 @@
+<ngb-alert
+  *ngIf="error"
+  [type]="'danger'"
+  (closed)="error = ''; modal.dismiss('Error close')"
+>
+  <i class="fa fa-exclamation-triangle"></i>
+  {{ error }}
+  &nbsp;
+</ngb-alert>
+<div *ngIf="!error" class="modal-header">
+  <h4 class="modal-title">
+    {{ id ? "Editing assignment " : "New Assignment" }}
+  </h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div *ngIf="!error" class="modal-body"></div>

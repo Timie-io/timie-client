@@ -2,7 +2,7 @@
   <div class="card-header">
     <div class="card-title">
       <strong>Assignments</strong>
-      <button class="btn btn-light float-end">
+      <button class="btn btn-light float-end" (click)="newAssignment()">
         <i class="fa fa-plus"></i>
       </button>
     </div>
@@ -14,8 +14,14 @@
           <div class="card-header">
             <div class="card-title">
               <strong>Merfrei</strong>
-              <button class="btn btn-light float-end">
-                <i class="fa fa-times"></i>
+              <button class="btn btn-light float-end" title="Remove">
+                <i class="fa fa-trash"></i>
+              </button>
+              <button class="btn btn-light float-end" title="Edit">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button class="btn btn-light float-end" title="Entries">
+                <i class="fa fa-clock"></i>
               </button>
             </div>
           </div>
