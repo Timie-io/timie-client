@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Task } from './../../_models/task.model';
+import { AuthService } from './../../_services/auth.service';
 import { RemoveTaskGQL } from './graphql/tasks-mutation.graphql';
 import { AllTasksGQL, AllTasksResponse } from './graphql/tasks-query.graphql';
 import {
@@ -34,8 +35,10 @@ export class TasksComponent implements OnInit {
   projectSelected = '';
 
   onlyActive = true;
+  onlyFollowing = false;
 
   constructor(
+    private readonly authService: AuthService,
     private readonly allTasksGQL: AllTasksGQL,
     private readonly modalService: NgbModal,
     private readonly removeTaskGQL: RemoveTaskGQL,
@@ -43,7 +46,7 @@ export class TasksComponent implements OnInit {
     private readonly taskRemovedGQL: TaskRemovedGQL,
     private readonly router: Router
   ) {
-    this.tasksQuery = allTasksGQL.watch(this.filters);
+    this.tasksQuery = this.allTasksGQL.watch();
   }
 
   private get filters() {
@@ -53,6 +56,10 @@ export class TasksComponent implements OnInit {
     };
     if (this.onlyActive) {
       filters['active'] = true;
+    }
+    if (this.onlyFollowing) {
+      const userId = this.authService.user?.id;
+      filters['followerIds'] = [userId];
     }
     filters['title'] = this.search || undefined;
     filters['projectId'] = this.projectSelected || undefined;
@@ -69,6 +76,7 @@ export class TasksComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.applyFilters();
     this.tasksQuery.valueChanges.subscribe(({ data }) => {
       this.total = data.tasks.total;
       this.tasks = data.tasks.result;
@@ -158,6 +166,11 @@ export class TasksComponent implements OnInit {
 
   onActiveChange() {
     this.onlyActive = !this.onlyActive;
+    this.applyFilters();
+  }
+
+  onFollowingChange() {
+    this.onlyFollowing = !this.onlyFollowing;
     this.applyFilters();
   }
 

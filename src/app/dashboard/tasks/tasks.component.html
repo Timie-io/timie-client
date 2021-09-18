@@ -41,6 +41,17 @@
           >
             Active
           </button>
+          <button
+            type="button"
+            class="btn"
+            [ngClass]="{
+              'btn-secondary': onlyFollowing,
+              'btn-light': !onlyFollowing
+            }"
+            (click)="onFollowingChange()"
+          >
+            Following
+          </button>
         </div>
       </div>
     </div>

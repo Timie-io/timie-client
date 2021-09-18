@@ -14,6 +14,7 @@ import { TokenStorageService } from './token-storage.service';
 const GET_USER = gql`
   query GetUser {
     loggedUser {
+      id
       email
       name
       isAdmin

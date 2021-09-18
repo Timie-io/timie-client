@@ -109,6 +109,7 @@ export class AddTaskFollowerGQL extends Mutation<AddTaskFollowerResponse> {
   document = gql`
     mutation AddTaskFollower($id: ID!, $userId: ID!) {
       addTaskFollower(id: $id, userId: $userId) {
+        id
         followers {
           id
           name
@@ -126,6 +127,7 @@ export class RemoveTaskFollowerGQL extends Mutation<RemoveTaskFollowerResponse> 
   document = gql`
     mutation RemoveTaskFollower($id: ID!, $userId: ID!) {
       removeTaskFollower(id: $id, userId: $userId) {
+        id
         followers {
           id
           name

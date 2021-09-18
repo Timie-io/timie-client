@@ -35,6 +35,7 @@ export class AllTasksGQL extends Query<AllTasksResponse> {
       $title: String
       $projectId: ID
       $active: Boolean
+      $followerIds: [ID!]
     ) {
       tasks(
         skip: $skip
@@ -42,6 +43,7 @@ export class AllTasksGQL extends Query<AllTasksResponse> {
         title: $title
         projectId: $projectId
         active: $active
+        followerIds: $followerIds
       ) {
         total
         result {
@@ -114,6 +116,7 @@ export class TaskFollowersGQL extends Query<TaskFollowersResponse> {
   document = gql`
     query GetTaskFollowers($id: ID!) {
       task(id: $id) {
+        id
         followers {
           id
           name
