@@ -1,4 +1,9 @@
 <div class="card mt-2">
+  <ngb-alert *ngIf="error" [type]="'danger'" (closed)="error = ''">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{ error }}
+    &nbsp;
+  </ngb-alert>
   <div class="card-header">
     <div class="card-title">
       <strong>Assignments</strong>
@@ -9,15 +14,23 @@
   </div>
   <div class="card-body">
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">
+      <li *ngFor="let assignment of assignments" class="list-group-item">
         <div class="card">
           <div class="card-header">
             <div class="card-title">
-              <strong>Merfrei</strong>
-              <button class="btn btn-light float-end" title="Remove">
+              <strong>{{ assignment.user.name }}</strong>
+              <button
+                class="btn btn-light float-end"
+                title="Remove"
+                (click)="removeAssignment(assignment)"
+              >
                 <i class="fa fa-trash"></i>
               </button>
-              <button class="btn btn-light float-end" title="Edit">
+              <button
+                class="btn btn-light float-end"
+                title="Edit"
+                (click)="editAssignment(assignment)"
+              >
                 <i class="fa fa-edit"></i>
               </button>
               <button class="btn btn-light float-end" title="Entries">
@@ -27,16 +40,20 @@
           </div>
           <div class="card-body">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item">Should fix everything ASAP</li>
+              <li class="list-group-item">{{ assignment.note }}</li>
               <li class="list-group-item">
-                <strong>Assigned by:</strong>&nbsp;Merfrei (Sep 16, 2021 12:34
-                AM)
+                <strong>Assigned by:</strong>&nbsp;{{
+                  assignment.creator.name
+                }}
+                ({{ assignment.creationDate | date: "MMM d, y h:mm a":locale }})
               </li>
               <li class="list-group-item">
-                <strong>Status:</strong>&nbsp;In Progress
+                <strong>Status:</strong>&nbsp;{{ assignment.status.label }}
               </li>
               <li class="list-group-item">
-                <strong>Deadline:</strong>&nbsp;Sep 17, 2021
+                <strong>Deadline:</strong>&nbsp;{{
+                  assignment.deadline | date: "MMM d, y":locale
+                }}
               </li>
             </ul>
           </div>

@@ -21,6 +21,7 @@ export class TeamAddedGQL extends Subscription<TeamAddedResponse> {
         name
         description
         owner {
+          id
           email
           name
         }

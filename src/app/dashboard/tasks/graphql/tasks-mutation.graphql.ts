@@ -56,6 +56,7 @@ export class CreateTaskGQL extends Mutation<CreateTaskResponse> {
           name
         }
         creator {
+          id
           name
         }
       }
@@ -82,6 +83,7 @@ export class UpdateTaskGQL extends Mutation<UpdateTaskResponse> {
           name
         }
         creator {
+          id
           name
         }
       }

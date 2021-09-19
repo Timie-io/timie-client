@@ -54,8 +54,26 @@ export class GraphQLModule {
       link: ApolloLink.from([auth, link]),
       cache: new InMemoryCache({
         typePolicies: {
+          User: {
+            keyFields: ['id'],
+          },
           Task: {
             keyFields: ['id'],
+          },
+          Project: {
+            keyFields: ['id'],
+          },
+          Team: {
+            keyFields: ['id'],
+          },
+          Assignment: {
+            keyFields: ['id'],
+          },
+          Entry: {
+            keyFields: ['id'],
+          },
+          Status: {
+            keyFields: ['code'],
           },
         },
       }),

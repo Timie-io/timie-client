@@ -59,6 +59,7 @@ export class AllTasksGQL extends Query<AllTasksResponse> {
             name
           }
           creator {
+            id
             name
           }
         }
@@ -86,23 +87,8 @@ export class TaskGQL extends Query<TaskResponse> {
           name
         }
         creator {
-          name
-        }
-        assignments {
           id
-          creator {
-            name
-          }
-          creationDate
-          user {
-            name
-          }
-          note
-          deadline
-          status {
-            code
-            label
-          }
+          name
         }
       }
     }

@@ -205,7 +205,7 @@ export class TasksComponent implements OnInit {
               'on table "assignment"'
             )
           ) {
-            this.error = 'This task has assignments';
+            this.error = 'This task contains assignments';
           } else {
             this.error = error;
           }

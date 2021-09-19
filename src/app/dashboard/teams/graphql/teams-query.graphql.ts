@@ -46,6 +46,7 @@ export class AllTeamsGQL extends Query<AllTeamsResponse> {
           name
           description
           owner {
+            id
             email
             name
           }

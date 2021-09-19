@@ -43,6 +43,7 @@ export class UpdateTeamGQL extends Mutation<UpdateTeamResponse> {
         name
         description
         owner {
+          id
           name
           email
         }
@@ -62,6 +63,7 @@ export class CreateTeamGQL extends Mutation<CreateTeamResponse> {
         name
         description
         owner {
+          id
           name
           email
         }
@@ -90,7 +92,9 @@ export class AddTeamMemberGQL extends Mutation<AddTeamMemberResponse> {
   document = gql`
     mutation AddTeamMember($userId: ID!, $teamId: ID!) {
       addTeamMember(userId: $userId, teamId: $teamId) {
+        id
         members {
+          id
           name
           email
         }
@@ -106,7 +110,9 @@ export class RemoveTeamMemberGQL extends Mutation<RemoveTeamMemberResponse> {
   document = gql`
     mutation RemoveTeamMember($userId: ID!, $teamId: ID!) {
       removeTeamMember(userId: $userId, teamId: $teamId) {
+        id
         members {
+          id
           name
           email
         }

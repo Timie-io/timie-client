@@ -14,8 +14,27 @@ export interface CreateAssignmentResponse {
   createAssignment: Assignment;
 }
 
+export interface UpdateAssignmentResponse {
+  updateAssignment: Assignment;
+}
+
 export interface RemoveAssignmentResponse {
   removeAssignment: Assignment;
+}
+
+export interface NewAssignmentInput {
+  taskId: string;
+  note: string;
+  deadline: string;
+  userId: string;
+  statusCode: string;
+}
+
+export interface UpdateAssignmentInput {
+  note: string;
+  deadline: string;
+  userId: string;
+  statusCode: string;
 }
 
 @Injectable({
@@ -38,12 +57,39 @@ export class CreateAssignmentGQL extends Mutation<CreateAssignmentResponse> {
         }
         deadline
         note
-        status
+        status {
+          code
+          label
+          order
+        }
       }
     }
   `;
 }
 
+@Injectable({
+  providedIn: 'root',
+})
+export class UpdateAssignmentGQL extends Mutation<UpdateAssignmentResponse> {
+  document = gql`
+    mutation UpdateAssignment($id: ID!, $data: UpdateAssignmentInput!) {
+      updateAssignment(id: $id, data: $data) {
+        id
+        note
+        deadline
+        status {
+          code
+          label
+          order
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
 export class RemoveAssignmentGQL extends Mutation<RemoveAssignmentResponse> {
   document = gql`
     mutation RemoveAssignment($id: ID!) {

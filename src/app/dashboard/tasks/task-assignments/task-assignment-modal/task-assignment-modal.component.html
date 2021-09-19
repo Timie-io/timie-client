@@ -20,4 +20,73 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div *ngIf="!error" class="modal-body"></div>
+<div *ngIf="!error" class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" method="POST">
+    <div class="form-group">
+      <label for="assignmentUserId">User</label>
+      <select
+        id="assignmentUserId"
+        class="form-select"
+        formControlName="userId"
+        [ngClass]="{
+          'is-invalid': submitted && f.userId.errors
+        }"
+      >
+        <option value="">Select a user</option>
+        <option *ngFor="let user of allUsers" value="{{ user.id }}">
+          {{ user.name }}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.userId.errors" class="invalid-feedback">
+        <div *ngIf="f.userId.errors.required">user is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="assignmentNote">Note</label>
+      <input
+        type="text"
+        class="form-control"
+        id="assignmentNote"
+        placeholder="An optional note"
+        formControlName="note"
+        [ngClass]="{ 'is-invalid': submitted && f.note.errors }"
+      />
+      <div *ngIf="submitted && f.note.errors" class="invalid-feedback">
+        <div *ngIf="f.note.errors.maxlength">
+          No more than {{ f.note.errors.maxlength.requiredLength }} characters
+          allowed
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="assignmentDeadline"
+        >Deadline (optional)</label
+      >
+      <input
+        type="date"
+        min="{{ today | date: 'yyyy-MM-dd':locale }}"
+        class="form-control"
+        id="assignmentDeadline"
+        formControlName="deadline"
+      />
+    </div>
+    <div *ngIf="!id" class="form-group">
+      <label for="assignmentStatusCode">Status</label>
+      <select
+        id="assignmentStatusCode"
+        class="form-select"
+        formControlName="statusCode"
+        [ngClass]="{ 'is-invalid': submitted && f.statusCode.errors }"
+      >
+        <option *ngFor="let status of allStatus" value="{{ status.code }}">
+          {{ status.label }}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.statusCode.errors" class="invalid-feedback">
+        <div *ngIf="f.statusCode.errors.required">status is required</div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-outline-dark mt-3">Save</button>
+    <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{ error }}</div>
+  </form>
+</div>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Subscription } from 'apollo-angular';
+import { Task } from '../../../_models/task.model';
 
 export interface TaskAddedResponse {
   taskAdded: Task;
@@ -34,6 +35,7 @@ export class TaskAddedGQL extends Subscription<TaskAddedResponse> {
           name
         }
         creator {
+          id
           name
         }
       }
@@ -46,7 +48,7 @@ export class TaskAddedGQL extends Subscription<TaskAddedResponse> {
 })
 export class TaskRemovedGQL extends Subscription<TaskRemovedResponse> {
   document = gql`
-    subscription TaskRemoved($input: TaskAddedInput!) {
+    subscription TaskRemoved($input: TaskAddedInput) {
       taskRemoved(input: $input) {
         id
       }
