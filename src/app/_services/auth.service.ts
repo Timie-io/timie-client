@@ -27,7 +27,8 @@ export class AuthService {
   private refreshTokenTimeout: number | undefined;
   private authSubject: BehaviorSubject<Auth>;
   public auth$: Observable<Auth>;
-  public user?: User;
+  private userSubject: BehaviorSubject<User | null>;
+  public user$: Observable<User | null>;
 
   constructor(
     private readonly apollo: Apollo,
@@ -36,12 +37,18 @@ export class AuthService {
     private graphQLModule: GraphQLModule,
     private storage: TokenStorageService
   ) {
+    this.userSubject = new BehaviorSubject<User | null>(null);
+    this.user$ = this.userSubject.asObservable();
     this.authSubject = new BehaviorSubject<Auth>(this.storage.getAuth());
     this.auth$ = this.authSubject.asObservable();
   }
 
   public get authValue(): Auth {
     return this.authSubject.value;
+  }
+
+  public get user(): User | null {
+    return this.userSubject.value;
   }
 
   private restartSubscriptionsClient() {
@@ -61,7 +68,7 @@ export class AuthService {
       })
       .valueChanges.pipe(first())
       .subscribe(({ data }) => {
-        this.user = data.loggedUser;
+        this.userSubject.next(data.loggedUser);
       });
   }
 

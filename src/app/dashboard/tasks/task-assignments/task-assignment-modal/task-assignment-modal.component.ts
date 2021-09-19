@@ -100,7 +100,7 @@ export class TaskAssignmentModalComponent implements OnInit {
   private get updateAssignmentInput(): UpdateAssignmentInput {
     return {
       note: this.form.controls.note.value,
-      deadline: this.form.controls.deadline.value,
+      deadline: this.form.controls.deadline.value || undefined,
       userId: this.form.controls.userId.value,
       statusCode: this.form.controls.statusCode.value,
     };
@@ -110,7 +110,7 @@ export class TaskAssignmentModalComponent implements OnInit {
     return {
       taskId: this.taskId || '',
       note: this.form.controls.note.value,
-      deadline: this.form.controls.deadline.value,
+      deadline: this.form.controls.deadline.value || undefined,
       userId: this.form.controls.userId.value,
       statusCode: this.form.controls.statusCode.value,
     };

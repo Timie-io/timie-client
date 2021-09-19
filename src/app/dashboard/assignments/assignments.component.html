@@ -1,1 +1,67 @@
-<p>assignments works!</p>
+<div id="assignments-component">
+  <ngb-alert *ngIf="error" [type]="'danger'" (closed)="error = ''">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{ error }}
+    &nbsp;
+  </ngb-alert>
+  <div class="row mt-3">
+    <div class="col-10"></div>
+  </div>
+  <div class="row">
+    <div class="col-10">
+      <table class="table table-hover">
+        <caption>
+          {{
+            total
+          }}
+          assignments found
+        </caption>
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Note</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Entries</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let assignment of assignments">
+            <td>
+              <button
+                class="btn btn-link"
+                [routerLink]="'/tasks/' + assignment.task.id"
+              >
+                {{ assignment.task.id }}
+              </button>
+            </td>
+            <td>{{ assignment.note }}</td>
+            <td>{{ assignment.deadline | date: "MMM d, y" }}</td>
+            <td>{{ assignment.status.label }}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm"
+                  title="Show Entries"
+                >
+                  <i class="fa fa-eye"></i>
+                </button>
+                <!-- TODO Create startStop directive-->
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm"
+                  title="Start New"
+                >
+                  <i class="fa fa-play"></i>
+                </button>
+              </div>
+            </td>
+            <td><strong>02:24:32</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
