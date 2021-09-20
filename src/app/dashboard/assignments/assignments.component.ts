@@ -1,12 +1,22 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { Assignment } from './../../_models/assignment.model';
+import { Status } from './../../_models/status.model';
 import { AuthService } from './../../_services/auth.service';
+import { UpdateAssignmentGQL } from './../../_services/graphql/assignments-mutation.graphql';
 import {
   AssignmentsGQL,
   AssignmentsResponse,
 } from './../../_services/graphql/assignments-query.graphql';
+import {
+  CreateEntryGQL,
+  NewEntryInput,
+  StartEntryGQL,
+} from './../../_services/graphql/entries-mutation.graphql';
+import { StatusOptionsGQL } from './../../_services/graphql/status-query.graphql';
 
 @Component({
   selector: 'app-assignments',
@@ -18,6 +28,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
 
   assignmentsQuery: QueryRef<AssignmentsResponse>;
   assignments: Assignment[] = [];
+  allStatus: Status[] = [];
 
   total = 0;
 
@@ -25,7 +36,12 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly assignmentsGQL: AssignmentsGQL
+    private readonly router: Router,
+    private readonly assignmentsGQL: AssignmentsGQL,
+    private readonly statusOptionsGQL: StatusOptionsGQL,
+    private readonly updateAssignmentGQL: UpdateAssignmentGQL,
+    private readonly createEntryGQL: CreateEntryGQL,
+    private readonly startEntryGQL: StartEntryGQL
   ) {
     this.assignmentsQuery = this.assignmentsGQL.watch();
   }
@@ -41,15 +57,49 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
         this.assignmentsQuery.refetch();
       }
     });
+    this.statusOptionsGQL
+      .fetch()
+      .pipe(first())
+      .subscribe(({ data }) => {
+        this.allStatus = data.statuses;
+      });
   }
 
   ngOnDestroy() {
     this.currentUserSubscription?.unsubscribe();
   }
 
-  private applyFilters() {}
+  onStatusChange(statusCode: string, assignment: Assignment) {
+    this.updateAssignmentGQL
+      .mutate({
+        id: assignment.id,
+        data: {
+          statusCode: statusCode,
+        },
+      })
+      .subscribe();
+  }
 
-  onPageChange() {
-    this.applyFilters();
+  private newEntryInput(assignmentId: string): NewEntryInput {
+    return {
+      assignmentId: assignmentId,
+    };
+  }
+
+  startNewEntry(assignment: Assignment) {
+    this.createEntryGQL
+      .mutate({ data: this.newEntryInput(assignment.id) })
+      .subscribe({
+        next: ({ data }) => {
+          this.startEntryGQL.mutate({ id: data?.createEntry.id }).subscribe({
+            next: () => {
+              this.router.navigate(['/entries']);
+            },
+          });
+        },
+        error: (error) => {
+          this.error = error;
+        },
+      });
   }
 }

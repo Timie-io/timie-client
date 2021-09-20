@@ -55,6 +55,11 @@
                   assignment.deadline | date: "MMM d, y":locale
                 }}
               </li>
+              <li class="list-group-item">
+                <strong>Time:</strong>&nbsp;<strong>{{
+                  assignment.totalTime | formatDuration
+                }}</strong>
+              </li>
             </ul>
           </div>
         </div>

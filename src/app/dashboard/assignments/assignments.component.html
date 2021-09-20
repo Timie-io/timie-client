@@ -38,7 +38,25 @@
             </td>
             <td>{{ assignment.note }}</td>
             <td>{{ assignment.deadline | date: "MMM d, y" }}</td>
-            <td>{{ assignment.status.label }}</td>
+            <td>
+              <select
+                #statusOption
+                class="form-select"
+                (change)="onStatusChange(statusOption.value, assignment)"
+              >
+                <option
+                  *ngFor="let status of allStatus"
+                  [attr.selected]="
+                    assignment.status.code === status.code
+                      ? 'selected'
+                      : undefined
+                  "
+                  value="{{ status.code }}"
+                >
+                  {{ status.label }}
+                </option>
+              </select>
+            </td>
             <td>
               <div class="btn-group" role="group">
                 <button
@@ -48,17 +66,19 @@
                 >
                   <i class="fa fa-eye"></i>
                 </button>
-                <!-- TODO Create startStop directive-->
                 <button
                   type="button"
                   class="btn btn-light btn-sm"
                   title="Start New"
+                  (click)="startNewEntry(assignment)"
                 >
                   <i class="fa fa-play"></i>
                 </button>
               </div>
             </td>
-            <td><strong>02:24:32</strong></td>
+            <td>
+              <strong>{{ assignment.totalTime | formatDuration }}</strong>
+            </td>
           </tr>
         </tbody>
       </table>

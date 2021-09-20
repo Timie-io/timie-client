@@ -11,7 +11,11 @@ import { EntriesComponent } from './dashboard/entries/entries.component';
 import { ProjectModalComponent } from './dashboard/projects/project-modal/project-modal.component';
 import { ProjectsComponent } from './dashboard/projects/projects.component';
 import { TaskPriorityDirective } from './dashboard/tasks/directives/priority.directive';
+import { TaskAssignmentModalComponent } from './dashboard/tasks/task-assignments/task-assignment-modal/task-assignment-modal.component';
+import { TaskAssignmentsComponent } from './dashboard/tasks/task-assignments/task-assignments.component';
+import { TaskCommentsComponent } from './dashboard/tasks/task-comments/task-comments.component';
 import { TaskDetailsComponent } from './dashboard/tasks/task-details/task-details.component';
+import { TaskFollowersComponent } from './dashboard/tasks/task-followers/task-followers.component';
 import { TaskModalComponent } from './dashboard/tasks/task-modal/task-modal.component';
 import { TasksComponent } from './dashboard/tasks/tasks.component';
 import { TeamMembersComponent } from './dashboard/teams/team-members/team-members.component';
@@ -25,11 +29,8 @@ import { GraphQLModule } from './_graphql/graphql.module';
 import { appInitializer } from './_helpers/app.initializer';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { FormatDurationPipe } from './_pipes/format-duration.pipe';
 import { AuthService } from './_services/auth.service';
-import { TaskFollowersComponent } from './dashboard/tasks/task-followers/task-followers.component';
-import { TaskAssignmentsComponent } from './dashboard/tasks/task-assignments/task-assignments.component';
-import { TaskCommentsComponent } from './dashboard/tasks/task-comments/task-comments.component';
-import { TaskAssignmentModalComponent } from './dashboard/tasks/task-assignments/task-assignment-modal/task-assignment-modal.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { TaskAssignmentModalComponent } from './dashboard/tasks/task-assignments
     TaskAssignmentsComponent,
     TaskCommentsComponent,
     TaskAssignmentModalComponent,
+    FormatDurationPipe,
   ],
   imports: [
     BrowserModule,

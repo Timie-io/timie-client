@@ -1,3 +1,4 @@
+import { Entry } from './entry.model';
 import { Status } from './status.model';
 import { Task } from './task.model';
 import { User } from './user.model';
@@ -11,4 +12,6 @@ export interface Assignment {
   deadline?: string;
   note: string;
   status: Status;
+  totalTime: number;
+  entries: Entry[];
 }
