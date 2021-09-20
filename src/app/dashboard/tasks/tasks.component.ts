@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
+import { Subscription } from 'rxjs';
 import { Task } from './../../_models/task.model';
 import { AuthService } from './../../_services/auth.service';
 import { RemoveTaskGQL } from './graphql/tasks-mutation.graphql';
@@ -18,10 +19,11 @@ import { TaskModalComponent } from './task-modal/task-modal.component';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
 })
-export class TasksComponent implements OnInit {
+export class TasksComponent implements OnInit, OnDestroy {
   private tasksQuery: QueryRef<AllTasksResponse>;
   private unsubscribeAdded = () => {};
   private unsubscribeRemoved = () => {};
+  private currentUserSubscription: Subscription;
 
   error = '';
   search = '';
@@ -35,7 +37,7 @@ export class TasksComponent implements OnInit {
   projectSelected = '';
 
   onlyActive = true;
-  onlyFollowing = false;
+  onlyFollowing = true;
 
   constructor(
     private readonly authService: AuthService,
@@ -47,6 +49,11 @@ export class TasksComponent implements OnInit {
     private readonly router: Router
   ) {
     this.tasksQuery = this.allTasksGQL.watch();
+    this.currentUserSubscription = this.authService.user$.subscribe((value) => {
+      if (value && this.onlyFollowing) {
+        this.applyFilters();
+      }
+    });
   }
 
   private get filters() {
@@ -57,8 +64,8 @@ export class TasksComponent implements OnInit {
     if (this.onlyActive) {
       filters['active'] = true;
     }
-    if (this.onlyFollowing) {
-      const userId = this.authService.user?.id;
+    if (this.onlyFollowing && this.authService.user) {
+      const userId = this.authService.user.id;
       filters['followerIds'] = [userId];
     }
     filters['title'] = this.search || undefined;
@@ -90,6 +97,10 @@ export class TasksComponent implements OnInit {
     this.unsubscribeRemoved = this.subscribeToTaskRemoved(
       this.subscriptionInput
     );
+  }
+
+  ngOnDestroy() {
+    this.currentUserSubscription.unsubscribe();
   }
 
   private applyFilters() {
