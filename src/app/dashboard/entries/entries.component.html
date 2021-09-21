@@ -1,1 +1,132 @@
-<p>entries works!</p>
+<div id="entries-component">
+  <ngb-alert *ngIf="error" [type]="'danger'" (closed)="error = ''">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{ error }}
+    &nbsp;
+  </ngb-alert>
+  <div class="row mt-3">
+    <div class="col-8">
+      <div class="row">
+        <div class="col-4">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search"
+            [(ngModel)]="search"
+            value="{{ search }}"
+            (ngModelChange)="onSearchChange($event)"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+      <button
+        class="btn btn-light float-end"
+        title="Create"
+        (click)="newEntry()"
+      >
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-10">
+      <table class="table table-hover">
+        <caption>
+          {{
+            total
+          }}
+          entries found
+        </caption>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Task</th>
+            <th>Note</th>
+            <th>Start Time</th>
+            <th>Finish Time</th>
+            <th>Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of entries">
+            <td>{{ entry.id }}</td>
+            <td>{{ entry.user.name }}</td>
+            <td>
+              <button
+                *ngIf="entry.assignment"
+                button
+                class="btn btn-link"
+                [routerLink]="'/tasks/' + entry.assignment.task.id"
+              >
+                {{ entry.assignment.task.id }}
+              </button>
+            </td>
+            <div
+              *ngIf="entry.note; then entryNoteCol; else entryAssignmentCol"
+            ></div>
+            <ng-template #entryNoteCol>
+              <td>{{ entry.note }}</td>
+            </ng-template>
+            <ng-template #entryAssignmentCol>
+              <td>{{ entry.assignment?.note }}</td>
+            </ng-template>
+            <td>{{ entry.startTime | date: "MMM d, y H:mm:ss" }}</td>
+            <div
+              *ngIf="entry.finishTime; then finishTimeCol; else runningTimeCol"
+            ></div>
+            <ng-template #finishTimeCol>
+              <td>
+                {{ entry.finishTime | date: "MMM d, y H:mm:ss" }}
+              </td>
+            </ng-template>
+            <ng-template #runningTimeCol>
+              <td>
+                <span class="text-success">Running</span>
+                <button
+                  class="btn btn-light btn-sm"
+                  title="Stop"
+                  (click)="stopEntry(entry)"
+                >
+                  <i class="fa fa-stop"></i>
+                </button>
+              </td>
+            </ng-template>
+            <td>
+              {{ calculateTotal(entry) | formatDuration }}
+            </td>
+            <td>
+              <button
+                class="btn btn-light btn-sm"
+                title="Remove"
+                (click)="removeEntry(entry)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+              <strong>{{ totalTime | formatDuration }}</strong>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <ngb-pagination
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [collectionSize]="total"
+        (pageChange)="onPageChange()"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

@@ -71,6 +71,37 @@ export class AllTasksGQL extends Query<AllTasksResponse> {
 @Injectable({
   providedIn: 'root',
 })
+export class TaskOptionsGQL extends Query<AllTasksResponse> {
+  document = gql`
+    query GetAllTasks(
+      $skip: Int = 0
+      $take: Int = 25
+      $title: String
+      $projectId: ID
+      $active: Boolean
+      $followerIds: [ID!]
+    ) {
+      tasks(
+        skip: $skip
+        take: $take
+        title: $title
+        projectId: $projectId
+        active: $active
+        followerIds: $followerIds
+      ) {
+        total
+        result {
+          id
+          title
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
 export class TaskGQL extends Query<TaskResponse> {
   document = gql`
     query GetTask($id: ID!) {

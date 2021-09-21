@@ -81,7 +81,12 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
   }
 
   private newEntryInput(assignmentId: string): NewEntryInput {
+    const userId = this.authService.user?.id || '';
+    if (!userId) {
+      this.error = 'Unexpected error';
+    }
     return {
+      userId: userId,
       assignmentId: assignmentId,
     };
   }

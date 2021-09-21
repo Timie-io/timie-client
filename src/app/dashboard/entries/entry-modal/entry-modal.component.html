@@ -1,0 +1,78 @@
+<div class="modal-header">
+  <h4 class="modal-title">New Entry</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" method="POST">
+    <div class="form-group">
+      <label for="entryAssignmentId">Assignment (optional)</label>
+      <select
+        id="entryAssignmentId"
+        class="form-select"
+        formControlName="assignmentId"
+      >
+        <option value="">No assignment</option>
+        <option
+          *ngFor="let assignment of assignments"
+          value="{{ assignment.id }}"
+        >
+          {{ assignment.note }}
+        </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="entryNote">Note</label>
+      <input
+        type="text"
+        class="form-control"
+        id="entryNote"
+        placeholder="An optional note or task name"
+        formControlName="note"
+        [ngClass]="{ 'is-invalid': submitted && f.note.errors }"
+      />
+      <div *ngIf="submitted && f.note.errors" class="invalid-feedback">
+        <div *ngIf="f.note.errors.maxlength">
+          No more than {{ f.note.errors.maxlength.requiredLength }} characters
+          allowed
+        </div>
+      </div>
+    </div>
+    <div class="form-group"></div>
+    <div class="form-group">
+      <label class="form-label" for="entryStartTime"
+        >Start Time (optional)</label
+      >
+      <input
+        type="datetime-local"
+        class="form-control"
+        id="entryStartTime"
+        formControlName="startTime"
+      />
+    </div>
+    <div *ngIf="f.startTime.value" class="form-group">
+      <label class="form-label" for="entryFinishTime"
+        >Finish Time (optional)</label
+      >
+      <input
+        type="datetime-local"
+        class="form-control"
+        id="entryFinishTime"
+        formControlName="finishTime"
+        min="{{ f.startTime.value }}"
+        [ngClass]="{ 'is-invalid': submitted && f.finishTime.errors }"
+      />
+      <div *ngIf="submitted && f.finishTime.errors" class="invalid-feedback">
+        <div *ngIf="f.finishTime.errors.tooEarly">Finish time is not valid</div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-outline-dark mt-3">Save</button>
+    <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{ error }}</div>
+  </form>
+</div>

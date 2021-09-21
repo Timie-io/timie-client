@@ -25,12 +25,15 @@ export interface StopEntryResponse {
 export interface UpdateEntryInput {
   startTime?: string;
   finishTime?: string;
+  note?: string;
 }
 
 export interface NewEntryInput {
   startTime?: string;
   finishTime?: string;
-  assignmentId: string;
+  note?: string;
+  assignmentId?: string;
+  userId: string;
 }
 
 @Injectable({
@@ -43,6 +46,7 @@ export class CreateEntryGQL extends Mutation<CreateEntryResponse> {
         id
         startTime
         finishTime
+        note
         assignment {
           id
         }
@@ -61,6 +65,7 @@ export class UpdateEntryGQL extends Mutation<UpdateEntryResponse> {
         id
         startTime
         finishTime
+        note
         assignment {
           id
         }

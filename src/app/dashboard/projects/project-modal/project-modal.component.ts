@@ -45,6 +45,8 @@ export class ProjectModalComponent implements OnInit {
     });
   }
 
+  // TODO: subscribe to team added and team removed and update options
+
   ngOnInit(): void {
     this.form.controls.name.setValue(this.name);
     this.form.controls.description.setValue(this.description);
@@ -107,7 +109,11 @@ export class ProjectModalComponent implements OnInit {
             this.modal.close('Project saved');
           },
           error: (error) => {
-            this.error = error;
+            if (error.message.includes('duplicate key')) {
+              this.error = 'Team with the same name already exists';
+            } else {
+              this.error = error;
+            }
             this.loading = false;
           },
         });

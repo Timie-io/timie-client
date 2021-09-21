@@ -80,3 +80,25 @@ export class AssignmentEntriesGQL extends Query<AssignmentEntriesResponse> {
     }
   `;
 }
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AssignmentOptionsGQL extends Query<AssignmentsResponse> {
+  document = gql`
+    query GetAssignments(
+      $skip: Int = 0
+      $take: Int = 25
+      $userId: ID
+      $taskId: ID
+    ) {
+      assignments(skip: $skip, take: $take, userId: $userId, taskId: $taskId) {
+        total
+        result {
+          id
+          note
+        }
+      }
+    }
+  `;
+}

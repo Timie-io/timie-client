@@ -95,9 +95,9 @@
             <td activeStyle [isActive]="task.active">
               {{ task.active ? "Yes" : "No" }}
             </td>
-            <td>{{ task.creationDate | date: "MMM d, y h:mm a" }}</td>
+            <td>{{ task.creationDate | date: "MMM d, y H:mm" }}</td>
             <td>{{ task.creator?.name }}</td>
-            <td>{{ task.lastModified | date: "MMM d, y h:mm a" }}</td>
+            <td>{{ task.lastModified | date: "MMM d, y H:mm" }}</td>
             <td taskPriority [priority]="task.priority">
               {{ task.priority }}
             </td>
