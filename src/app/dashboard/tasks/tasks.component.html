@@ -14,7 +14,7 @@
             placeholder="Search"
             [(ngModel)]="search"
             value="{{ search }}"
-            (ngModelChange)="onSearchChange()"
+            (ngModelChange)="onSearchChange($event)"
           />
         </div>
         <div class="col">

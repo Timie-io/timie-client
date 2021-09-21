@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Apollo, QueryRef } from 'apollo-angular';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Team } from '../../_models/team.model';
 import { AuthService } from './../../_services/auth.service';
 import { RemoveTeamGQL } from './graphql/teams-mutation.graphql';
@@ -17,13 +19,16 @@ import { TeamModalComponent } from './team-modal/team-modal.component';
   templateUrl: './teams.component.html',
   styleUrls: ['./teams.component.css'],
 })
-export class TeamsComponent implements OnInit {
+export class TeamsComponent implements OnInit, OnDestroy {
   public loading = true;
   private teamsQuery: QueryRef<AllTeamsResponse>;
   public teams: Team[] = [];
   public total: number = 0;
   public error = '';
+
   public search = '';
+  private searchChanged: Subject<string> = new Subject<string>();
+  private searchSub: Subscription;
 
   constructor(
     private apollo: Apollo,
@@ -34,6 +39,13 @@ export class TeamsComponent implements OnInit {
     private readonly modalService: NgbModal,
     private readonly authService: AuthService
   ) {
+    // Applying debounce for search value changes
+    this.searchSub = this.searchChanged
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.search = value;
+        this.teamsQuery.setVariables({ name: this.search });
+      });
     this.teamsQuery = this.allTeamsGQL.watch();
   }
 
@@ -83,6 +95,10 @@ export class TeamsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.searchSub.unsubscribe();
+  }
+
   newTeam() {
     this.modalService.open(TeamModalComponent);
   }
@@ -126,9 +142,7 @@ export class TeamsComponent implements OnInit {
     }
   }
 
-  onSearchChange() {
-    if (this.search.length > 3 || !this.search) {
-      this.teamsQuery.setVariables({ name: this.search });
-    }
+  onSearchChange(value: string) {
+    this.searchChanged.next(value);
   }
 }

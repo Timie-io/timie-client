@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Task } from './../../_models/task.model';
 import { AuthService } from './../../_services/auth.service';
 import { RemoveTaskGQL } from './graphql/tasks-mutation.graphql';
@@ -26,7 +27,10 @@ export class TasksComponent implements OnInit, OnDestroy {
   private currentUserSubscription: Subscription;
 
   error = '';
+
   search = '';
+  private searchChanged: Subject<string> = new Subject<string>();
+  private searchSub: Subscription;
 
   page = 1;
   pageSize = 50;
@@ -48,6 +52,13 @@ export class TasksComponent implements OnInit, OnDestroy {
     private readonly taskRemovedGQL: TaskRemovedGQL,
     private readonly router: Router
   ) {
+    // Add debounce time for searching
+    this.searchSub = this.searchChanged
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.search = value;
+        this.applyFilters();
+      });
     this.tasksQuery = this.allTasksGQL.watch();
     this.currentUserSubscription = this.authService.user$.subscribe((value) => {
       if (value && this.onlyFollowing) {
@@ -101,6 +112,7 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.currentUserSubscription.unsubscribe();
+    this.searchSub.unsubscribe();
   }
 
   private applyFilters() {
@@ -161,10 +173,8 @@ export class TasksComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSearchChange() {
-    if (this.search.length > 3 || !this.search) {
-      this.applyFilters();
-    }
+  onSearchChange(value: string) {
+    this.searchChanged.next(value);
   }
 
   onProjectsChange() {

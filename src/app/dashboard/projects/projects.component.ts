@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Project } from './../../_models/project.model';
 import { AuthService } from './../../_services/auth.service';
 import { RemoveProjectGQL } from './graphql/projects-mutation.graphql';
@@ -19,14 +21,17 @@ import { ProjectModalComponent } from './project-modal/project-modal.component';
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.css'],
 })
-export class ProjectsComponent implements OnInit {
+export class ProjectsComponent implements OnInit, OnDestroy {
   private projectsQuery: QueryRef<AllProjectsResponse>;
 
   public total = 0;
   public projects: Project[] = [];
 
   public error = '';
+
   public search = '';
+  private searchChanged: Subject<string> = new Subject<string>();
+  private searchSub: Subscription;
 
   onlyActive = true;
 
@@ -38,6 +43,13 @@ export class ProjectsComponent implements OnInit {
     private readonly projectAddedGQL: ProjectAddedGQL,
     private readonly projectRemovedGQL: ProjectRemovedGQL
   ) {
+    // Add debounce time for searching
+    this.searchSub = this.searchChanged
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.search = value;
+        this.projectsQuery.setVariables(this.filters);
+      });
     this.projectsQuery = this.allProjectsGQL.watch(this.filters);
   }
 
@@ -89,6 +101,10 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.searchSub.unsubscribe();
+  }
+
   get currentUser() {
     return this.authService.user;
   }
@@ -100,10 +116,8 @@ export class ProjectsComponent implements OnInit {
     return filters;
   }
 
-  onSearchChange() {
-    if (this.search.length > 3 || !this.search) {
-      this.projectsQuery.setVariables(this.filters);
-    }
+  onSearchChange(value: string) {
+    this.searchChanged.next(value);
   }
 
   onActiveChange() {
