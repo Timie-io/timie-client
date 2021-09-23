@@ -22,8 +22,7 @@
             <th>Note</th>
             <th>Deadline</th>
             <th>Status</th>
-            <th>Entries</th>
-            <th>Time</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -58,26 +57,17 @@
               </select>
             </td>
             <td>
-              <div class="btn-group" role="group">
+              <div class="float-end me-5">
+                <strong>{{ assignment.totalTime | formatDuration }}</strong>
                 <button
                   type="button"
-                  class="btn btn-light btn-sm"
-                  title="Show Entries"
-                >
-                  <i class="fa fa-eye"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-light btn-sm"
+                  class="btn btn-light btn-sm ms-2"
                   title="Start New"
                   (click)="startNewEntry(assignment)"
                 >
                   <i class="fa fa-play"></i>
                 </button>
               </div>
-            </td>
-            <td>
-              <strong>{{ assignment.totalTime | formatDuration }}</strong>
             </td>
           </tr>
         </tbody>
