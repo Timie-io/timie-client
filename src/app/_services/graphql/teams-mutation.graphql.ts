@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Mutation } from 'apollo-angular';
-import { Team } from '../../../_models/team.model';
+import { Team } from '../../_models/team.model';
 
 export interface UpdateTeamResponse {
   updateTeam: Team;

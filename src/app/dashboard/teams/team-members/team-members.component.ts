@@ -2,16 +2,18 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { User } from '../../../_models/user.model';
-import { TeamMembersResponse } from '../graphql/teams-query.graphql';
+import {
+  AddTeamMemberGQL,
+  RemoveTeamMemberGQL,
+} from '../../../_services/graphql/teams-mutation.graphql';
+import {
+  TeamMembersGQL,
+  TeamMembersResponse,
+} from '../../../_services/graphql/teams-query.graphql';
 import {
   AllUsersQueryGQL,
   AllUsersResponse,
 } from './../../../_services/graphql/users-query.graphql';
-import {
-  AddTeamMemberGQL,
-  RemoveTeamMemberGQL,
-} from './../graphql/teams-mutation.graphql';
-import { TeamMembersGQL } from './../graphql/teams-query.graphql';
 
 @Component({
   selector: 'app-team-members',

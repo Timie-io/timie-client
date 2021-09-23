@@ -1,18 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import {
+  AddTaskFollowerGQL,
+  RemoveTaskFollowerGQL,
+} from '../../../_services/graphql/tasks-mutation.graphql';
+import {
   TaskFollowersGQL,
   TaskFollowersResponse,
-} from '../graphql/tasks-query.graphql';
+} from '../../../_services/graphql/tasks-query.graphql';
 import { User } from './../../../_models/user.model';
 import {
   AllUsersQueryGQL,
   AllUsersResponse,
 } from './../../../_services/graphql/users-query.graphql';
-import {
-  AddTaskFollowerGQL,
-  RemoveTaskFollowerGQL,
-} from './../graphql/tasks-mutation.graphql';
 
 @Component({
   selector: 'app-task-followers',

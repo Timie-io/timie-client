@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Mutation } from 'apollo-angular';
-import { Project } from './../../../_models/project.model';
+import { Project } from '../../_models/project.model';
 
 export interface UpdateProjectInput {
   name?: string;

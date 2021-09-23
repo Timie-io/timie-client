@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Subscription } from 'apollo-angular';
-import { Task } from '../../../_models/task.model';
+import { Task } from '../../_models/task.model';
 
 export interface TaskAddedResponse {
   taskAdded: Task;

@@ -4,15 +4,18 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Task } from './../../_models/task.model';
-import { AuthService } from './../../_services/auth.service';
-import { RemoveTaskGQL } from './graphql/tasks-mutation.graphql';
-import { AllTasksGQL, AllTasksResponse } from './graphql/tasks-query.graphql';
+import { RemoveTaskGQL } from '../../_services/graphql/tasks-mutation.graphql';
+import {
+  AllTasksGQL,
+  AllTasksResponse,
+} from '../../_services/graphql/tasks-query.graphql';
 import {
   TaskAddedGQL,
   TaskRemovedGQL,
   TaskSubscriptionInput,
-} from './graphql/tasks-subscription.graphql';
+} from '../../_services/graphql/tasks-subscription.graphql';
+import { Task } from './../../_models/task.model';
+import { AuthService } from './../../_services/auth.service';
 import { TaskModalComponent } from './task-modal/task-modal.component';
 
 @Component({

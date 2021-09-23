@@ -4,13 +4,16 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Team } from '../../_models/team.model';
-import { AuthService } from './../../_services/auth.service';
-import { RemoveTeamGQL } from './graphql/teams-mutation.graphql';
-import { AllTeamsGQL, AllTeamsResponse } from './graphql/teams-query.graphql';
+import { RemoveTeamGQL } from '../../_services/graphql/teams-mutation.graphql';
+import {
+  AllTeamsGQL,
+  AllTeamsResponse,
+} from '../../_services/graphql/teams-query.graphql';
 import {
   TeamAddedGQL,
   TeamRemovedGQL,
-} from './graphql/teams-subscription.graphql';
+} from '../../_services/graphql/teams-subscription.graphql';
+import { AuthService } from './../../_services/auth.service';
 import { TeamMembersComponent } from './team-members/team-members.component';
 import { TeamModalComponent } from './team-modal/team-modal.component';
 

@@ -2,14 +2,14 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { first } from 'rxjs/operators';
-import { Team } from './../../../_models/team.model';
-import { TeamsOptionGQL } from './../../../_services/graphql/teams-query.graphql';
 import {
   CreateProjectGQL,
   NewProjectInput,
   UpdateProjectGQL,
   UpdateProjectInput,
-} from './../graphql/projects-mutation.graphql';
+} from '../../../_services/graphql/projects-mutation.graphql';
+import { Team } from './../../../_models/team.model';
+import { TeamsOptionGQL } from './../../../_services/graphql/teams-query.graphql';
 
 @Component({
   selector: 'app-project-modal',

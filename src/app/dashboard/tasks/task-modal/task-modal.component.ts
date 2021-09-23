@@ -2,14 +2,14 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { first } from 'rxjs/operators';
-import { Project } from './../../../_models/project.model';
-import { ProjectsOptionGQL } from './../../../_services/graphql/projects-query.graphql';
 import {
   CreateTaskGQL,
   NewTaskInput,
   UpdateTaskGQL,
   UpdateTaskInput,
-} from './../graphql/tasks-mutation.graphql';
+} from '../../../_services/graphql/tasks-mutation.graphql';
+import { Project } from './../../../_models/project.model';
+import { ProjectsOptionGQL } from './../../../_services/graphql/projects-query.graphql';
 
 @Component({
   selector: 'app-task-modal',

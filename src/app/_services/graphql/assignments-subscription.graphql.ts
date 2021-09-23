@@ -42,6 +42,7 @@ export class AssignmentAddedGQL extends Subscription<AssignmentAddedResponse> {
           code
           label
         }
+        totalTime
       }
     }
   `;

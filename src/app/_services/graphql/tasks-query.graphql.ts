@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
-import { Task } from './../../../_models/task.model';
-import { User } from './../../../_models/user.model';
+import { Task } from '../../_models/task.model';
+import { User } from '../../_models/user.model';
 
 export interface AllTasksResult {
   total: number;

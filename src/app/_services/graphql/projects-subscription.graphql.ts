@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Subscription } from 'apollo-angular';
-import { Project } from './../../../_models/project.model';
+import { Project } from '../../_models/project.model';
 
 export interface ProjectAddedResponse {
   projectAdded: Project;

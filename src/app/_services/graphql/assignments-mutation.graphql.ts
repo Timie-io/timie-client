@@ -62,6 +62,7 @@ export class CreateAssignmentGQL extends Mutation<CreateAssignmentResponse> {
           label
           order
         }
+        totalTime
       }
     }
   `;
@@ -82,6 +83,7 @@ export class UpdateAssignmentGQL extends Mutation<UpdateAssignmentResponse> {
           label
           order
         }
+        totalTime
       }
     }
   `;

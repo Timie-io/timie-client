@@ -7,7 +7,7 @@ import {
   NewTeamInput,
   UpdateTeamGQL,
   UpdateTeamInput,
-} from './../graphql/teams-mutation.graphql';
+} from '../../../_services/graphql/teams-mutation.graphql';
 
 @Component({
   selector: 'app-team-modal',

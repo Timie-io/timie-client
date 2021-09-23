@@ -3,17 +3,17 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Project } from './../../_models/project.model';
-import { AuthService } from './../../_services/auth.service';
-import { RemoveProjectGQL } from './graphql/projects-mutation.graphql';
+import { RemoveProjectGQL } from '../../_services/graphql/projects-mutation.graphql';
 import {
   AllProjectsGQL,
   AllProjectsResponse,
-} from './graphql/projects-query.graphql';
+} from '../../_services/graphql/projects-query.graphql';
 import {
   ProjectAddedGQL,
   ProjectRemovedGQL,
-} from './graphql/projects-subscription.graphql';
+} from '../../_services/graphql/projects-subscription.graphql';
+import { Project } from './../../_models/project.model';
+import { AuthService } from './../../_services/auth.service';
 import { ProjectModalComponent } from './project-modal/project-modal.component';
 
 @Component({

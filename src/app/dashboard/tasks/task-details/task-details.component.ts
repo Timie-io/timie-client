@@ -3,8 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Task } from '../../../_models/task.model';
-import { TaskResponse } from '../graphql/tasks-query.graphql';
-import { TaskGQL } from './../graphql/tasks-query.graphql';
+import {
+  TaskGQL,
+  TaskResponse,
+} from '../../../_services/graphql/tasks-query.graphql';
 import { TaskModalComponent } from './../task-modal/task-modal.component';
 
 @Component({
