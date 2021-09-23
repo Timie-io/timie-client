@@ -1,57 +1,63 @@
 <div class="card mt-2">
   <div class="card-header">
     <div class="card-title">
-      <strong>Comments</strong>
+      <strong>Comments ({{ total }})</strong>
     </div>
   </div>
   <div class="card-body">
     <div class="card">
       <div class="card-body">
-        <textarea
-          id="taskNewCommentText"
-          class="form-control"
-          rows="3"
-        ></textarea>
-        <button class="btn btn-light mt-2 float-end">Send</button>
+        <div class="form-group">
+          <textarea
+            id="taskNewCommentText"
+            class="form-control"
+            rows="3"
+            [formControl]="commentText"
+            [ngClass]="{ 'is-invalid': submitted && commentText.errors }"
+          ></textarea>
+          <div *ngIf="submitted && commentText.errors" class="invalid-feedback">
+            <div *ngIf="commentText.errors.required">
+              a comment text is required
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-light mt-2 float-end" (click)="addNewComment()">
+          Send
+        </button>
+        <div *ngIf="error" class="alert alert-danger mt-3 mb-0">
+          {{ error }}
+        </div>
       </div>
     </div>
-    <div class="card mt-2">
+    <div *ngFor="let comment of comments" class="card mt-2">
       <div class="card-header">
         <div class="card-title">
-          <strong>Merfrei (Sep 16, 2021 12:34 AM)</strong>
-          <button class="btn btn-light float-end">
+          <strong
+            >{{ comment.user.name }} ({{
+              comment.creationDate | date: "MMM d, yyyy hh:mm a"
+            }})</strong
+          >
+          <button
+            *ngIf="comment.user.id === currentUserId"
+            class="btn btn-light float-end"
+            (click)="removeComment(comment)"
+          >
             <i class="fa fa-times"></i>
           </button>
         </div>
       </div>
       <div class="card-body">
-        <pre>This is a comment</pre>
+        <pre>{{ comment.body }}</pre>
       </div>
     </div>
-
-    <div class="card mt-2">
-      <div class="card-header">
-        <div class="card-title">
-          <strong>Pupe (Sep 16, 2021 12:34 AM)</strong>
-        </div>
-      </div>
-      <div class="card-body">
-        <pre>This is not my comment</pre>
-      </div>
-    </div>
-
-    <div class="card mt-2">
-      <div class="card-header">
-        <div class="card-title">
-          <strong>Merfrei (Sep 16, 2021 12:34 AM)</strong>
-          <button class="btn btn-light float-end">
-            <i class="fa fa-times"></i>
-          </button>
-        </div>
-      </div>
-      <div class="card-body">
-        <pre>This is a comment</pre>
-      </div>
-    </div>
+  </div>
+  <div class="card-footer text-center">
+    <button
+      class="btn btn-link"
+      [ngClass]="{ disabled: !isThereMore }"
+      (click)="loadMore()"
+    >
+      Load more
+    </button>
   </div>
 </div>
