@@ -74,13 +74,16 @@ export class TaskCommentsComponent implements OnInit, OnDestroy {
           return prev;
         }
         const commentAdded = subscriptionData.data.commentAdded;
+        const oldList = prev.comments.result.filter(
+          (comment) => comment.id !== commentAdded.id
+        );
 
         return {
           ...prev,
           comments: {
             __typename: 'CommentsResult',
             total: prev.comments.total + 1,
-            result: [commentAdded, ...prev.comments.result],
+            result: [commentAdded, ...oldList],
           },
         };
       },

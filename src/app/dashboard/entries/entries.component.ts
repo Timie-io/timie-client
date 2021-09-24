@@ -43,6 +43,8 @@ export class EntriesComponent implements OnInit, OnDestroy {
   private unsubscribeAdded = () => {};
   private unsubscribeRemoved = () => {};
 
+  // TODO: show only my Entries filter
+
   constructor(
     private readonly entriesGQL: EntriesGQL,
     private readonly entryAddedGQL: EntryAddedGQL,

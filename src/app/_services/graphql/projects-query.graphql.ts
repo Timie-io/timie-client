@@ -69,7 +69,7 @@ export class ProjectsOptionGQL extends Query<ProjectOptionsResponse> {
   document = gql`
     query GetProjectsOption(
       $skip: Int = 0
-      $take: Int = 100
+      $take: Int = 50
       $name: String
       $ownerId: ID
       $teamId: ID
