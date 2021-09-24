@@ -32,6 +32,8 @@ import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { FormatDurationPipe } from './_pipes/format-duration.pipe';
 import { AuthService } from './_services/auth.service';
 import { EntryModalComponent } from './dashboard/entries/entry-modal/entry-modal.component';
+import { AccessComponent } from './dashboard/admin/access/access.component';
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,8 @@ import { EntryModalComponent } from './dashboard/entries/entry-modal/entry-modal
     TaskAssignmentModalComponent,
     FormatDurationPipe,
     EntryModalComponent,
+    AccessComponent,
+    SignupComponent,
   ],
   imports: [
     BrowserModule,

@@ -33,5 +33,17 @@
       routerLinkActive="active"
       >Entries</a
     >
+    <div *ngIf="currentUser && currentUser.isAdmin; then adminMenu"></div>
+    <ng-template #adminMenu>
+      <span class="list-group-item list-group-item-light text-center"
+        ><strong>Admin</strong></span
+      >
+      <a
+        routerLink="access"
+        routerLinkActive="active"
+        class="list-group-item list-group-item-action list-group-item-light p-3"
+        >Access</a
+      >
+    </ng-template>
   </div>
 </div>

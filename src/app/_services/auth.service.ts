@@ -96,6 +96,35 @@ export class AuthService {
     this.resetAuth();
   }
 
+  allowAccess$(email: string, expireSeconds: number) {
+    return this.http.post<any>(`${environment.apiUrl}/auth/allow`, {
+      email,
+      expireSeconds,
+    });
+  }
+
+  signUp$(email: string, name: string, password: string) {
+    return this.http
+      .post<any>(`${environment.apiUrl}/auth/signup`, {
+        email,
+        name,
+        password,
+      })
+      .pipe(
+        map((data) => {
+          const auth = {
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token,
+            active: true,
+          } as Auth;
+          this.updateAuth(auth);
+          this.storage.saveAuth(auth);
+          this.startRefreshTokenTimer();
+          return auth;
+        })
+      );
+  }
+
   resetAuth() {
     this.storage.removeAuth();
     this.authSubject.next(this.storage.getAuth());

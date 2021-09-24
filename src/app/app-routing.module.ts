@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AccessComponent } from './dashboard/admin/access/access.component';
 import { AssignmentsComponent } from './dashboard/assignments/assignments.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EntriesComponent } from './dashboard/entries/entries.component';
@@ -8,10 +9,13 @@ import { TaskDetailsComponent } from './dashboard/tasks/task-details/task-detail
 import { TasksComponent } from './dashboard/tasks/tasks.component';
 import { TeamsComponent } from './dashboard/teams/teams.component';
 import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
+import { AdminGuard } from './_helpers/admin.guard';
 import { AuthGuard } from './_helpers/auth.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
   {
     path: '',
     component: DashboardComponent,
@@ -27,6 +31,11 @@ const routes: Routes = [
       { path: 'projects', component: ProjectsComponent },
       { path: 'teams', component: TeamsComponent },
       { path: 'entries', component: EntriesComponent },
+      {
+        path: 'access',
+        canActivate: [AdminGuard],
+        component: AccessComponent,
+      },
     ],
   },
 

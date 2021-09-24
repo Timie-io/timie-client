@@ -1,0 +1,94 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Icon -->
+    <div class="fadeIn first">
+      <img src="assets/logo.svg" id="logo" alt="Logo" />
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" method="POST">
+      <input
+        type="text"
+        id="email"
+        class="fadeIn second form-control"
+        name="email"
+        placeholder="email"
+        formControlName="email"
+        required
+        [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
+      />
+      <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+        <div *ngIf="f.email.errors.required">email is required</div>
+        <div *ngIf="f.email.errors.email">email is not valid</div>
+      </div>
+      <input
+        type="text"
+        id="name"
+        class="fadeIn second form-control"
+        name="name"
+        placeholder="your name"
+        formControlName="name"
+        required
+        [ngClass]="{ 'is-invalid': submitted && f.name.errors }"
+      />
+      <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+        <div *ngIf="f.name.errors.required">a name is required</div>
+        <div *ngIf="f.name.errors.minlength">
+          at least {{ f.name.errors.minlength.requiredLength }} characters
+        </div>
+        <div *ngIf="f.name.errors.maxlength">
+          no more than {{ f.name.errors.maxlength.requiredLength }} characters
+        </div>
+      </div>
+      <input
+        type="password"
+        id="password1"
+        class="fadeIn third form-control"
+        name="password1"
+        placeholder="your new password"
+        formControlName="password1"
+        required
+        [ngClass]="{ 'is-invalid': submitted && f.password1.errors }"
+      />
+      <div *ngIf="submitted && f.password1.errors" class="invalid-feedback">
+        <div *ngIf="f.password1.errors.required">a password is required</div>
+        <div *ngIf="f.password1.errors.minLength">
+          at least {{ f.password1.errors.minLength.requiredLength }} characters
+        </div>
+      </div>
+      <input
+        type="password"
+        id="password2"
+        class="fadeIn third form-control"
+        name="password2"
+        placeholder="repeat the password"
+        formControlName="password2"
+        required
+        [ngClass]="{ 'is-invalid': submitted && f.password2.errors }"
+      />
+      <div *ngIf="submitted && f.password2.errors" class="invalid-feedback">
+        <div *ngIf="f.password2.errors.required">
+          your should repeat the password
+        </div>
+        <div *ngIf="f.password2.errors.passwordMatch">
+          the passwords do not match
+        </div>
+      </div>
+      <input
+        [disabled]="loading"
+        type="submit"
+        class="fadeIn fourth"
+        value="Sign Up"
+      />
+    </form>
+
+    <p *ngIf="error" class="text-danger">{{ error }}</p>
+
+    <!-- Footer -->
+    <div id="formFooter">
+      <p class="m-0 text-center text-secondary">
+        Copyright &copy; Timie {{ currentYear }}
+      </p>
+    </div>
+  </div>
+</div>
