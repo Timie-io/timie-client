@@ -81,11 +81,16 @@ export class SignupComponent implements OnInit {
     const password = this.form.controls.password1.value;
     this.authService.signUp$(email, name, password).subscribe({
       next: () => {
-        this.loading = false;
         this.router.navigate(['/']);
       },
       error: (error) => {
-        this.error = 'An unexpected error happened';
+        if (error === 'Action not allowed') {
+          this.error = 'This email is not authorized to sign up';
+        } else {
+          this.error = 'An unexpected error happened';
+        }
+      },
+      complete: () => {
         this.loading = false;
       },
     });

@@ -17,6 +17,19 @@
             (ngModelChange)="onSearchChange($event)"
           />
         </div>
+        <div class="col">
+          <button
+            type="button"
+            class="btn"
+            [ngClass]="{
+              'btn-secondary': onlyMyEntries,
+              'btn-light': !onlyMyEntries
+            }"
+            (click)="onMyEntriesChange()"
+          >
+            My Entries
+          </button>
+        </div>
       </div>
     </div>
     <div class="col-2">

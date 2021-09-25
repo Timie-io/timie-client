@@ -4,6 +4,7 @@ import { QueryRef } from 'apollo-angular';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Entry } from './../../_models/entry.model';
+import { AuthService } from './../../_services/auth.service';
 import {
   RemoveEntryGQL,
   StopEntryGQL,
@@ -32,20 +33,21 @@ export class EntriesComponent implements OnInit, OnDestroy {
   private searchSub: Subscription;
 
   entries: Entry[] = [];
+  private entriesQuery: QueryRef<EntriesResponse>;
+  onlyMyEntries = true;
+
+  private currentUserSub: Subscription;
 
   total = 0;
   page = 1;
   pageSize = 50;
   totalTime = 0;
 
-  private entriesQuery: QueryRef<EntriesResponse>;
-
   private unsubscribeAdded = () => {};
   private unsubscribeRemoved = () => {};
 
-  // TODO: show only my Entries filter
-
   constructor(
+    private readonly authService: AuthService,
     private readonly entriesGQL: EntriesGQL,
     private readonly entryAddedGQL: EntryAddedGQL,
     private readonly entryRemovedGQL: EntryRemovedGQL,
@@ -61,6 +63,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
         this.search = value;
         this.applyFilters();
       });
+    this.currentUserSub = this.authService.user$.subscribe((user) => {
+      if (user && this.onlyMyEntries) {
+        this.applyFilters();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -76,6 +83,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
+    this.currentUserSub.unsubscribe();
   }
 
   private get filters() {
@@ -84,6 +92,9 @@ export class EntriesComponent implements OnInit, OnDestroy {
       skip: (this.page - 1) * this.pageSize,
       take: this.pageSize,
     };
+    if (this.onlyMyEntries) {
+      filters['userId'] = this.authService.user?.id;
+    }
     return filters;
   }
 
@@ -152,6 +163,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   onSearchChange(value: string) {
     this.searchChanged.next(value);
+  }
+
+  onMyEntriesChange() {
+    this.onlyMyEntries = !this.onlyMyEntries;
+    this.applyFilters();
   }
 
   stopEntry(entry: Entry) {
