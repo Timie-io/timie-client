@@ -91,9 +91,12 @@ export class AuthService {
   }
 
   logout() {
-    this.http.get<any>(`${environment.apiUrl}/auth/logout`, {}).subscribe();
-    this.stopRefreshTokenTimer();
-    this.resetAuth();
+    this.http.get<any>(`${environment.apiUrl}/auth/logout`, {}).subscribe({
+      complete: () => {
+        this.startRefreshTokenTimer();
+        this.resetAuth();
+      },
+    });
   }
 
   allowAccess$(email: string, expireSeconds: number) {
@@ -128,7 +131,8 @@ export class AuthService {
   resetAuth() {
     this.storage.removeAuth();
     this.authSubject.next(this.storage.getAuth());
-    this.router.navigate(['/login']);
+    this.userSubject.next(null);
+    window.location.replace('/login'); // Force a total app reloading
   }
 
   refreshToken$(): Observable<Auth> {

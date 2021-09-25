@@ -1,0 +1,62 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ user?.name }}</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ngb-alert *ngIf="error" [type]="'danger'" (closed)="error = ''">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{ error }}
+    &nbsp;
+  </ngb-alert>
+  <div class="row">
+    <div class="col">
+      <p><strong>Email:</strong>&nbsp;{{ user?.email }}</p>
+      <p><strong>Is Admin?:</strong>&nbsp;{{ user?.isAdmin ? "Yes" : "No" }}</p>
+    </div>
+  </div>
+  <div>
+    <div class="row mt-3">
+      <div class="col">
+        <input
+          id="newPassword"
+          type="password"
+          class="form-control"
+          name="password"
+          placeholder="new password"
+          [formControl]="newPassword"
+          [ngClass]="{ 'is-invalid': passwordSubmitted && newPassword.errors }"
+        />
+        <div
+          *ngIf="passwordSubmitted && newPassword.errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="newPassword.errors.required">password is required</div>
+          <div *ngIf="newPassword.errors.minlength">
+            at least
+            {{ newPassword.errors.minlength.requiredLength }} characters
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" (click)="onPasswordUpdate()">
+          Update
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <p *ngIf="message" class="alert alert-success mt-3 mb-0">{{ message }}</p>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-danger float-end" (click)="onUserDelete()">
+    Delete
+  </button>
+</div>

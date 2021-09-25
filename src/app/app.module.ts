@@ -34,6 +34,7 @@ import { AuthService } from './_services/auth.service';
 import { EntryModalComponent } from './dashboard/entries/entry-modal/entry-modal.component';
 import { AccessComponent } from './dashboard/admin/access/access.component';
 import { SignupComponent } from './signup/signup.component';
+import { ProfileModalComponent } from './top-menu/profile-modal/profile-modal.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { SignupComponent } from './signup/signup.component';
     EntryModalComponent,
     AccessComponent,
     SignupComponent,
+    ProfileModalComponent,
   ],
   imports: [
     BrowserModule,
