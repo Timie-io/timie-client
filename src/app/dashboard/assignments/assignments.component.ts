@@ -32,7 +32,10 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
 
   total = 0;
 
+  private userId?: string;
   private currentUserSubscription?: Subscription;
+
+  statusSelected: string = '';
 
   constructor(
     private readonly authService: AuthService,
@@ -53,8 +56,8 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
     });
     this.currentUserSubscription = this.authService.user$.subscribe((user) => {
       if (user) {
-        this.assignmentsQuery.setVariables({ userId: user.id });
-        this.assignmentsQuery.refetch();
+        this.userId = user.id;
+        this.applyFilters();
       }
     });
     this.statusOptionsGQL
@@ -69,6 +72,15 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
     this.currentUserSubscription?.unsubscribe();
   }
 
+  private applyFilters() {
+    const variables: { [id: string]: any } = { userId: this.userId };
+    if (this.statusSelected) {
+      variables['statusCode'] = this.statusSelected;
+    }
+    this.assignmentsQuery.setVariables(variables);
+    this.assignmentsQuery.refetch();
+  }
+
   onStatusChange(statusCode: string, assignment: Assignment) {
     this.updateAssignmentGQL
       .mutate({
@@ -78,6 +90,10 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
         },
       })
       .subscribe();
+  }
+
+  onStatusFilterChange() {
+    this.applyFilters();
   }
 
   private newEntryInput(assignmentId: string): NewEntryInput {

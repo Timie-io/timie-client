@@ -31,8 +31,15 @@ export class AssignmentsGQL extends Query<AssignmentsResponse> {
       $take: Int = 25
       $userId: ID
       $taskId: ID
+      $statusCode: ID
     ) {
-      assignments(skip: $skip, take: $take, userId: $userId, taskId: $taskId) {
+      assignments(
+        skip: $skip
+        take: $take
+        userId: $userId
+        taskId: $taskId
+        statusCode: $statusCode
+      ) {
         total
         result {
           id
@@ -91,8 +98,15 @@ export class AssignmentOptionsGQL extends Query<AssignmentsResponse> {
       $take: Int = 25
       $userId: ID
       $taskId: ID
+      $statusCode: ID
     ) {
-      assignments(skip: $skip, take: $take, userId: $userId, taskId: $taskId) {
+      assignments(
+        skip: $skip
+        take: $take
+        userId: $userId
+        taskId: $taskId
+        statusCode: $statusCode
+      ) {
         total
         result {
           id

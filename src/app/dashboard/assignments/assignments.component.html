@@ -5,7 +5,20 @@
     &nbsp;
   </ngb-alert>
   <div class="row mt-3">
-    <div class="col-10"></div>
+    <div class="col-10">
+      <div class="col-2">
+        <select
+          class="form-select"
+          [(ngModel)]="statusSelected"
+          (ngModelChange)="onStatusFilterChange()"
+        >
+          <option value="">All Status</option>
+          <option *ngFor="let status of allStatus" value="{{ status.code }}">
+            {{ status.label }}
+          </option>
+        </select>
+      </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-10">
