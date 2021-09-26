@@ -49,6 +49,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       .subscribe((value) => {
         this.search = value;
         this.projectsQuery.setVariables(this.filters);
+        this.projectsQuery.refetch();
       });
     this.projectsQuery = this.allProjectsGQL.watch(this.filters);
   }
@@ -66,13 +67,16 @@ export class ProjectsComponent implements OnInit, OnDestroy {
           return prev;
         }
         const projectAdded = subscriptionData.data.projectAdded;
+        const newList = prev.projects.result.filter(
+          (project) => project.id !== projectAdded.id
+        );
 
         return {
           ...prev,
           projects: {
             __typename: 'ProjectsResult',
             total: prev.projects.total + 1,
-            result: [projectAdded, ...prev.projects.result],
+            result: [projectAdded, ...newList],
           },
         };
       },
@@ -123,6 +127,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   onActiveChange() {
     this.onlyActive = !this.onlyActive;
     this.projectsQuery.setVariables(this.filters);
+    this.projectsQuery.refetch();
   }
 
   newProject() {

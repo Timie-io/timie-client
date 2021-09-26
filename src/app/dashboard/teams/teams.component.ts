@@ -48,6 +48,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
       .subscribe((value) => {
         this.search = value;
         this.teamsQuery.setVariables({ name: this.search });
+        this.teamsQuery.refetch();
       });
     this.teamsQuery = this.allTeamsGQL.watch();
   }
