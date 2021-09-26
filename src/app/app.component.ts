@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -7,13 +6,7 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  public constructor(private titleService: Title) {}
+  public constructor() {}
 
-  public setTitle(newTitle: string) {
-    this.titleService.setTitle(newTitle);
-  }
-
-  ngOnInit() {
-    this.setTitle('Time - Task Management');
-  }
+  ngOnInit() {}
 }

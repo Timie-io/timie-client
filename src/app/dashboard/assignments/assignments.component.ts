@@ -6,6 +6,7 @@ import { first } from 'rxjs/operators';
 import { Assignment } from './../../_models/assignment.model';
 import { Status } from './../../_models/status.model';
 import { AuthService } from './../../_services/auth.service';
+import { EntriesService } from './../../_services/entries.service';
 import { UpdateAssignmentGQL } from './../../_services/graphql/assignments-mutation.graphql';
 import {
   AssignmentsGQL,
@@ -14,7 +15,6 @@ import {
 import {
   CreateEntryGQL,
   NewEntryInput,
-  StartEntryGQL,
 } from './../../_services/graphql/entries-mutation.graphql';
 import { StatusOptionsGQL } from './../../_services/graphql/status-query.graphql';
 
@@ -44,7 +44,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
     private readonly statusOptionsGQL: StatusOptionsGQL,
     private readonly updateAssignmentGQL: UpdateAssignmentGQL,
     private readonly createEntryGQL: CreateEntryGQL,
-    private readonly startEntryGQL: StartEntryGQL
+    private readonly entriesService: EntriesService
   ) {
     this.assignmentsQuery = this.assignmentsGQL.watch();
   }
@@ -112,11 +112,13 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
       .mutate({ data: this.newEntryInput(assignment.id) })
       .subscribe({
         next: ({ data }) => {
-          this.startEntryGQL.mutate({ id: data?.createEntry.id }).subscribe({
-            next: () => {
-              this.router.navigate(['/entries']);
-            },
-          });
+          if (data) {
+            this.entriesService.startEntry$(data.createEntry.id).subscribe({
+              next: () => {
+                this.router.navigate(['/entries']);
+              },
+            });
+          }
         },
         error: (error) => {
           this.error = error;

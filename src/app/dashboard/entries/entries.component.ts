@@ -5,10 +5,8 @@ import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Entry } from './../../_models/entry.model';
 import { AuthService } from './../../_services/auth.service';
-import {
-  RemoveEntryGQL,
-  StopEntryGQL,
-} from './../../_services/graphql/entries-mutation.graphql';
+import { EntriesService } from './../../_services/entries.service';
+import { RemoveEntryGQL } from './../../_services/graphql/entries-mutation.graphql';
 import {
   EntriesGQL,
   EntriesResponse,
@@ -51,8 +49,8 @@ export class EntriesComponent implements OnInit, OnDestroy {
     private readonly entriesGQL: EntriesGQL,
     private readonly entryAddedGQL: EntryAddedGQL,
     private readonly entryRemovedGQL: EntryRemovedGQL,
-    private readonly stopEntryGQL: StopEntryGQL,
     private readonly removeEntryGQL: RemoveEntryGQL,
+    private readonly entriesService: EntriesService,
     private readonly modalService: NgbModal
   ) {
     this.entriesQuery = this.entriesGQL.watch();
@@ -171,7 +169,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   }
 
   stopEntry(entry: Entry) {
-    this.stopEntryGQL.mutate({ id: entry.id }).subscribe({
+    this.entriesService.stopEntry$(entry.id).subscribe({
       next: ({ data }) => {
         if (data?.stopEntry) {
           this.totalTime += this.calculateTotal(data.stopEntry);
