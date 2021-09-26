@@ -89,7 +89,7 @@ export class TeamsOptionGQL extends Query<TeamsOptionResponse> {
   document = gql`
     query AllTeams(
       $skip: Int = 0
-      $take: Int = 100
+      $take: Int = 50
       $name: String
       $ownerId: ID
     ) {

@@ -64,13 +64,16 @@ export class TeamsComponent implements OnInit, OnDestroy {
           return prev;
         }
         const teamAdded = subscriptionData.data.teamAdded;
+        const newTeamList = prev.teams.result.filter(
+          (team) => team.id !== teamAdded.id
+        );
 
         return {
           ...prev,
           teams: {
             __typename: 'TeamsResult',
             total: prev.teams.total + 1,
-            result: [teamAdded, ...prev.teams.result],
+            result: [teamAdded, ...newTeamList],
           },
         };
       },

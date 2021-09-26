@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { QueryRef } from 'apollo-angular';
 import { first } from 'rxjs/operators';
 import {
   CreateProjectGQL,
@@ -9,7 +10,10 @@ import {
   UpdateProjectInput,
 } from '../../../_services/graphql/projects-mutation.graphql';
 import { Team } from './../../../_models/team.model';
-import { TeamsOptionGQL } from './../../../_services/graphql/teams-query.graphql';
+import {
+  TeamsOptionGQL,
+  TeamsOptionResponse,
+} from './../../../_services/graphql/teams-query.graphql';
 
 @Component({
   selector: 'app-project-modal',
@@ -24,6 +28,7 @@ export class ProjectModalComponent implements OnInit {
   @Input() team?: Team;
 
   teams: Team[] = [];
+  private teamsOptionQuery: QueryRef<TeamsOptionResponse>;
 
   form: FormGroup;
   loading = false;
@@ -43,18 +48,18 @@ export class ProjectModalComponent implements OnInit {
       teamId: [''],
       active: [false],
     });
+    this.teamsOptionQuery = this.teamsOptionGQL.watch();
   }
-
-  // TODO: subscribe to team added and team removed and update options
 
   ngOnInit(): void {
     this.form.controls.name.setValue(this.name);
     this.form.controls.description.setValue(this.description);
     this.form.controls.active.setValue(this.active);
     this.form.controls.teamId.setValue(this.team?.id);
-    this.teamsOptionGQL.watch().valueChanges.subscribe(({ data }) => {
+    this.teamsOptionQuery.valueChanges.subscribe(({ data }) => {
       this.teams = data.teams.result;
     });
+    this.teamsOptionQuery.refetch();
   }
 
   get f() {

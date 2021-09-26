@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { QueryRef } from 'apollo-angular';
 import { first } from 'rxjs/operators';
 import {
   CreateTaskGQL,
@@ -9,7 +10,10 @@ import {
   UpdateTaskInput,
 } from '../../../_services/graphql/tasks-mutation.graphql';
 import { Project } from './../../../_models/project.model';
-import { ProjectsOptionGQL } from './../../../_services/graphql/projects-query.graphql';
+import {
+  ProjectOptionsResponse,
+  ProjectsOptionGQL,
+} from './../../../_services/graphql/projects-query.graphql';
 
 @Component({
   selector: 'app-task-modal',
@@ -30,6 +34,7 @@ export class TaskModalComponent implements OnInit {
   error = '';
 
   projects: Project[] = [];
+  private projectsOptionQuery: QueryRef<ProjectOptionsResponse>;
 
   constructor(
     public modal: NgbActiveModal,
@@ -38,6 +43,7 @@ export class TaskModalComponent implements OnInit {
     private readonly updateTaskGQL: UpdateTaskGQL,
     private readonly createTaskGQL: CreateTaskGQL
   ) {
+    this.projectsOptionQuery = this.projectsOptionGQL.watch();
     this.form = formBuilder.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -61,9 +67,10 @@ export class TaskModalComponent implements OnInit {
     this.form.controls.active.setValue(this.active);
     this.form.controls.projectId.setValue(this.projectId || '');
 
-    this.projectsOptionGQL.watch().valueChanges.subscribe(({ data }) => {
+    this.projectsOptionQuery.valueChanges.subscribe(({ data }) => {
       this.projects = data.projects.result;
     });
+    this.projectsOptionQuery.refetch();
   }
 
   private get updateTaskInput(): UpdateTaskInput {
