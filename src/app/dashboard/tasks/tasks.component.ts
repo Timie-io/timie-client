@@ -137,13 +137,16 @@ export class TasksComponent implements OnInit, OnDestroy {
           return prev;
         }
         const taskAdded = subscriptionData.data.taskAdded;
+        const newList = prev.tasks.result.filter(
+          (task) => task.id !== taskAdded.id
+        );
 
         return {
           ...prev,
           tasks: {
             __typename: 'TasksResult',
             total: prev.tasks.total + 1,
-            result: [taskAdded, ...prev.tasks.result],
+            result: [taskAdded, ...newList],
           },
         };
       },
