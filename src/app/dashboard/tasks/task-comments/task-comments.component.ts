@@ -39,6 +39,9 @@ export class TaskCommentsComponent implements OnInit, OnDestroy {
   currentUserId?: string;
   private currentUserSub?: Subscription;
 
+  private unsubscribeToAdded = () => {};
+  private unsubscribeToRemoved = () => {};
+
   constructor(
     private readonly authService: AuthService,
     private readonly commentsGQL: CommentsGQL,
@@ -64,7 +67,7 @@ export class TaskCommentsComponent implements OnInit, OnDestroy {
       this.total = data.comments.total;
       this.comments = data.comments.result;
     });
-    this.commentsQuery.subscribeToMore({
+    this.unsubscribeToAdded = this.commentsQuery.subscribeToMore({
       document: this.commentAddedGQL.document,
       variables: {
         input: { taskId: this.taskId },
@@ -88,7 +91,7 @@ export class TaskCommentsComponent implements OnInit, OnDestroy {
         };
       },
     });
-    this.commentsQuery.subscribeToMore({
+    this.unsubscribeToRemoved = this.commentsQuery.subscribeToMore({
       document: this.commentRemovedGQL.document,
       variables: {
         input: { taskId: this.taskId },
@@ -116,6 +119,8 @@ export class TaskCommentsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.currentUserSub?.unsubscribe();
+    this.unsubscribeToAdded();
+    this.unsubscribeToRemoved();
   }
 
   get isThereMore() {

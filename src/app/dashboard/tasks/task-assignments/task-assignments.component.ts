@@ -1,4 +1,11 @@
-import { Component, Inject, Input, LOCALE_ID, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  LOCALE_ID,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Assignment } from './../../../_models/assignment.model';
@@ -19,7 +26,7 @@ import { TaskAssignmentModalComponent } from './task-assignment-modal/task-assig
   templateUrl: './task-assignments.component.html',
   styleUrls: ['./task-assignments.component.css'],
 })
-export class TaskAssignmentsComponent implements OnInit {
+export class TaskAssignmentsComponent implements OnInit, OnDestroy {
   @Input() taskId: string | null = null;
 
   error = '';
@@ -53,6 +60,11 @@ export class TaskAssignmentsComponent implements OnInit {
     this.unsubscribeRemoved = this.subscribeToAssignmentRemoved(
       this.subscriptionInput
     );
+  }
+
+  ngOnDestroy() {
+    this.unsubscribeAdded();
+    this.unsubscribeRemoved();
   }
 
   newAssignment() {

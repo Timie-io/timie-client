@@ -35,6 +35,9 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   onlyActive = true;
 
+  private unsubscribeToAdded = () => {};
+  private unsubscribeToRemoved = () => {};
+
   constructor(
     private readonly authService: AuthService,
     private readonly modalService: NgbModal,
@@ -59,7 +62,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       this.total = data.projects.total;
       this.projects = data.projects.result;
     });
-    this.projectsQuery.subscribeToMore({
+    this.unsubscribeToAdded = this.projectsQuery.subscribeToMore({
       document: this.projectAddedGQL.document,
       updateQuery: (prev, { subscriptionData }) => {
         console.log(subscriptionData);
@@ -81,7 +84,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         };
       },
     });
-    this.projectsQuery.subscribeToMore({
+    this.unsubscribeToRemoved = this.projectsQuery.subscribeToMore({
       document: this.projectRemovedGQL.document,
       updateQuery: (prev, { subscriptionData }) => {
         console.log(subscriptionData);
@@ -107,6 +110,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
+    this.unsubscribeToAdded();
+    this.unsubscribeToRemoved();
   }
 
   get currentUser() {

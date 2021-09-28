@@ -82,6 +82,8 @@ export class EntriesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.searchSub.unsubscribe();
     this.currentUserSub.unsubscribe();
+    this.unsubscribeAdded();
+    this.unsubscribeRemoved();
   }
 
   private get filters() {

@@ -116,6 +116,8 @@ export class TasksComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.currentUserSubscription.unsubscribe();
     this.searchSub.unsubscribe();
+    this.unsubscribeAdded();
+    this.unsubscribeRemoved();
   }
 
   private applyFilters() {

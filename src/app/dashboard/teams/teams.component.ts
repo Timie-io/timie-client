@@ -33,6 +33,9 @@ export class TeamsComponent implements OnInit, OnDestroy {
   private searchChanged: Subject<string> = new Subject<string>();
   private searchSub: Subscription;
 
+  private unsubscribeToAdded = () => {};
+  private unsubscribeToRemoved = () => {};
+
   constructor(
     private apollo: Apollo,
     private readonly allTeamsGQL: AllTeamsGQL,
@@ -58,7 +61,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
       this.total = data.teams.total;
       this.teams = data.teams.result;
     });
-    this.teamsQuery.subscribeToMore({
+    this.unsubscribeToAdded = this.teamsQuery.subscribeToMore({
       document: this.teamAddedGQL.document,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
@@ -79,7 +82,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
         };
       },
     });
-    this.teamsQuery.subscribeToMore({
+    this.unsubscribeToRemoved = this.teamsQuery.subscribeToMore({
       document: this.teamRemovedGQL.document,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
@@ -104,6 +107,8 @@ export class TeamsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
+    this.unsubscribeToAdded();
+    this.unsubscribeToRemoved();
   }
 
   newTeam() {
