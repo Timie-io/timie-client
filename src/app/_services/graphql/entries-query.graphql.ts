@@ -54,3 +54,36 @@ export class EntriesGQL extends Query<EntriesResponse> {
     }
   `;
 }
+
+@Injectable({
+  providedIn: 'root',
+})
+export class EntriesOnlyGQL extends Query<EntriesResponse> {
+  // Simplified version with only the entries data
+  document = gql`
+    query GetEntriesOnly(
+      $skip: Int = 0
+      $take: Int = 25
+      $userId: ID
+      $assignmentId: ID
+      $note: String
+    ) {
+      entries(
+        skip: $skip
+        take: $take
+        userId: $userId
+        assignmentId: $assignmentId
+        note: $note
+      ) {
+        total
+        totalTime
+        result {
+          id
+          startTime
+          finishTime
+          note
+        }
+      }
+    }
+  `;
+}
