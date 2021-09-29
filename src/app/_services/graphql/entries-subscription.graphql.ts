@@ -41,6 +41,7 @@ export class EntryAddedGQL extends Subscription<EntryAddedResponse> {
           id
           task {
             id
+            title
           }
         }
       }

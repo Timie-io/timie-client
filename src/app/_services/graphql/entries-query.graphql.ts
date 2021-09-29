@@ -47,6 +47,7 @@ export class EntriesGQL extends Query<EntriesResponse> {
             note
             task {
               id
+              title
             }
           }
         }
