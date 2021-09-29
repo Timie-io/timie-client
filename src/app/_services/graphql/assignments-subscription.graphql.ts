@@ -37,6 +37,7 @@ export class AssignmentAddedGQL extends Subscription<AssignmentAddedResponse> {
         }
         task {
           id
+          title
         }
         status {
           code

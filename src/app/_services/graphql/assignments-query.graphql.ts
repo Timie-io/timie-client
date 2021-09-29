@@ -58,6 +58,7 @@ export class AssignmentsGQL extends Query<AssignmentsResponse> {
           }
           task {
             id
+            title
           }
           status {
             code
