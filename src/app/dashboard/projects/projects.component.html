@@ -96,6 +96,12 @@
           </tr>
         </tbody>
       </table>
+      <ngb-pagination
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [collectionSize]="total"
+        (pageChange)="onPageChange()"
+      ></ngb-pagination>
     </div>
     <div class="col-md-2"></div>
   </div>

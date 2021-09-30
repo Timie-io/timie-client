@@ -1,19 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { QueryRef } from 'apollo-angular';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { RemoveProjectGQL } from '../../_services/graphql/projects-mutation.graphql';
-import {
-  AllProjectsGQL,
-  AllProjectsResponse,
-} from '../../_services/graphql/projects-query.graphql';
-import {
-  ProjectAddedGQL,
-  ProjectRemovedGQL,
-} from '../../_services/graphql/projects-subscription.graphql';
 import { Project } from './../../_models/project.model';
 import { AuthService } from './../../_services/auth.service';
+import { ProjectsService } from './../../_services/projects.service';
 import { ProjectModalComponent } from './project-modal/project-modal.component';
 
 @Component({
@@ -22,107 +13,75 @@ import { ProjectModalComponent } from './project-modal/project-modal.component';
   styleUrls: ['./projects.component.css'],
 })
 export class ProjectsComponent implements OnInit, OnDestroy {
-  private projectsQuery: QueryRef<AllProjectsResponse>;
-
-  public total = 0;
-  public projects: Project[] = [];
-
-  public error = '';
-
-  public search = '';
   private searchChanged: Subject<string> = new Subject<string>();
   private searchSub: Subscription;
 
-  onlyActive = true;
-
-  private unsubscribeToAdded = () => {};
-  private unsubscribeToRemoved = () => {};
-
   constructor(
+    private readonly projectsService: ProjectsService,
     private readonly authService: AuthService,
-    private readonly modalService: NgbModal,
-    private readonly allProjectsGQL: AllProjectsGQL,
-    private readonly removeProjectGQL: RemoveProjectGQL,
-    private readonly projectAddedGQL: ProjectAddedGQL,
-    private readonly projectRemovedGQL: ProjectRemovedGQL
+    private readonly modalService: NgbModal
   ) {
     // Add debounce time for searching
     this.searchSub = this.searchChanged
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe((value) => {
-        this.search = value;
-        this.projectsQuery.setVariables(this.filters);
-        this.projectsQuery.refetch();
+        this.projectsService.search = value;
+        this.projectsService.applyFilters();
       });
-    this.projectsQuery = this.allProjectsGQL.watch(this.filters);
   }
 
-  ngOnInit(): void {
-    this.projectsQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.projects.total;
-      this.projects = data.projects.result;
-    });
-    this.unsubscribeToAdded = this.projectsQuery.subscribeToMore({
-      document: this.projectAddedGQL.document,
-      updateQuery: (prev, { subscriptionData }) => {
-        console.log(subscriptionData);
-        if (!subscriptionData) {
-          return prev;
-        }
-        const projectAdded = subscriptionData.data.projectAdded;
-        const newList = prev.projects.result.filter(
-          (project) => project.id !== projectAdded.id
-        );
-
-        return {
-          ...prev,
-          projects: {
-            __typename: 'ProjectsResult',
-            total: prev.projects.total + 1,
-            result: [projectAdded, ...newList],
-          },
-        };
-      },
-    });
-    this.unsubscribeToRemoved = this.projectsQuery.subscribeToMore({
-      document: this.projectRemovedGQL.document,
-      updateQuery: (prev, { subscriptionData }) => {
-        console.log(subscriptionData);
-        if (!subscriptionData) {
-          return prev;
-        }
-        const projectRemoved = subscriptionData.data.projectRemoved;
-        const newProjectList = prev.projects.result.filter(
-          (project) => project.id !== projectRemoved.id
-        );
-
-        return {
-          ...prev,
-          projects: {
-            __typename: 'ProjectsResult',
-            total: prev.projects.total - 1,
-            result: newProjectList,
-          },
-        };
-      },
-    });
+  get projects() {
+    return this.projectsService.projects;
   }
+
+  get error() {
+    return this.projectsService.error;
+  }
+
+  set error(value: string) {
+    this.projectsService.error = value;
+  }
+
+  get search() {
+    return this.projectsService.search;
+  }
+
+  set search(value: string) {
+    this.projectsService.search = value;
+  }
+
+  get onlyActive() {
+    return this.projectsService.onlyActive;
+  }
+
+  set onlyActive(value: boolean) {
+    this.projectsService.onlyActive = value;
+  }
+
+  get page() {
+    return this.projectsService.page;
+  }
+
+  set page(value: number) {
+    this.projectsService.page = value;
+  }
+
+  get pageSize() {
+    return this.projectsService.pageSize;
+  }
+
+  get total() {
+    return this.projectsService.total;
+  }
+
+  ngOnInit(): void {}
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
-    this.unsubscribeToAdded();
-    this.unsubscribeToRemoved();
   }
 
   get currentUser() {
     return this.authService.user;
-  }
-
-  private get filters() {
-    const filters: { [id: string]: any } = {};
-    filters['name'] = this.search || undefined;
-    filters['active'] = this.onlyActive || undefined;
-    return filters;
   }
 
   onSearchChange(value: string) {
@@ -131,8 +90,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   onActiveChange() {
     this.onlyActive = !this.onlyActive;
-    this.projectsQuery.setVariables(this.filters);
-    this.projectsQuery.refetch();
+    this.projectsService.applyFilters();
+  }
+
+  onPageChange() {
+    this.projectsService.applyFilters();
   }
 
   newProject() {
@@ -149,23 +111,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   removeProject(project: Project) {
     if (confirm('Are you sure about removing this project?')) {
-      this.removeProjectGQL.mutate({ id: project.id }).subscribe({
-        next: () => {
-          this.error = '';
-        },
-        error: (error) => {
-          if (
-            error.message.includes(
-              'violates foreign key constraint',
-              'on table "task"'
-            )
-          ) {
-            this.error = 'There are still tasks associated with this project';
-          } else {
-            this.error = error;
-          }
-        },
-      });
+      this.projectsService.removeProject(project);
     }
   }
 }
