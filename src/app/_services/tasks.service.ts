@@ -22,7 +22,7 @@ export class TasksService {
   error = '';
 
   page = 1;
-  pageSize = 50;
+  pageSize = 10;
   total = 0;
 
   tasks: Task[] = [];
@@ -41,7 +41,7 @@ export class TasksService {
     private readonly taskRemovedGQL: TaskRemovedGQL,
     private readonly router: Router
   ) {
-    this.tasksQuery = this.allTasksGQL.watch();
+    this.tasksQuery = this.allTasksGQL.watch(this.filters);
     this.tasksQuery.valueChanges.subscribe(({ data }) => {
       this.total = data.tasks.total;
       this.tasks = data.tasks.result;
