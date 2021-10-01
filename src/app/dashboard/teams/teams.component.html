@@ -37,18 +37,40 @@
         <thead>
           <tr>
             <th scope="col">
-              Name <i class="fa fa-fw fa-sort" (click)="toggleSort('name')"></i>
+              Name
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('name')"
+                [ngClass]="{
+                  'fa-sort': !this.sortedColumns['name'],
+                  'fa-sort-up': this.sortedColumns['name'] === 'ASC',
+                  'fa-sort-down': this.sortedColumns['name'] === 'DESC'
+                }"
+              ></i>
             </th>
             <th scope="col">
               Description
               <i
-                class="fa fa-fw fa-sort"
+                class="fa fa-fw"
                 (click)="toggleSort('description')"
+                [ngClass]="{
+                  'fa-sort': !this.sortedColumns['description'],
+                  'fa-sort-up': this.sortedColumns['description'] === 'ASC',
+                  'fa-sort-down': this.sortedColumns['description'] === 'DESC'
+                }"
               ></i>
             </th>
             <th scope="col">
               Owner
-              <i class="fa fa-fw fa-sort" (click)="toggleSort('owner')"></i>
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('owner')"
+                [ngClass]="{
+                  'fa-sort': !this.sortedColumns['owner'],
+                  'fa-sort-up': this.sortedColumns['owner'] === 'ASC',
+                  'fa-sort-down': this.sortedColumns['owner'] === 'DESC'
+                }"
+              ></i>
             </th>
             <th scope="col">Actions</th>
           </tr>
@@ -84,7 +106,7 @@
                   type="button"
                   class="btn btn-light btn-sm"
                   title="Remove"
-                  (click)="removeTeam(team)"
+                  (click)="removeTeam(team.id)"
                 >
                   <i class="fa fa-trash"></i>
                 </button>

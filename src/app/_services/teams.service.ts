@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { TeamView } from '../_models/team-view.model';
-import { Team } from '../_models/team.model';
 import { RemoveTeamGQL } from './graphql/teams-mutation.graphql';
 import { TeamsViewGQL, TeamsViewResponse } from './graphql/teams-query.graphql';
 import {
@@ -91,14 +90,8 @@ export class TeamsService {
       },
     });
   }
-
-  toggleSort(column: string) {
-    this.sortService.toogleColumn('teams', column);
-    this.applyFilters();
-  }
-
-  removeTeam(team: Team) {
-    this.removeTeamGQL.mutate({ id: team.id }).subscribe({
+  removeTeam(teamId: string) {
+    this.removeTeamGQL.mutate({ id: teamId }).subscribe({
       next: () => {
         this.error = '';
       },

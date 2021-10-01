@@ -5,7 +5,15 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Project } from './../../_models/project.model';
 import { AuthService } from './../../_services/auth.service';
 import { ProjectsService } from './../../_services/projects.service';
+import { SortService, SortUpdate } from './../../_services/sort.service';
 import { ProjectModalComponent } from './project-modal/project-modal.component';
+
+interface EditProjectInput {
+  id: string;
+  name: string;
+  description: string;
+  active: boolean;
+}
 
 @Component({
   selector: 'app-projects',
@@ -16,8 +24,12 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   private searchChanged: Subject<string> = new Subject<string>();
   private searchSub: Subscription;
 
+  private sortedColumnsSub: Subscription;
+  sortedColumns: { [column: string]: 'ASC' | 'DESC' | null } = {};
+
   constructor(
     private readonly projectsService: ProjectsService,
+    private readonly sortService: SortService,
     private readonly authService: AuthService,
     private readonly modalService: NgbModal
   ) {
@@ -28,6 +40,13 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         this.projectsService.search = value;
         this.projectsService.applyFilters();
       });
+    this.sortedColumnsSub = this.sortService.sortUpdate$.subscribe(
+      (sortUpdate: SortUpdate) => {
+        if (sortUpdate[0] === 'projects') {
+          this.sortedColumns[sortUpdate[1]] = sortUpdate[2];
+        }
+      }
+    );
   }
 
   get projects() {
@@ -78,6 +97,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
+    this.sortedColumnsSub.unsubscribe();
   }
 
   get currentUser() {
@@ -101,7 +121,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.modalService.open(ProjectModalComponent);
   }
 
-  editProject(project: Project) {
+  editProject(project: EditProjectInput) {
     const modal = this.modalService.open(ProjectModalComponent);
     modal.componentInstance.id = project.id;
     modal.componentInstance.name = project.name;
@@ -111,7 +131,12 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   removeProject(project: Project) {
     if (confirm('Are you sure about removing this project?')) {
-      this.projectsService.removeProject(project);
+      this.projectsService.removeProject(project.id);
     }
+  }
+
+  toggleSort(column: string) {
+    this.sortService.toogleColumn('projects', column);
+    this.projectsService.applyFilters();
   }
 }

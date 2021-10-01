@@ -50,11 +50,66 @@
         </caption>
         <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Owner</th>
-            <th scope="col">Team</th>
-            <th scope="col">Created</th>
+            <th scope="col">
+              Name
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('name')"
+                [ngClass]="{
+                  'fa-sort': !this.sortedColumns['name'],
+                  'fa-sort-up': this.sortedColumns['name'] === 'ASC',
+                  'fa-sort-down': this.sortedColumns['name'] === 'DESC'
+                }"
+              ></i>
+            </th>
+            <th scope="col">
+              Description
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('description')"
+                [ngClass]="{
+                  'fa-sort': !this.sortedColumns['description'],
+                  'fa-sort-up': this.sortedColumns['description'] === 'ASC',
+                  'fa-sort-down': this.sortedColumns['description'] === 'DESC'
+                }"
+              ></i>
+            </th>
+            <th scope="col">
+              Owner
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('owner')"
+                [ngClass]="{
+                  'fa-sort': !this.sortedColumns['owner'],
+                  'fa-sort-up': this.sortedColumns['owner'] === 'ASC',
+                  'fa-sort-down': this.sortedColumns['owner'] === 'DESC'
+                }"
+              ></i>
+            </th>
+            <th scope="col">
+              Team
+              <i
+                class="fa fa-fw fa-sort"
+                (click)="toggleSort('team')"
+                [ngClass]="{
+                  'fa-sort': !this.sortedColumns['team'],
+                  'fa-sort-up': this.sortedColumns['team'] === 'ASC',
+                  'fa-sort-down': this.sortedColumns['team'] === 'DESC'
+                }"
+              ></i>
+            </th>
+            <th scope="col">
+              Created
+              <i
+                class="fa fa-fw fa-sort"
+                (click)="toggleSort('created')"
+                [ngClass]="{
+                  'fa-sort': !this.sortedColumns['created'],
+                  'fa-sort-up': this.sortedColumns['created'] === 'ASC',
+                  'fa-sort-down': this.sortedColumns['created'] === 'DESC'
+                }"
+              ></i>
+            </th>
             <th scope="col">Active</th>
             <th scope="col">Actions</th>
           </tr>
@@ -63,15 +118,15 @@
           <tr *ngFor="let project of projects">
             <td>{{ project.name }}</td>
             <td>{{ project.description }}</td>
-            <td>{{ project.owner?.name }}</td>
-            <td>{{ project.team?.name }}</td>
-            <td>{{ project.creationDate | date: "MMM d, y" }}</td>
+            <td>{{ project.ownerName }}</td>
+            <td>{{ project.teamName }}</td>
+            <td>{{ project.created | date: "MMM d, y" }}</td>
             <td activeStyle [isActive]="project.active">
               {{ project.active ? "Yes" : "No" }}
             </td>
             <td>
               <div
-                *ngIf="project.owner?.email === currentUser?.email"
+                *ngIf="project.ownerId === currentUser?.id"
                 class="btn-group"
                 role="group"
               >

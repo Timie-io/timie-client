@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { Project } from '../_models/project.model';
+import { ProjectView } from '../_models/project-view.model';
 import { RemoveProjectGQL } from './graphql/projects-mutation.graphql';
 import {
-  AllProjectsGQL,
-  AllProjectsResponse,
+  ProjectsViewGQL,
+  ProjectsViewResponse,
 } from './graphql/projects-query.graphql';
 import {
   ProjectAddedGQL,
   ProjectRemovedGQL,
 } from './graphql/projects-subscription.graphql';
+import { SortService } from './sort.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectsService {
-  private projectsQuery: QueryRef<AllProjectsResponse>;
+  private projectsQuery: QueryRef<ProjectsViewResponse>;
   private unsubscribeAdded = () => {};
   private unsubscribeRemoved = () => {};
 
@@ -25,22 +26,23 @@ export class ProjectsService {
   pageSize = 10;
   total = 0;
 
-  projects: Project[] = [];
+  projects: ProjectView[] = [];
 
   search = '';
 
   onlyActive = true;
 
   constructor(
-    private readonly allProjectsGQL: AllProjectsGQL,
+    private readonly projectsViewGQL: ProjectsViewGQL,
     private readonly projectAddedGQL: ProjectAddedGQL,
     private readonly projectRemovedGQL: ProjectRemovedGQL,
-    private readonly removeProjectGQL: RemoveProjectGQL
+    private readonly removeProjectGQL: RemoveProjectGQL,
+    private readonly sortService: SortService
   ) {
-    this.projectsQuery = this.allProjectsGQL.watch(this.filters);
+    this.projectsQuery = this.projectsViewGQL.watch(this.filters);
     this.projectsQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.projects.total;
-      this.projects = data.projects.result;
+      this.total = data.projectsView.total;
+      this.projects = data.projectsView.result;
     });
     this.unsubscribeAdded = this.subscribeToProjectAdded();
     this.unsubscribeRemoved = this.subscribeToProjectRemoved();
@@ -51,8 +53,12 @@ export class ProjectsService {
       skip: (this.page - 1) * this.pageSize,
       take: this.pageSize,
     };
-    filters['name'] = this.search || undefined;
+    filters['search'] = this.search || undefined;
     filters['active'] = this.onlyActive || undefined;
+    const sortOptions = this.sortService.getSortOptions('projects');
+    if (sortOptions.length > 0) {
+      filters['sortBy'] = sortOptions;
+    }
     return filters;
   }
 
@@ -69,19 +75,8 @@ export class ProjectsService {
         if (!subscriptionData) {
           return prev;
         }
-        const projectAdded = subscriptionData.data.projectAdded;
-        const newList = prev.projects.result.filter(
-          (project) => project.id !== projectAdded.id
-        );
-
-        return {
-          ...prev,
-          projects: {
-            __typename: 'ProjectsResult',
-            total: prev.projects.total + 1,
-            result: [projectAdded, ...newList],
-          },
-        };
+        this.projectsQuery.refetch();
+        return prev;
       },
     });
   }
@@ -94,25 +89,14 @@ export class ProjectsService {
         if (!subscriptionData) {
           return prev;
         }
-        const projectRemoved = subscriptionData.data.projectRemoved;
-        const newProjectList = prev.projects.result.filter(
-          (project) => project.id !== projectRemoved.id
-        );
-
-        return {
-          ...prev,
-          projects: {
-            __typename: 'ProjectsResult',
-            total: prev.projects.total - 1,
-            result: newProjectList,
-          },
-        };
+        this.projectsQuery.refetch();
+        return prev;
       },
     });
   }
 
-  removeProject(project: Project) {
-    this.removeProjectGQL.mutate({ id: project.id }).subscribe({
+  removeProject(projectId: string) {
+    this.removeProjectGQL.mutate({ id: projectId }).subscribe({
       next: () => {
         this.error = '';
       },

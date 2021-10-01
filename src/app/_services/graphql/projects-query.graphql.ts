@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
+import { ProjectView } from '../../_models/project-view.model';
 import { Project } from './../../_models/project.model';
 
 export interface ProjectsOptionResult {
@@ -17,6 +18,15 @@ export interface AllProjectsResult {
 
 export interface AllProjectsResponse {
   projects: AllProjectsResult;
+}
+
+export interface ProjectsViewResult {
+  total: number;
+  result: ProjectView[];
+}
+
+export interface ProjectsViewResponse {
+  projectsView: ProjectsViewResult;
 }
 
 @Injectable({
@@ -56,6 +66,46 @@ export class AllProjectsGQL extends Query<AllProjectsResponse> {
             id
             name
           }
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ProjectsViewGQL extends Query<ProjectsViewResponse> {
+  document = gql`
+    query ProjectsView(
+      $skip: Int = 0
+      $take: Int = 25
+      $search: String
+      $active: Boolean
+      $ownerId: ID
+      $teamId: ID
+      $sortBy: [SortInput]
+    ) {
+      projectsView(
+        skip: $skip
+        take: $take
+        search: $search
+        active: $active
+        ownerId: $ownerId
+        teamId: $teamId
+        sortBy: $sortBy
+      ) {
+        total
+        result {
+          id
+          name
+          description
+          ownerId
+          ownerName
+          teamId
+          teamName
+          created
+          active
         }
       }
     }

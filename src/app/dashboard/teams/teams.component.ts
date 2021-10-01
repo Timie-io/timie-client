@@ -2,11 +2,23 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Team } from '../../_models/team.model';
+import { SortUpdate } from '../../_services/sort.service';
 import { AuthService } from './../../_services/auth.service';
+import { SortService } from './../../_services/sort.service';
 import { TeamsService } from './../../_services/teams.service';
 import { TeamMembersComponent } from './team-members/team-members.component';
 import { TeamModalComponent } from './team-modal/team-modal.component';
+
+interface EditTeamInput {
+  id: string;
+  name: string;
+  description: string;
+}
+
+interface EditMembersInput {
+  id: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-teams',
@@ -17,8 +29,12 @@ export class TeamsComponent implements OnInit, OnDestroy {
   private searchChanged: Subject<string> = new Subject<string>();
   private searchSub: Subscription;
 
+  private sortedColumnsSub: Subscription;
+  sortedColumns: { [column: string]: 'ASC' | 'DESC' | null } = {};
+
   constructor(
     private readonly teamsService: TeamsService,
+    private readonly sortService: SortService,
     private readonly modalService: NgbModal,
     private readonly authService: AuthService
   ) {
@@ -29,6 +45,13 @@ export class TeamsComponent implements OnInit, OnDestroy {
         this.search = value;
         this.teamsService.applyFilters();
       });
+    this.sortedColumnsSub = this.sortService.sortUpdate$.subscribe(
+      (sortUpdate: SortUpdate) => {
+        if (sortUpdate[0] === 'teams') {
+          this.sortedColumns[sortUpdate[1]] = sortUpdate[2];
+        }
+      }
+    );
   }
 
   get teams() {
@@ -71,6 +94,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
+    this.sortedColumnsSub.unsubscribe();
   }
 
   newTeam() {
@@ -81,22 +105,22 @@ export class TeamsComponent implements OnInit, OnDestroy {
     return this.authService.user;
   }
 
-  editTeam(team: Team) {
+  editTeam(team: EditTeamInput) {
     const modal = this.modalService.open(TeamModalComponent);
     modal.componentInstance.id = team.id;
     modal.componentInstance.name = team.name;
     modal.componentInstance.description = team.description;
   }
 
-  editMembers(team: Team) {
+  editMembers(team: EditMembersInput) {
     const modal = this.modalService.open(TeamMembersComponent);
     modal.componentInstance.id = team.id;
     modal.componentInstance.name = team.name;
   }
 
-  removeTeam(team: Team) {
+  removeTeam(teamId: string) {
     if (confirm('Are you sure about removing this team?')) {
-      this.teamsService.removeTeam(team);
+      this.teamsService.removeTeam(teamId);
     }
   }
 
@@ -109,6 +133,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
   }
 
   toggleSort(column: string) {
-    this.teamsService.toggleSort(column);
+    this.sortService.toogleColumn('teams', column);
+    this.teamsService.applyFilters();
   }
 }
