@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EntriesService } from './_services/entries.service';
+import { AppService } from './_services/app.service';
 
 @Component({
   selector: 'app-root',
@@ -7,11 +7,11 @@ import { EntriesService } from './_services/entries.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  public constructor(private readonly entriesService: EntriesService) {}
+  public constructor(private readonly appService: AppService) {}
 
   async ngOnInit() {
-    if (await this.entriesService.isRunning()) {
-      this.entriesService.setRunning();
+    if (await this.appService.isRunning()) {
+      this.appService.setRunning();
     }
   }
 }
