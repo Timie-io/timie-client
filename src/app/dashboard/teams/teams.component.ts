@@ -107,4 +107,8 @@ export class TeamsComponent implements OnInit, OnDestroy {
   onPageChange() {
     this.teamsService.applyFilters();
   }
+
+  toggleSort(column: string) {
+    this.teamsService.toggleSort(column);
+  }
 }

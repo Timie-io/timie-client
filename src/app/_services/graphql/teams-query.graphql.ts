@@ -123,8 +123,15 @@ export class TeamsViewGQL extends Query<TeamsViewResponse> {
       $take: Int = 25
       $search: String
       $ownerId: ID
+      $sortBy: [SortInput]
     ) {
-      teamsView(skip: $skip, take: $take, search: $search, ownerId: $ownerId) {
+      teamsView(
+        skip: $skip
+        take: $take
+        search: $search
+        ownerId: $ownerId
+        sortBy: $sortBy
+      ) {
         total
         result {
           id

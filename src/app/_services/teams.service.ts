@@ -8,6 +8,7 @@ import {
   TeamAddedGQL,
   TeamRemovedGQL,
 } from './graphql/teams-subscription.graphql';
+import { SortService } from './sort.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,8 @@ export class TeamsService {
     private readonly teamsViewGQL: TeamsViewGQL,
     private readonly teamAddedGQL: TeamAddedGQL,
     private readonly teamRemovedGQL: TeamRemovedGQL,
-    private readonly removeTeamGQL: RemoveTeamGQL
+    private readonly removeTeamGQL: RemoveTeamGQL,
+    private readonly sortService: SortService
   ) {
     this.teamsQuery = this.teamsViewGQL.watch(this.filters);
     this.teamsQuery.valueChanges.subscribe(({ data }) => {
@@ -55,6 +57,10 @@ export class TeamsService {
       take: this.pageSize,
     };
     filters['search'] = this.search || undefined;
+    const sortOptions = this.sortService.getSortOptions('teams');
+    if (sortOptions.length > 0) {
+      filters['sortBy'] = sortOptions;
+    }
     return filters;
   }
 
@@ -84,6 +90,11 @@ export class TeamsService {
         return prev;
       },
     });
+  }
+
+  toggleSort(column: string) {
+    this.sortService.toogleColumn('teams', column);
+    this.applyFilters();
   }
 
   removeTeam(team: Team) {

@@ -36,9 +36,20 @@
         </caption>
         <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Owner</th>
+            <th scope="col">
+              Name <i class="fa fa-fw fa-sort" (click)="toggleSort('name')"></i>
+            </th>
+            <th scope="col">
+              Description
+              <i
+                class="fa fa-fw fa-sort"
+                (click)="toggleSort('description')"
+              ></i>
+            </th>
+            <th scope="col">
+              Owner
+              <i class="fa fa-fw fa-sort" (click)="toggleSort('owner')"></i>
+            </th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
