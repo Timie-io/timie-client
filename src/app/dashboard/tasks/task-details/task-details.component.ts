@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Task } from '../../../_models/task.model';
@@ -25,7 +25,6 @@ export class TaskDetailsComponent implements OnInit {
 
   constructor(
     private readonly taskGQL: TaskGQL,
-    private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly modalService: NgbModal
   ) {

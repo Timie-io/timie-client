@@ -66,7 +66,6 @@ export class ProjectsService {
     return this.projectsQuery.subscribeToMore({
       document: this.projectAddedGQL.document,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log(subscriptionData);
         if (!subscriptionData) {
           return prev;
         }
@@ -92,7 +91,6 @@ export class ProjectsService {
     return this.projectsQuery.subscribeToMore({
       document: this.projectRemovedGQL.document,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log(subscriptionData);
         if (!subscriptionData) {
           return prev;
         }

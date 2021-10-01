@@ -11,6 +11,7 @@ export interface AssignmentRemovedResponse {
 }
 
 export interface AssignmentSubscriptionInput {
+  userId?: string;
   taskId?: string;
 }
 
