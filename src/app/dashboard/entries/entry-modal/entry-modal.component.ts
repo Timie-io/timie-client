@@ -93,7 +93,6 @@ export class EntryModalComponent implements OnInit, OnDestroy {
       finishTime: this.form.controls.finishTime.value || undefined,
       note: this.form.controls.note.value || undefined,
       assignmentId: this.form.controls.assignmentId.value || undefined,
-      userId: this.authService.user?.id || '',
     };
   }
 

@@ -33,7 +33,6 @@ export interface NewEntryInput {
   finishTime?: string;
   note?: string;
   assignmentId?: string;
-  userId: string;
 }
 
 @Injectable({

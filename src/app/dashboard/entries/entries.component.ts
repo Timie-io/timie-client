@@ -2,7 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { User } from '../../_models/user.model';
 import { Entry } from './../../_models/entry.model';
+import { AuthService } from './../../_services/auth.service';
 import { EntriesService } from './../../_services/entries.service';
 import { EntryModalComponent } from './entry-modal/entry-modal.component';
 
@@ -15,7 +17,11 @@ export class EntriesComponent implements OnInit, OnDestroy {
   private searchChanged: Subject<string> = new Subject<string>();
   private searchSub: Subscription;
 
+  private currentUserSub: Subscription;
+  currentUser: User | null = null;
+
   constructor(
+    private readonly authService: AuthService,
     private readonly entriesService: EntriesService,
     private readonly modalService: NgbModal
   ) {
@@ -26,12 +32,16 @@ export class EntriesComponent implements OnInit, OnDestroy {
         this.entriesService.search = value;
         this.entriesService.applyFilters();
       });
+    this.currentUserSub = this.authService.user$.subscribe((user) => {
+      this.currentUser = user;
+    });
   }
 
   ngOnInit(): void {}
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
+    this.currentUserSub.unsubscribe();
   }
 
   get entries() {

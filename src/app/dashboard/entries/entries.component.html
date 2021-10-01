@@ -112,6 +112,7 @@
             </td>
             <td>
               <button
+                *ngIf="entry.user.id === currentUser?.id"
                 class="btn btn-light btn-sm"
                 title="Remove"
                 (click)="removeEntry(entry)"

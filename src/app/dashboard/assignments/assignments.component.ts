@@ -89,7 +89,6 @@ export class AssignmentsComponent implements OnInit {
       this.assignmentsService.error = 'Unexpected error';
     }
     return {
-      userId: this.assignmentsService.userId || '',
       assignmentId: assignmentId,
     };
   }

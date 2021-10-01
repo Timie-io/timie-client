@@ -112,6 +112,10 @@ export class AssignmentOptionsGQL extends Query<AssignmentsResponse> {
         result {
           id
           note
+          task {
+            id
+            title
+          }
         }
       }
     }

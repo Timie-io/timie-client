@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { Assignment } from '../_models/assignment.model';
 import { Status } from '../_models/status.model';
@@ -19,8 +18,6 @@ import { StatusOptionsGQL } from './graphql/status-query.graphql';
   providedIn: 'root',
 })
 export class AssignmentsService {
-  private currentUserSubscription?: Subscription;
-
   private assignmentsQuery: QueryRef<AssignmentsResponse>;
   private unsubscribeAdded = () => {};
   private unsubscribeRemoved = () => {};
@@ -55,7 +52,7 @@ export class AssignmentsService {
       .subscribe(({ data }) => {
         this.allStatus = data.statuses;
       });
-    this.currentUserSubscription = this.authService.user$.subscribe((user) => {
+    this.authService.user$.subscribe((user) => {
       if (user) {
         this.userId = user.id;
         this.applyFilters();

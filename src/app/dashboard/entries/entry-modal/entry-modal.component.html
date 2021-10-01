@@ -23,7 +23,8 @@
           *ngFor="let assignment of assignments"
           value="{{ assignment.id }}"
         >
-          {{ assignment.note }}
+          {{ assignment.task.title }}
+          <span *ngIf="assignment.note">({{ assignment.note }})</span>
         </option>
       </select>
     </div>
