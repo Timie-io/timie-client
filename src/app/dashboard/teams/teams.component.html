@@ -46,10 +46,10 @@
           <tr *ngFor="let team of teams">
             <td>{{ team.name }}</td>
             <td>{{ team.description }}</td>
-            <td>{{ team.owner?.name }}</td>
+            <td>{{ team.ownerName }}</td>
             <td>
               <div
-                *ngIf="team.owner?.email === currentUser?.email"
+                *ngIf="team.ownerId === currentUser?.id"
                 class="btn-group"
                 role="group"
               >

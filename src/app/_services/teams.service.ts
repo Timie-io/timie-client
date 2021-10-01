@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
+import { TeamView } from '../_models/team-view.model';
 import { Team } from '../_models/team.model';
 import { RemoveTeamGQL } from './graphql/teams-mutation.graphql';
-import { AllTeamsGQL, AllTeamsResponse } from './graphql/teams-query.graphql';
+import { TeamsViewGQL, TeamsViewResponse } from './graphql/teams-query.graphql';
 import {
   TeamAddedGQL,
   TeamRemovedGQL,
@@ -12,7 +13,7 @@ import {
   providedIn: 'root',
 })
 export class TeamsService {
-  private teamsQuery: QueryRef<AllTeamsResponse>;
+  private teamsQuery: QueryRef<TeamsViewResponse>;
   private unsubscribeAdded = () => {};
   private unsubscribeRemoved = () => {};
 
@@ -22,20 +23,20 @@ export class TeamsService {
   pageSize = 10;
   total = 0;
 
-  teams: Team[] = [];
+  teams: TeamView[] = [];
 
   search = '';
 
   constructor(
-    private readonly allTeamsGQL: AllTeamsGQL,
+    private readonly teamsViewGQL: TeamsViewGQL,
     private readonly teamAddedGQL: TeamAddedGQL,
     private readonly teamRemovedGQL: TeamRemovedGQL,
     private readonly removeTeamGQL: RemoveTeamGQL
   ) {
-    this.teamsQuery = this.allTeamsGQL.watch(this.filters);
+    this.teamsQuery = this.teamsViewGQL.watch(this.filters);
     this.teamsQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.teams.total;
-      this.teams = data.teams.result;
+      this.total = data.teamsView.total;
+      this.teams = data.teamsView.result;
     });
     this.unsubscribeAdded = this.subscribeToTeamAdded();
     this.unsubscribeRemoved = this.subscribeToTeamRemoved();
@@ -53,7 +54,7 @@ export class TeamsService {
       skip: (this.page - 1) * this.pageSize,
       take: this.pageSize,
     };
-    filters['name'] = this.search || undefined;
+    filters['search'] = this.search || undefined;
     return filters;
   }
 
@@ -65,19 +66,8 @@ export class TeamsService {
         if (!subscriptionData.data) {
           return prev;
         }
-        const teamAdded = subscriptionData.data.teamAdded;
-        const newTeamList = prev.teams.result.filter(
-          (team) => team.id !== teamAdded.id
-        );
-
-        return {
-          ...prev,
-          teams: {
-            __typename: 'TeamsResult',
-            total: prev.teams.total + 1,
-            result: [teamAdded, ...newTeamList],
-          },
-        };
+        this.teamsQuery.refetch();
+        return prev;
       },
     });
   }
@@ -90,19 +80,8 @@ export class TeamsService {
         if (!subscriptionData.data) {
           return prev;
         }
-        const teamRemoved = subscriptionData.data.teamRemoved;
-        const newTeamList = prev.teams.result.filter(
-          (team) => team.id !== teamRemoved.id
-        );
-
-        return {
-          ...prev,
-          teams: {
-            __typename: 'TeamsResult',
-            total: prev.teams.total - 1,
-            result: newTeamList,
-          },
-        };
+        this.teamsQuery.refetch();
+        return prev;
       },
     });
   }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
+import { TeamView } from '../../_models/team-view.model';
 import { User } from '../../_models/user.model';
 import { Team } from './../../_models/team.model';
 
@@ -34,6 +35,15 @@ export interface TeamMembersResult {
 
 export interface TeamMembersResponse {
   team: TeamMembersResult;
+}
+
+export interface TeamsViewResult {
+  total: number;
+  result: TeamView[];
+}
+
+export interface TeamsViewResponse {
+  teamsView: TeamsViewResult;
 }
 
 @Injectable({
@@ -97,6 +107,31 @@ export class TeamsOptionGQL extends Query<TeamsOptionResponse> {
         result {
           id
           name
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TeamsViewGQL extends Query<TeamsViewResponse> {
+  document = gql`
+    query TeamsView(
+      $skip: Int = 0
+      $take: Int = 25
+      $search: String
+      $ownerId: ID
+    ) {
+      teamsView(skip: $skip, take: $take, search: $search, ownerId: $ownerId) {
+        total
+        result {
+          id
+          name
+          description
+          ownerId
+          ownerName
         }
       }
     }
