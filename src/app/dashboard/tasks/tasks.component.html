@@ -7,7 +7,7 @@
   <div class="row mt-3">
     <div class="col-8">
       <div class="row">
-        <div class="col">
+        <div class="col-4">
           <input
             type="text"
             class="form-control"
@@ -17,7 +17,7 @@
             (ngModelChange)="onSearchChange($event)"
           />
         </div>
-        <div class="col">
+        <div class="col-3">
           <select
             class="form-select"
             [(ngModel)]="projectSelected"
@@ -77,13 +77,67 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Title <i class="fa fa-fw fa-sort"></i></th>
-            <th>Project</th>
+            <th>
+              Title
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('title')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="title"
+              ></i>
+            </th>
+            <th>
+              Project
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('project')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="project"
+              ></i>
+            </th>
             <th>Active</th>
-            <th>Created <i class="fa fa-fw fa-sort"></i></th>
-            <th>Created By <i class="fa fa-fw fa-sort"></i></th>
-            <th>Last Modified <i class="fa fa-fw fa-sort"></i></th>
-            <th>Priority <i class="fa fa-fw fa-sort"></i></th>
+            <th>
+              Created
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('created')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="created"
+              ></i>
+            </th>
+            <th>
+              Created By
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('creator')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="creator"
+              ></i>
+            </th>
+            <th>
+              Last Modified
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('modified')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="modified"
+              ></i>
+            </th>
+            <th>
+              Priority
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('priority')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="priority"
+              ></i>
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -91,13 +145,13 @@
           <tr *ngFor="let task of tasks">
             <td>{{ task.id }}</td>
             <td>{{ task.title }}</td>
-            <td>{{ task.project?.name }}</td>
+            <td>{{ task.projectName }}</td>
             <td activeStyle [isActive]="task.active">
               {{ task.active ? "Yes" : "No" }}
             </td>
-            <td>{{ task.creationDate | date: "MMM d, y H:mm" }}</td>
-            <td>{{ task.creator?.name }}</td>
-            <td>{{ task.lastModified | date: "MMM d, y H:mm" }}</td>
+            <td>{{ task.created | date: "MMM d, y H:mm" }}</td>
+            <td>{{ task.creatorName }}</td>
+            <td>{{ task.modified | date: "MMM d, y H:mm" }}</td>
             <td taskPriority [priority]="task.priority">
               {{ task.priority }}
             </td>
@@ -107,7 +161,7 @@
                   type="button"
                   class="btn btn-light btn-sm"
                   title="View"
-                  (click)="viewTask(task)"
+                  (click)="viewTask(task.id)"
                 >
                   <i class="fa fa-eye"></i>
                 </button>
@@ -123,7 +177,7 @@
                   type="button"
                   class="btn btn-light btn-sm"
                   title="Remove"
-                  (click)="removeTask(task)"
+                  (click)="removeTask(task.id)"
                 >
                   <i class="fa fa-trash"></i>
                 </button>

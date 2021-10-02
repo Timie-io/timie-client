@@ -9,6 +9,7 @@ import {
   UpdateTaskGQL,
   UpdateTaskInput,
 } from '../../../_services/graphql/tasks-mutation.graphql';
+import { TasksService } from '../../../_services/tasks.service';
 import { Project } from './../../../_models/project.model';
 import {
   ProjectOptionsResponse,
@@ -41,7 +42,8 @@ export class TaskModalComponent implements OnInit {
     formBuilder: FormBuilder,
     private readonly projectsOptionGQL: ProjectsOptionGQL,
     private readonly updateTaskGQL: UpdateTaskGQL,
-    private readonly createTaskGQL: CreateTaskGQL
+    private readonly createTaskGQL: CreateTaskGQL,
+    private readonly tasksService: TasksService
   ) {
     this.projectsOptionQuery = this.projectsOptionGQL.watch();
     this.form = formBuilder.group({
@@ -104,6 +106,7 @@ export class TaskModalComponent implements OnInit {
         .pipe(first())
         .subscribe({
           next: (data) => {
+            this.tasksService.applyFilters();
             this.modal.close('Task saved');
           },
           error: (error) => {

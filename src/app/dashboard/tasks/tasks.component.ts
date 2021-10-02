@@ -3,9 +3,18 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Task } from './../../_models/task.model';
+import { SortService, SortUpdate } from './../../_services/sort.service';
 import { TasksService } from './../../_services/tasks.service';
 import { TaskModalComponent } from './task-modal/task-modal.component';
+
+interface EditTaskInput {
+  id: string;
+  title: string;
+  description: string;
+  priority: number;
+  projectId: string;
+  active: boolean;
+}
 
 @Component({
   selector: 'app-tasks',
@@ -16,8 +25,12 @@ export class TasksComponent implements OnInit, OnDestroy {
   private searchChanged: Subject<string> = new Subject<string>();
   private searchSub: Subscription;
 
+  private sortedColumnsSub: Subscription;
+  sortedColumns: { [column: string]: 'ASC' | 'DESC' | null } = {};
+
   constructor(
     private readonly tasksService: TasksService,
+    private readonly sortService: SortService,
     private readonly modalService: NgbModal,
     private readonly router: Router
   ) {
@@ -28,6 +41,13 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.tasksService.search = value;
         this.tasksService.applyFilters();
       });
+    this.sortedColumnsSub = this.sortService.sortUpdate$.subscribe(
+      (sortUpdate: SortUpdate) => {
+        if (sortUpdate[0] === 'tasks') {
+          this.sortedColumns[sortUpdate[1]] = sortUpdate[2];
+        }
+      }
+    );
   }
 
   get error() {
@@ -94,10 +114,13 @@ export class TasksComponent implements OnInit, OnDestroy {
     this.tasksService.projectSelected = value;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.tasksService.applyFilters();
+  }
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
+    this.sortedColumnsSub.unsubscribe();
   }
 
   onSearchChange(value: string) {
@@ -122,27 +145,32 @@ export class TasksComponent implements OnInit, OnDestroy {
     this.tasksService.applyFilters();
   }
 
-  viewTask(task: Task) {
-    this.router.navigate(['/tasks', task.id]);
+  viewTask(taskId: string) {
+    this.router.navigate(['/tasks', taskId]);
   }
 
   newTask() {
     this.modalService.open(TaskModalComponent);
   }
 
-  editTask(task: Task) {
+  editTask(input: EditTaskInput) {
     const modal = this.modalService.open(TaskModalComponent);
-    modal.componentInstance.id = task.id;
-    modal.componentInstance.title = task.title;
-    modal.componentInstance.description = task.description;
-    modal.componentInstance.priority = task.priority;
-    modal.componentInstance.projectId = task.project?.id;
-    modal.componentInstance.active = task.active;
+    modal.componentInstance.id = input.id;
+    modal.componentInstance.title = input.title;
+    modal.componentInstance.description = input.description;
+    modal.componentInstance.priority = input.priority;
+    modal.componentInstance.projectId = input.projectId;
+    modal.componentInstance.active = input.active;
   }
 
-  removeTask(task: Task) {
+  removeTask(taskId: string) {
     if (confirm('Are you sure about removing this task?')) {
-      this.tasksService.removeTasks(task);
+      this.tasksService.removeTasks(taskId);
     }
+  }
+
+  toggleSort(column: string) {
+    this.sortService.toogleColumn('tasks', column);
+    this.tasksService.applyFilters();
   }
 }

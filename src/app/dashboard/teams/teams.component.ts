@@ -90,7 +90,9 @@ export class TeamsComponent implements OnInit, OnDestroy {
     this.teamsService.search = value;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.teamsService.applyFilters();
+  }
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();

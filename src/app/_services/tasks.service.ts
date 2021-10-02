@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { QueryRef } from 'apollo-angular';
-import { Task } from '../_models/task.model';
+import { TaskView } from '../_models/task-view.model';
 import { AuthService } from './auth.service';
 import { RemoveTaskGQL } from './graphql/tasks-mutation.graphql';
-import { AllTasksGQL, AllTasksResponse } from './graphql/tasks-query.graphql';
+import { TasksViewGQL, TasksViewResponse } from './graphql/tasks-query.graphql';
 import {
   TaskAddedGQL,
   TaskRemovedGQL,
   TaskSubscriptionInput,
 } from './graphql/tasks-subscription.graphql';
+import { SortService } from './sort.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TasksService {
-  private tasksQuery: QueryRef<AllTasksResponse>;
+  private tasksQuery: QueryRef<TasksViewResponse>;
   private unsubscribeAdded = () => {};
   private unsubscribeRemoved = () => {};
 
@@ -25,7 +25,7 @@ export class TasksService {
   pageSize = 10;
   total = 0;
 
-  tasks: Task[] = [];
+  tasks: TaskView[] = [];
   projects: { [id: string]: string } = {};
   projectSelected = '';
 
@@ -35,19 +35,19 @@ export class TasksService {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly allTasksGQL: AllTasksGQL,
+    private readonly tasksViewGQL: TasksViewGQL,
     private readonly removeTaskGQL: RemoveTaskGQL,
     private readonly taskAddedGQL: TaskAddedGQL,
     private readonly taskRemovedGQL: TaskRemovedGQL,
-    private readonly router: Router
+    private readonly sortService: SortService
   ) {
-    this.tasksQuery = this.allTasksGQL.watch(this.filters);
+    this.tasksQuery = this.tasksViewGQL.watch(this.filters);
     this.tasksQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.tasks.total;
-      this.tasks = data.tasks.result;
+      this.total = data.tasksView.total;
+      this.tasks = data.tasksView.result;
       for (let task of this.tasks) {
-        if (task.project) {
-          this.projects[task.project.id] = task.project.name;
+        if (task.projectId) {
+          this.projects[task.projectId] = task.projectName;
         }
       }
     });
@@ -74,8 +74,12 @@ export class TasksService {
       const userId = this.authService.user.id;
       filters['followerIds'] = [userId];
     }
-    filters['title'] = this.search || undefined;
+    filters['search'] = this.search || undefined;
     filters['projectId'] = this.projectSelected || undefined;
+    const sortOptions = this.sortService.getSortOptions('tasks');
+    if (sortOptions.length > 0) {
+      filters['sortBy'] = sortOptions;
+    }
     return filters;
   }
 
@@ -106,19 +110,8 @@ export class TasksService {
         if (!subscriptionData.data) {
           return prev;
         }
-        const taskAdded = subscriptionData.data.taskAdded;
-        const newList = prev.tasks.result.filter(
-          (task) => task.id !== taskAdded.id
-        );
-
-        return {
-          ...prev,
-          tasks: {
-            __typename: 'TasksResult',
-            total: prev.tasks.total + 1,
-            result: [taskAdded, ...newList],
-          },
-        };
+        this.tasksQuery.refetch();
+        return prev;
       },
     });
   }
@@ -132,25 +125,14 @@ export class TasksService {
         if (!subscriptionData.data) {
           return prev;
         }
-        const taskRemoved = subscriptionData.data.taskRemoved;
-        const newTaskList = prev.tasks.result.filter(
-          (task) => task.id !== taskRemoved.id
-        );
-
-        return {
-          ...prev,
-          tasks: {
-            __typename: 'TasksResult',
-            total: prev.tasks.total - 1,
-            result: newTaskList,
-          },
-        };
+        this.tasksQuery.refetch();
+        return prev;
       },
     });
   }
 
-  removeTasks(task: Task) {
-    this.removeTaskGQL.mutate({ id: task.id }).subscribe({
+  removeTasks(taskId: string) {
+    this.removeTaskGQL.mutate({ id: taskId }).subscribe({
       next: () => {
         this.error = '';
       },

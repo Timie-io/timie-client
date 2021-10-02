@@ -93,7 +93,9 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     return this.projectsService.total;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.projectsService.applyFilters();
+  }
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();

@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Assignment } from './../../_models/assignment.model';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { SortService, SortUpdate } from '../../_services/sort.service';
 import { AssignmentsService } from './../../_services/assignments.service';
 import { EntriesService } from './../../_services/entries.service';
 import { UpdateAssignmentGQL } from './../../_services/graphql/assignments-mutation.graphql';
@@ -14,14 +16,36 @@ import {
   templateUrl: './assignments.component.html',
   styleUrls: ['./assignments.component.css'],
 })
-export class AssignmentsComponent implements OnInit {
+export class AssignmentsComponent implements OnInit, OnDestroy {
+  private searchChanged: Subject<string> = new Subject<string>();
+  private searchSub: Subscription;
+
+  private sortedColumnsSub: Subscription;
+  sortedColumns: { [column: string]: 'ASC' | 'DESC' | null } = {};
+
   constructor(
     private readonly assignmentsService: AssignmentsService,
     private readonly router: Router,
     private readonly updateAssignmentGQL: UpdateAssignmentGQL,
     private readonly createEntryGQL: CreateEntryGQL,
-    private readonly entriesService: EntriesService
-  ) {}
+    private readonly entriesService: EntriesService,
+    private readonly sortService: SortService
+  ) {
+    // Add debounce time for searching
+    this.searchSub = this.searchChanged
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.assignmentsService.search = value;
+        this.assignmentsService.applyFilters();
+      });
+    this.sortedColumnsSub = this.sortService.sortUpdate$.subscribe(
+      (sortUpdate: SortUpdate) => {
+        if (sortUpdate[0] === 'assignments') {
+          this.sortedColumns[sortUpdate[1]] = sortUpdate[2];
+        }
+      }
+    );
+  }
 
   get assignments() {
     return this.assignmentsService.assignments;
@@ -63,12 +87,27 @@ export class AssignmentsComponent implements OnInit {
     this.assignmentsService.error = value;
   }
 
-  ngOnInit(): void {}
+  get search() {
+    return this.assignmentsService.search;
+  }
 
-  onStatusChange(statusCode: string, assignment: Assignment) {
+  set search(value: string) {
+    this.assignmentsService.search = value;
+  }
+
+  ngOnInit(): void {
+    this.assignmentsService.applyFilters();
+  }
+
+  ngOnDestroy() {
+    this.searchSub.unsubscribe();
+    this.sortedColumnsSub.unsubscribe();
+  }
+
+  onStatusChange(statusCode: string, assignmentId: string) {
     this.updateAssignmentGQL
       .mutate({
-        id: assignment.id,
+        id: assignmentId,
         data: {
           statusCode: statusCode,
         },
@@ -84,6 +123,10 @@ export class AssignmentsComponent implements OnInit {
     this.assignmentsService.applyFilters();
   }
 
+  onSearchChange(value: string) {
+    this.searchChanged.next(value);
+  }
+
   private newEntryInput(assignmentId: string): NewEntryInput {
     if (!this.assignmentsService.userId) {
       this.assignmentsService.error = 'Unexpected error';
@@ -93,9 +136,9 @@ export class AssignmentsComponent implements OnInit {
     };
   }
 
-  startNewEntry(assignment: Assignment) {
+  startNewEntry(assignmentId: string) {
     this.createEntryGQL
-      .mutate({ data: this.newEntryInput(assignment.id) })
+      .mutate({ data: this.newEntryInput(assignmentId) })
       .subscribe({
         next: ({ data }) => {
           if (data) {
@@ -110,5 +153,10 @@ export class AssignmentsComponent implements OnInit {
           this.assignmentsService.error = error;
         },
       });
+  }
+
+  toggleSort(column: string) {
+    this.sortService.toogleColumn('assignments', column);
+    this.assignmentsService.applyFilters();
   }
 }

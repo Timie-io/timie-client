@@ -5,18 +5,30 @@
     &nbsp;
   </ngb-alert>
   <div class="row mt-3">
-    <div class="col-10">
-      <div class="col-2">
-        <select
-          class="form-select"
-          [(ngModel)]="statusSelected"
-          (ngModelChange)="onStatusFilterChange()"
-        >
-          <option value="">All Status</option>
-          <option *ngFor="let status of allStatus" value="{{ status.code }}">
-            {{ status.label }}
-          </option>
-        </select>
+    <div class="col-8">
+      <div class="row">
+        <div class="col-4">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search"
+            [(ngModel)]="search"
+            value="{{ search }}"
+            (ngModelChange)="onSearchChange($event)"
+          />
+        </div>
+        <div class="col-3">
+          <select
+            class="form-select"
+            [(ngModel)]="statusSelected"
+            (ngModelChange)="onStatusFilterChange()"
+          >
+            <option value="">All Status</option>
+            <option *ngFor="let status of allStatus" value="{{ status.code }}">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -31,11 +43,58 @@
         </caption>
         <thead>
           <tr>
-            <th>Task</th>
-            <th>Note</th>
-            <th>Deadline</th>
-            <th>Status</th>
-            <th></th>
+            <th>
+              Task
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('task')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="task"
+              ></i>
+            </th>
+            <th>
+              Note
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('note')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="note"
+              ></i>
+            </th>
+            <th>
+              Deadline
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('deadline')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="deadline"
+              ></i>
+            </th>
+            <th>
+              Status
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('status')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="status"
+              ></i>
+            </th>
+            <th class="text-center">
+              <div class="me-5">
+                Total Time
+                <i
+                  class="fa fa-fw"
+                  (click)="toggleSort('time')"
+                  sortingAction
+                  [sortedColumns]="sortedColumns"
+                  columnName="time"
+                ></i>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -43,9 +102,9 @@
             <td>
               <button
                 class="btn btn-link"
-                [routerLink]="'/tasks/' + assignment.task.id"
+                [routerLink]="'/tasks/' + assignment.taskId"
               >
-                {{ assignment.task.title }}
+                {{ assignment.taskTitle }}
               </button>
             </td>
             <td>{{ assignment.note }}</td>
@@ -54,12 +113,12 @@
               <select
                 #statusOption
                 class="form-select"
-                (change)="onStatusChange(statusOption.value, assignment)"
+                (change)="onStatusChange(statusOption.value, assignment.id)"
               >
                 <option
                   *ngFor="let status of allStatus"
                   [attr.selected]="
-                    assignment.status.code === status.code
+                    assignment.statusCode === status.code
                       ? 'selected'
                       : undefined
                   "
@@ -69,14 +128,14 @@
                 </option>
               </select>
             </td>
-            <td>
-              <div class="float-end me-5">
+            <td class="text-center">
+              <div class="me-5">
                 <strong>{{ assignment.totalTime | formatDuration }}</strong>
                 <button
                   type="button"
                   class="btn btn-light btn-sm ms-2"
                   title="Start New"
-                  (click)="startNewEntry(assignment)"
+                  (click)="startNewEntry(assignment.id)"
                 >
                   <i class="fa fa-play"></i>
                 </button>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
+import { TaskView } from '../../_models/task-view.model';
 import { Task } from '../../_models/task.model';
 import { User } from '../../_models/user.model';
 
@@ -10,6 +11,15 @@ export interface AllTasksResult {
 
 export interface AllTasksResponse {
   tasks: AllTasksResult;
+}
+
+export interface TasksViewResult {
+  total: number;
+  result: TaskView[];
+}
+
+export interface TasksViewResponse {
+  tasksView: TasksViewResult;
 }
 
 export interface TaskResponse {
@@ -93,6 +103,48 @@ export class TaskOptionsGQL extends Query<AllTasksResponse> {
         result {
           id
           title
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TasksViewGQL extends Query<TasksViewResponse> {
+  document = gql`
+    query TasksView(
+      $skip: Int = 0
+      $take: Int = 25
+      $search: String
+      $projectId: ID
+      $active: Boolean
+      $followerIds: [ID!]
+      $sortBy: [SortInput]
+    ) {
+      tasksView(
+        skip: $skip
+        take: $take
+        search: $search
+        projectId: $projectId
+        active: $active
+        followerIds: $followerIds
+        sortBy: $sortBy
+      ) {
+        total
+        result {
+          id
+          title
+          description
+          projectId
+          projectName
+          active
+          created
+          creatorId
+          creatorName
+          modified
+          priority
         }
       }
     }

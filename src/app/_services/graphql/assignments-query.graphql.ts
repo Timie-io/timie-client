@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
+import { AssignmentView } from '../../_models/assignment-view.model';
 import { Assignment } from './../../_models/assignment.model';
 import { Entry } from './../../_models/entry.model';
 
@@ -13,8 +14,17 @@ export interface AssignmentEntriesResult {
   entries: Entry[];
 }
 
+export interface AssignmentsViewResult {
+  total: number;
+  result: AssignmentView[];
+}
+
 export interface AssignmentsResponse {
   assignments: AssignmentsResult;
+}
+
+export interface AssignmentsViewResponse {
+  assignmentsView: AssignmentsViewResult;
 }
 
 export interface AssignmentEntriesResponse {
@@ -64,6 +74,52 @@ export class AssignmentsGQL extends Query<AssignmentsResponse> {
             code
             label
           }
+          totalTime
+        }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AssignmentsViewGQL extends Query<AssignmentsViewResponse> {
+  document = gql`
+    query AssignmentsView(
+      $skip: Int = 0
+      $take: Int = 25
+      $search: String
+      $creatorId: ID
+      $userId: ID
+      $taskId: ID
+      $statusCode: ID
+      $sortBy: [SortInput]
+    ) {
+      assignmentsView(
+        skip: $skip
+        take: $take
+        search: $search
+        creatorId: $creatorId
+        userId: $userId
+        taskId: $taskId
+        statusCode: $statusCode
+        sortBy: $sortBy
+      ) {
+        total
+        result {
+          id
+          creatorId
+          creatorName
+          created
+          userId
+          userName
+          taskId
+          taskTitle
+          note
+          deadline
+          statusCode
+          statusLabel
           totalTime
         }
       }

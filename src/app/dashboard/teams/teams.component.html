@@ -5,17 +5,21 @@
     &nbsp;
   </ngb-alert>
   <div class="row mt-3">
-    <div class="col-md-2">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Search"
-        [(ngModel)]="search"
-        value="{{ search }}"
-        (ngModelChange)="onSearchChange($event)"
-      />
+    <div class="col-8">
+      <div class="row">
+        <div class="col-4">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search"
+            [(ngModel)]="search"
+            value="{{ search }}"
+            (ngModelChange)="onSearchChange($event)"
+          />
+        </div>
+      </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-2">
       <button
         class="btn btn-light float-end"
         title="Create"
@@ -41,11 +45,9 @@
               <i
                 class="fa fa-fw"
                 (click)="toggleSort('name')"
-                [ngClass]="{
-                  'fa-sort': !this.sortedColumns['name'],
-                  'fa-sort-up': this.sortedColumns['name'] === 'ASC',
-                  'fa-sort-down': this.sortedColumns['name'] === 'DESC'
-                }"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="name"
               ></i>
             </th>
             <th scope="col">
@@ -53,11 +55,9 @@
               <i
                 class="fa fa-fw"
                 (click)="toggleSort('description')"
-                [ngClass]="{
-                  'fa-sort': !this.sortedColumns['description'],
-                  'fa-sort-up': this.sortedColumns['description'] === 'ASC',
-                  'fa-sort-down': this.sortedColumns['description'] === 'DESC'
-                }"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="description"
               ></i>
             </th>
             <th scope="col">
@@ -65,11 +65,9 @@
               <i
                 class="fa fa-fw"
                 (click)="toggleSort('owner')"
-                [ngClass]="{
-                  'fa-sort': !this.sortedColumns['owner'],
-                  'fa-sort-up': this.sortedColumns['owner'] === 'ASC',
-                  'fa-sort-down': this.sortedColumns['owner'] === 'DESC'
-                }"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="owner"
               ></i>
             </th>
             <th scope="col">Actions</th>

@@ -14,6 +14,7 @@ import {
   TeamsOptionGQL,
   TeamsOptionResponse,
 } from './../../../_services/graphql/teams-query.graphql';
+import { ProjectsService } from './../../../_services/projects.service';
 
 @Component({
   selector: 'app-project-modal',
@@ -40,7 +41,8 @@ export class ProjectModalComponent implements OnInit {
     private formBuilder: FormBuilder,
     private createProjectGQL: CreateProjectGQL,
     private updateProjectGQL: UpdateProjectGQL,
-    private teamsOptionGQL: TeamsOptionGQL
+    private teamsOptionGQL: TeamsOptionGQL,
+    private readonly projectsService: ProjectsService
   ) {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
@@ -94,6 +96,7 @@ export class ProjectModalComponent implements OnInit {
         .pipe(first())
         .subscribe({
           next: (data) => {
+            this.projectsService.applyFilters();
             this.modal.close('Project saved');
           },
           error: (error) => {

@@ -1,24 +1,25 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { first } from 'rxjs/operators';
-import { Assignment } from '../_models/assignment.model';
+import { AssignmentView } from '../_models/assignment-view.model';
 import { Status } from '../_models/status.model';
 import { AuthService } from './auth.service';
 import {
-  AssignmentsGQL,
-  AssignmentsResponse,
+  AssignmentsViewGQL,
+  AssignmentsViewResponse,
 } from './graphql/assignments-query.graphql';
 import {
   AssignmentAddedGQL,
   AssignmentRemovedGQL,
 } from './graphql/assignments-subscription.graphql';
 import { StatusOptionsGQL } from './graphql/status-query.graphql';
+import { SortService } from './sort.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AssignmentsService {
-  private assignmentsQuery: QueryRef<AssignmentsResponse>;
+  private assignmentsQuery: QueryRef<AssignmentsViewResponse>;
   private unsubscribeAdded = () => {};
   private unsubscribeRemoved = () => {};
 
@@ -28,23 +29,26 @@ export class AssignmentsService {
   pageSize = 10;
   total = 0;
 
-  assignments: Assignment[] = [];
+  assignments: AssignmentView[] = [];
   allStatus: Status[] = [];
 
   userId?: string;
   statusSelected: string = '';
 
+  search = '';
+
   constructor(
     private readonly authService: AuthService,
-    private readonly assignmentsGQL: AssignmentsGQL,
+    private readonly assignmentsViewGQL: AssignmentsViewGQL,
     private readonly statusOptionsGQL: StatusOptionsGQL,
     private readonly assignmentAddedGQL: AssignmentAddedGQL,
-    private readonly assignmentRemovedGQL: AssignmentRemovedGQL
+    private readonly assignmentRemovedGQL: AssignmentRemovedGQL,
+    private readonly sortService: SortService
   ) {
-    this.assignmentsQuery = this.assignmentsGQL.watch(this.filters);
+    this.assignmentsQuery = this.assignmentsViewGQL.watch(this.filters);
     this.assignmentsQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.assignments.total;
-      this.assignments = data.assignments.result;
+      this.total = data.assignmentsView.total;
+      this.assignments = data.assignmentsView.result;
     });
     this.statusOptionsGQL
       .fetch()
@@ -67,8 +71,13 @@ export class AssignmentsService {
       skip: (this.page - 1) * this.pageSize,
       take: this.pageSize,
     };
+    filters['search'] = this.search || undefined;
     filters['userId'] = this.userId;
     filters['statusCode'] = this.statusSelected || undefined;
+    const sortOptions = this.sortService.getSortOptions('assignments');
+    if (sortOptions.length > 0) {
+      filters['sortBy'] = sortOptions;
+    }
     return filters;
   }
 

@@ -29,6 +29,7 @@ import { SignupComponent } from './signup/signup.component';
 import { ProfileModalComponent } from './top-menu/profile-modal/profile-modal.component';
 import { TopMenuComponent } from './top-menu/top-menu.component';
 import { ActiveDirective } from './_directives/active.directive';
+import { SortingDirective } from './_directives/sorting.directive';
 import { GraphQLModule } from './_graphql/graphql.module';
 import { appInitializer } from './_helpers/app.initializer';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
@@ -64,6 +65,7 @@ import { AuthService } from './_services/auth.service';
     AccessComponent,
     SignupComponent,
     ProfileModalComponent,
+    SortingDirective,
   ],
   imports: [
     BrowserModule,

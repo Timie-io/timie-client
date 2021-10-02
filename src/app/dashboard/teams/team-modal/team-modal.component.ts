@@ -8,6 +8,7 @@ import {
   UpdateTeamGQL,
   UpdateTeamInput,
 } from '../../../_services/graphql/teams-mutation.graphql';
+import { TeamsService } from './../../../_services/teams.service';
 
 @Component({
   selector: 'app-team-modal',
@@ -27,6 +28,7 @@ export class TeamModalComponent implements OnInit, OnDestroy {
   constructor(
     public modal: NgbActiveModal,
     private formBuilder: FormBuilder,
+    private teamsService: TeamsService,
     private updateTeamGQL: UpdateTeamGQL,
     private createTeamGQL: CreateTeamGQL
   ) {
@@ -73,6 +75,7 @@ export class TeamModalComponent implements OnInit, OnDestroy {
         .pipe(first())
         .subscribe({
           next: (data) => {
+            this.teamsService.applyFilters();
             this.modal.close('Team saved');
           },
           error: (error) => {
