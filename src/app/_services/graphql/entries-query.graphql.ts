@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Query } from 'apollo-angular';
+import { EntryView } from '../../_models/entry-view.model';
 import { Entry } from './../../_models/entry.model';
 
 export interface EntriesResult {
@@ -10,6 +11,16 @@ export interface EntriesResult {
 
 export interface EntriesResponse {
   entries: EntriesResult;
+}
+
+export interface EntriesViewResult {
+  total: number;
+  totalTime: number;
+  result: EntryView[];
+}
+
+export interface EntriesViewResponse {
+  entriesView: EntriesViewResult;
 }
 
 @Injectable({
@@ -51,6 +62,49 @@ export class EntriesGQL extends Query<EntriesResponse> {
             }
           }
         }
+      }
+    }
+  `;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class EntriesViewGQL extends Query<EntriesViewResponse> {
+  document = gql`
+    query EntriesView(
+      $skip: Int = 0
+      $take: Int = 25
+      $search: String
+      $userId: ID
+      $assignmentId: ID
+      $taskId: ID
+      $sortBy: [SortInput]
+    ) {
+      entriesView(
+        skip: $skip
+        take: $take
+        search: $search
+        userId: $userId
+        assignmentId: $assignmentId
+        taskId: $taskId
+        sortBy: $sortBy
+      ) {
+        total
+        result {
+          id
+          startTime
+          finishTime
+          note
+          userId
+          userName
+          assignmentId
+          assignmentNote
+          taskId
+          taskTitle
+          totalTime
+        }
+        totalTime
       }
     }
   `;

@@ -3,9 +3,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { User } from '../../_models/user.model';
-import { Entry } from './../../_models/entry.model';
 import { AuthService } from './../../_services/auth.service';
 import { EntriesService } from './../../_services/entries.service';
+import { SortService, SortUpdate } from './../../_services/sort.service';
 import { EntryModalComponent } from './entry-modal/entry-modal.component';
 
 @Component({
@@ -20,9 +20,13 @@ export class EntriesComponent implements OnInit, OnDestroy {
   private currentUserSub: Subscription;
   currentUser: User | null = null;
 
+  private sortedColumnsSub: Subscription;
+  sortedColumns: { [column: string]: 'ASC' | 'DESC' | null } = {};
+
   constructor(
     private readonly authService: AuthService,
     private readonly entriesService: EntriesService,
+    private readonly sortService: SortService,
     private readonly modalService: NgbModal
   ) {
     // Add debounce time for searching
@@ -35,6 +39,13 @@ export class EntriesComponent implements OnInit, OnDestroy {
     this.currentUserSub = this.authService.user$.subscribe((user) => {
       this.currentUser = user;
     });
+    this.sortedColumnsSub = this.sortService.sortUpdate$.subscribe(
+      (sortUpdate: SortUpdate) => {
+        if (sortUpdate[0] === 'entries') {
+          this.sortedColumns[sortUpdate[1]] = sortUpdate[2];
+        }
+      }
+    );
   }
 
   ngOnInit(): void {}
@@ -42,6 +53,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.searchSub.unsubscribe();
     this.currentUserSub.unsubscribe();
+    this.sortedColumnsSub.unsubscribe();
   }
 
   get entries() {
@@ -84,12 +96,12 @@ export class EntriesComponent implements OnInit, OnDestroy {
     this.entriesService.page = value;
   }
 
-  get totalTime() {
-    return this.entriesService.totalTime;
-  }
-
   get pageSize() {
     return this.entriesService.pageSize;
+  }
+
+  get totalTime() {
+    return this.entriesService.totalTime;
   }
 
   onPageChange() {
@@ -105,13 +117,13 @@ export class EntriesComponent implements OnInit, OnDestroy {
     this.entriesService.applyFilters();
   }
 
-  stopEntry(entry: Entry) {
-    this.entriesService.stopEntry(entry.id);
+  stopEntry(entryId: string) {
+    this.entriesService.stopEntry(entryId);
   }
 
-  removeEntry(entry: Entry) {
+  removeEntry(entryId: string) {
     if (confirm('Are you sure about removing this entry?')) {
-      this.entriesService.removeEntry(entry);
+      this.entriesService.removeEntry(entryId);
     }
   }
 
@@ -119,10 +131,8 @@ export class EntriesComponent implements OnInit, OnDestroy {
     this.modalService.open(EntryModalComponent);
   }
 
-  calculateTotal(entry: Entry): number {
-    if (entry.startTime && entry.finishTime) {
-      return Number(entry.finishTime) - Number(entry.startTime);
-    }
-    return 0;
+  toggleSort(column: string) {
+    this.sortService.toogleColumn('entries', column);
+    this.entriesService.applyFilters();
   }
 }

@@ -34,6 +34,14 @@ export class AppService {
     }
   }
 
+  async updateAppStatus() {
+    if (await this.isRunning()) {
+      this.setRunning();
+    } else {
+      this.setStopped();
+    }
+  }
+
   async isRunning() {
     // returns true when the current user has any running entry
     const user = await this.authService.user$

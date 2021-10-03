@@ -49,32 +49,87 @@
           {{
             total
           }}
-          entries found
+          entries found, Total Time:
+          <strong>{{ totalTime | formatDuration }}</strong>
         </caption>
         <thead>
           <tr>
             <th>ID</th>
-            <th>User</th>
-            <th>Task</th>
-            <th>Note</th>
-            <th>Start Time</th>
-            <th>Finish Time</th>
-            <th>Total</th>
+            <th>
+              User
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('user')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="user"
+              ></i>
+            </th>
+            <th>
+              Task
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('task')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="task"
+              ></i>
+            </th>
+            <th>
+              Note
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('note')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="note"
+              ></i>
+            </th>
+            <th>
+              Start Time
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('startTime')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="startTime"
+              ></i>
+            </th>
+            <th>
+              Finish Time
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('finishTime')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="finishTime"
+              ></i>
+            </th>
+            <th>
+              Total
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('totalTime')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="totalTime"
+              ></i>
+            </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let entry of entries">
             <td>{{ entry.id }}</td>
-            <td>{{ entry.user.name }}</td>
+            <td>{{ entry.userName }}</td>
             <td>
               <button
-                *ngIf="entry.assignment"
+                *ngIf="entry.taskId"
                 button
                 class="btn btn-link"
-                [routerLink]="'/tasks/' + entry.assignment.task.id"
+                [routerLink]="'/tasks/' + entry.taskId"
               >
-                {{ entry.assignment.task.title }}
+                {{ entry.taskTitle }}
               </button>
             </td>
             <div
@@ -84,7 +139,7 @@
               <td>{{ entry.note }}</td>
             </ng-template>
             <ng-template #entryAssignmentCol>
-              <td>{{ entry.assignment?.note }}</td>
+              <td>{{ entry.assignmentNote }}</td>
             </ng-template>
             <td>{{ entry.startTime | date: "MMM d, y H:mm:ss" }}</td>
             <div
@@ -101,37 +156,25 @@
                 <button
                   class="btn btn-light btn-sm"
                   title="Stop"
-                  (click)="stopEntry(entry)"
+                  (click)="stopEntry(entry.id)"
                 >
                   <i class="fa fa-stop"></i>
                 </button>
               </td>
             </ng-template>
             <td>
-              {{ calculateTotal(entry) | formatDuration }}
+              <strong>{{ entry.totalTime | formatDuration }}</strong>
             </td>
             <td>
               <button
-                *ngIf="entry.user.id === currentUser?.id"
+                *ngIf="entry.userId === currentUser?.id"
                 class="btn btn-light btn-sm"
                 title="Remove"
-                (click)="removeEntry(entry)"
+                (click)="removeEntry(entry.id)"
               >
                 <i class="fa fa-trash"></i>
               </button>
             </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <strong>{{ totalTime | formatDuration }}</strong>
-            </td>
-            <td></td>
           </tr>
         </tbody>
       </table>

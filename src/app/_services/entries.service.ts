@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { Entry } from '../_models/entry.model';
+import { EntryView } from '../_models/entry-view.model';
 import { AppService } from './app.service';
 import { AuthService } from './auth.service';
 import {
@@ -8,29 +8,32 @@ import {
   StartEntryGQL,
   StopEntryGQL,
 } from './graphql/entries-mutation.graphql';
-import { EntriesGQL, EntriesResponse } from './graphql/entries-query.graphql';
+import {
+  EntriesViewGQL,
+  EntriesViewResponse,
+} from './graphql/entries-query.graphql';
 import {
   EntryAddedGQL,
   EntryChangedInput,
   EntryRemovedGQL,
 } from './graphql/entries-subscription.graphql';
+import { SortService } from './sort.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EntriesService {
-  private favIcon: HTMLLinkElement | null = document.querySelector('#appIcon');
-
   error = '';
   search = '';
 
-  entries: Entry[] = [];
-  private entriesQuery: QueryRef<EntriesResponse>;
+  entries: EntryView[] = [];
+  private entriesQuery: QueryRef<EntriesViewResponse>;
   onlyMyEntries = true;
 
   total = 0;
   page = 1;
   pageSize = 10;
+
   totalTime = 0;
 
   private unsubscribeAdded = () => {};
@@ -39,18 +42,19 @@ export class EntriesService {
   constructor(
     private readonly authService: AuthService,
     private readonly appService: AppService,
-    private readonly entriesFullGQL: EntriesGQL,
+    private readonly entriesViewGQL: EntriesViewGQL,
     private readonly entryAddedGQL: EntryAddedGQL,
     private readonly entryRemovedGQL: EntryRemovedGQL,
     private readonly removeEntryGQL: RemoveEntryGQL,
     private readonly startEntryGQL: StartEntryGQL,
-    private readonly stopEntryGQL: StopEntryGQL
+    private readonly stopEntryGQL: StopEntryGQL,
+    private readonly sortService: SortService
   ) {
-    this.entriesQuery = this.entriesFullGQL.watch(this.filters);
+    this.entriesQuery = this.entriesViewGQL.watch(this.filters);
     this.entriesQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.entries.total;
-      this.entries = data.entries.result;
-      this.totalTime = data.entries.totalTime;
+      this.total = data.entriesView.total;
+      this.entries = data.entriesView.result;
+      this.totalTime = data.entriesView.totalTime;
     });
     this.unsubscribeAdded = this.subscribeToEntryAdded();
     this.unsubscribeRemoved = this.subscribeToEntryRemoved();
@@ -63,12 +67,16 @@ export class EntriesService {
 
   private get filters() {
     const filters: { [id: string]: any } = {
-      note: this.search || undefined,
+      search: this.search || undefined,
       skip: (this.page - 1) * this.pageSize,
       take: this.pageSize,
     };
     if (this.onlyMyEntries) {
       filters['userId'] = this.authService.user?.id;
+    }
+    const sortOptions = this.sortService.getSortOptions('entries');
+    if (sortOptions.length > 0) {
+      filters['sortBy'] = sortOptions;
     }
     return filters;
   }
@@ -111,33 +119,29 @@ export class EntriesService {
   }
 
   startEntry$(id: string) {
-    this.appService.setRunning();
     return this.startEntryGQL.mutate({ id: id });
   }
 
   stopEntry$(id: string) {
-    this.appService.setStopped();
     return this.stopEntryGQL.mutate({ id: id });
   }
 
   stopEntry(id: string) {
     this.stopEntry$(id).subscribe({
-      next: ({ data }) => {
+      next: async ({ data }) => {
         if (data?.stopEntry) {
-          this.totalTime += this.calculateTotal(data.stopEntry);
+          await this.appService.updateAppStatus();
+          this.entriesQuery.refetch();
         }
       },
     });
   }
 
-  removeEntry(entry: Entry) {
-    this.removeEntryGQL.mutate({ id: entry.id }).subscribe();
-  }
-
-  calculateTotal(entry: Entry): number {
-    if (entry.startTime && entry.finishTime) {
-      return Number(entry.finishTime) - Number(entry.startTime);
-    }
-    return 0;
+  removeEntry(entryId: string) {
+    this.removeEntryGQL.mutate({ id: entryId }).subscribe({
+      next: async () => {
+        await this.appService.updateAppStatus();
+      },
+    });
   }
 }
