@@ -44,6 +44,16 @@
         <thead>
           <tr>
             <th>
+              Project
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('project')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="project"
+              ></i>
+            </th>
+            <th>
               Task
               <i
                 class="fa fa-fw"
@@ -99,6 +109,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let assignment of assignments">
+            <td>{{ assignment.projectName }}</td>
             <td>
               <button
                 class="btn btn-link"

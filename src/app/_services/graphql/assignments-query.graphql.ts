@@ -93,6 +93,7 @@ export class AssignmentsViewGQL extends Query<AssignmentsViewResponse> {
       $creatorId: ID
       $userId: ID
       $taskId: ID
+      $projectId: ID
       $statusCode: ID
       $sortBy: [SortInput]
     ) {
@@ -103,6 +104,7 @@ export class AssignmentsViewGQL extends Query<AssignmentsViewResponse> {
         creatorId: $creatorId
         userId: $userId
         taskId: $taskId
+        projectId: $projectId
         statusCode: $statusCode
         sortBy: $sortBy
       ) {
@@ -116,6 +118,8 @@ export class AssignmentsViewGQL extends Query<AssignmentsViewResponse> {
           userName
           taskId
           taskTitle
+          projectId
+          projectName
           note
           deadline
           statusCode

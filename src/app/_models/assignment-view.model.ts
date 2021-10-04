@@ -9,6 +9,8 @@ export interface AssignmentView {
   userName: string;
   taskId: string;
   taskTitle: string;
+  projectId: string;
+  projectName: string;
   statusCode: string;
   statusLabel: string;
   totalTime: number;
