@@ -66,6 +66,16 @@
               ></i>
             </th>
             <th>
+              Project
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('project')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="project"
+              ></i>
+            </th>
+            <th>
               Task
               <i
                 class="fa fa-fw"
@@ -122,6 +132,7 @@
           <tr *ngFor="let entry of entries">
             <td>{{ entry.id }}</td>
             <td>{{ entry.userName }}</td>
+            <td>{{ entry.projectName }}</td>
             <td>
               <button
                 *ngIf="entry.taskId"

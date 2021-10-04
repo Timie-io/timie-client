@@ -79,6 +79,7 @@ export class EntriesViewGQL extends Query<EntriesViewResponse> {
       $userId: ID
       $assignmentId: ID
       $taskId: ID
+      $projectId: ID
       $sortBy: [SortInput]
     ) {
       entriesView(
@@ -88,6 +89,7 @@ export class EntriesViewGQL extends Query<EntriesViewResponse> {
         userId: $userId
         assignmentId: $assignmentId
         taskId: $taskId
+        projectId: $projectId
         sortBy: $sortBy
       ) {
         total
@@ -102,6 +104,8 @@ export class EntriesViewGQL extends Query<EntriesViewResponse> {
           assignmentNote
           taskId
           taskTitle
+          projectId
+          projectName
           totalTime
         }
         totalTime

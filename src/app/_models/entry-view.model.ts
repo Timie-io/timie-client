@@ -9,5 +9,7 @@ export interface EntryView {
   assignmentNote: string;
   taskId: string;
   taskTitle: string;
+  projectId: string;
+  projectName: string;
   totalTime: number;
 }
