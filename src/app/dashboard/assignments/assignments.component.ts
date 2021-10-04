@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SortService, SortUpdate } from '../../_services/sort.service';
+import { AppService } from './../../_services/app.service';
 import { AssignmentsService } from './../../_services/assignments.service';
 import { EntriesService } from './../../_services/entries.service';
 import { UpdateAssignmentGQL } from './../../_services/graphql/assignments-mutation.graphql';
@@ -24,6 +25,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
   sortedColumns: { [column: string]: 'ASC' | 'DESC' | null } = {};
 
   constructor(
+    private readonly appService: AppService,
     private readonly assignmentsService: AssignmentsService,
     private readonly router: Router,
     private readonly updateAssignmentGQL: UpdateAssignmentGQL,
@@ -144,6 +146,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
           if (data) {
             this.entriesService.startEntry$(data.createEntry.id).subscribe({
               next: () => {
+                this.appService.setRunning();
                 this.router.navigate(['/entries']);
               },
             });
