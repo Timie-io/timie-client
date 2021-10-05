@@ -114,7 +114,11 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
           statusCode: statusCode,
         },
       })
-      .subscribe();
+      .subscribe({
+        complete: () => {
+          this.assignmentsService.applyFilters();
+        },
+      });
   }
 
   onStatusFilterChange() {
