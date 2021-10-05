@@ -149,9 +149,12 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
         next: ({ data }) => {
           if (data) {
             this.entriesService.startEntry$(data.createEntry.id).subscribe({
-              next: () => {
+              next: (data) => {
                 this.appService.setRunning();
                 this.router.navigate(['/entries']);
+              },
+              error: (error) => {
+                this.entriesService.error = 'An unexpected error happened';
               },
             });
           }

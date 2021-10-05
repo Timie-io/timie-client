@@ -48,7 +48,9 @@ export class EntriesComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    this.entriesService.applyFilters();
+  }
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
