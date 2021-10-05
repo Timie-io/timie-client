@@ -10,6 +10,7 @@ import {
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
+import { fixTimeGap } from '../../../_utils/date.convert';
 import { Assignment } from './../../../_models/assignment.model';
 import { AuthService } from './../../../_services/auth.service';
 import {
@@ -89,8 +90,8 @@ export class EntryModalComponent implements OnInit, OnDestroy {
 
   private get newEntryInput(): NewEntryInput {
     return {
-      startTime: this.form.controls.startTime.value || undefined,
-      finishTime: this.form.controls.finishTime.value || undefined,
+      startTime: fixTimeGap(this.form.controls.startTime.value || undefined),
+      finishTime: fixTimeGap(this.form.controls.finishTime.value || undefined),
       note: this.form.controls.note.value || undefined,
       assignmentId: this.form.controls.assignmentId.value || undefined,
     };

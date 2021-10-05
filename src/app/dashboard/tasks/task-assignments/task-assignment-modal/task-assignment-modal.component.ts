@@ -3,6 +3,7 @@ import { Component, Inject, Input, LOCALE_ID, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { first } from 'rxjs/operators';
+import { fixTimeGap } from '../../../../_utils/date.convert';
 import { Status } from './../../../../_models/status.model';
 import { User } from './../../../../_models/user.model';
 import {
@@ -100,7 +101,10 @@ export class TaskAssignmentModalComponent implements OnInit {
   private get updateAssignmentInput(): UpdateAssignmentInput {
     return {
       note: this.form.controls.note.value,
-      deadline: this.form.controls.deadline.value || undefined,
+      deadline: fixTimeGap(
+        this.form.controls.deadline.value || undefined,
+        true
+      ),
       userId: this.form.controls.userId.value,
       statusCode: this.form.controls.statusCode.value,
     };
@@ -110,7 +114,10 @@ export class TaskAssignmentModalComponent implements OnInit {
     return {
       taskId: this.taskId || '',
       note: this.form.controls.note.value,
-      deadline: this.form.controls.deadline.value || undefined,
+      deadline: fixTimeGap(
+        this.form.controls.deadline.value || undefined,
+        true
+      ),
       userId: this.form.controls.userId.value,
       statusCode: this.form.controls.statusCode.value,
     };

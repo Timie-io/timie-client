@@ -6,7 +6,7 @@ export interface NewAssignmentInput {
   taskId: string;
   userId: string;
   note: string;
-  deadline: string;
+  deadline?: string;
   statusCode: string;
 }
 
@@ -22,17 +22,9 @@ export interface RemoveAssignmentResponse {
   removeAssignment: Assignment;
 }
 
-export interface NewAssignmentInput {
-  taskId: string;
-  note: string;
-  deadline: string;
-  userId: string;
-  statusCode: string;
-}
-
 export interface UpdateAssignmentInput {
   note: string;
-  deadline: string;
+  deadline?: string;
   userId: string;
   statusCode: string;
 }
