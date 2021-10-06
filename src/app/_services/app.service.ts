@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { filter, first } from 'rxjs/operators';
-import { AuthService } from './auth.service';
-import { EntriesOnlyGQL } from './graphql/entries-query.graphql';
+import { EntriesService } from './entries.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,10 +12,18 @@ export class AppService {
 
   constructor(
     private readonly titleService: Title,
-    private readonly authService: AuthService,
-    private readonly entriesOnlyGQL: EntriesOnlyGQL
+    private readonly entriesService: EntriesService
   ) {
     this.oldTitle = this.titleService.getTitle();
+    this.entriesService.entriesRunningQuery.valueChanges.subscribe(
+      ({ data }) => {
+        if (data.entries.result.length > 0) {
+          this.setRunning();
+        } else {
+          this.setStopped();
+        }
+      }
+    );
   }
 
   setRunning() {
@@ -32,29 +38,5 @@ export class AppService {
     if (this.favIcon) {
       this.favIcon.href = 'favicon.ico';
     }
-  }
-
-  async updateAppStatus() {
-    if (await this.isRunning()) {
-      this.setRunning();
-    } else {
-      this.setStopped();
-    }
-  }
-
-  async isRunning() {
-    // returns true when the current user has any running entry
-    const user = await this.authService.user$
-      .pipe(
-        filter((user) => user !== null),
-        first()
-      )
-      .toPromise();
-    const { data } = await this.entriesOnlyGQL
-      .watch({ userID: user?.id })
-      .valueChanges.pipe(first())
-      .toPromise();
-    const entry = data.entries.result.find((entry) => !entry.finishTime);
-    return entry ? true : false;
   }
 }

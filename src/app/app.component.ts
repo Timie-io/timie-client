@@ -9,9 +9,5 @@ import { AppService } from './_services/app.service';
 export class AppComponent implements OnInit {
   public constructor(private readonly appService: AppService) {}
 
-  async ngOnInit() {
-    if (await this.appService.isRunning()) {
-      this.appService.setRunning();
-    }
-  }
+  async ngOnInit() {}
 }

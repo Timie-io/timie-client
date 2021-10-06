@@ -34,6 +34,7 @@ export class EntriesGQL extends Query<EntriesResponse> {
       $userId: ID
       $assignmentId: ID
       $note: String
+      $isRunning: Boolean
     ) {
       entries(
         skip: $skip
@@ -41,6 +42,7 @@ export class EntriesGQL extends Query<EntriesResponse> {
         userId: $userId
         assignmentId: $assignmentId
         note: $note
+        isRunning: $isRunning
       ) {
         total
         totalTime
@@ -126,6 +128,7 @@ export class EntriesOnlyGQL extends Query<EntriesResponse> {
       $userId: ID
       $assignmentId: ID
       $note: String
+      $isRunning: Boolean
     ) {
       entries(
         skip: $skip
@@ -133,6 +136,7 @@ export class EntriesOnlyGQL extends Query<EntriesResponse> {
         userId: $userId
         assignmentId: $assignmentId
         note: $note
+        isRunning: $isRunning
       ) {
         total
         totalTime

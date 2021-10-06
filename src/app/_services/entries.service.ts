@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { EntryView } from '../_models/entry-view.model';
-import { AppService } from './app.service';
 import { AuthService } from './auth.service';
 import {
   RemoveEntryGQL,
@@ -9,6 +8,8 @@ import {
   StopEntryGQL,
 } from './graphql/entries-mutation.graphql';
 import {
+  EntriesOnlyGQL,
+  EntriesResponse,
   EntriesViewGQL,
   EntriesViewResponse,
 } from './graphql/entries-query.graphql';
@@ -26,6 +27,8 @@ export class EntriesService {
   error = '';
   search = '';
 
+  entriesRunningQuery: QueryRef<EntriesResponse>;
+
   entries: EntryView[] = [];
   private entriesQuery: QueryRef<EntriesViewResponse>;
   onlyMyEntries = true;
@@ -41,8 +44,8 @@ export class EntriesService {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly appService: AppService,
     private readonly entriesViewGQL: EntriesViewGQL,
+    private readonly entriesOnlyGQL: EntriesOnlyGQL,
     private readonly entryAddedGQL: EntryAddedGQL,
     private readonly entryRemovedGQL: EntryRemovedGQL,
     private readonly removeEntryGQL: RemoveEntryGQL,
@@ -56,6 +59,7 @@ export class EntriesService {
       this.entries = data.entriesView.result;
       this.totalTime = data.entriesView.totalTime;
     });
+    this.entriesRunningQuery = this.entriesOnlyGQL.watch({ isRunning: true });
     this.unsubscribeAdded = this.subscribeToEntryAdded();
     this.unsubscribeRemoved = this.subscribeToEntryRemoved();
     this.authService.user$.subscribe((user) => {
@@ -130,8 +134,8 @@ export class EntriesService {
     this.stopEntry$(id).subscribe({
       next: async ({ data }) => {
         if (data?.stopEntry) {
-          await this.appService.updateAppStatus();
           this.entriesQuery.refetch();
+          this.entriesRunningQuery.refetch();
         }
       },
     });
@@ -140,7 +144,7 @@ export class EntriesService {
   removeEntry(entryId: string) {
     this.removeEntryGQL.mutate({ id: entryId }).subscribe({
       next: async () => {
-        await this.appService.updateAppStatus();
+        this.entriesRunningQuery.refetch();
       },
     });
   }
