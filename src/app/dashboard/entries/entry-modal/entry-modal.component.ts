@@ -10,8 +10,10 @@ import {
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
+import { EntriesService } from '../../../_services/entries.service';
 import { fixTimeGap } from '../../../_utils/date.convert';
 import { Assignment } from './../../../_models/assignment.model';
+import { AppService } from './../../../_services/app.service';
 import { AuthService } from './../../../_services/auth.service';
 import {
   AssignmentOptionsGQL,
@@ -20,7 +22,6 @@ import {
 import {
   CreateEntryGQL,
   NewEntryInput,
-  StartEntryGQL,
 } from './../../../_services/graphql/entries-mutation.graphql';
 
 @Component({
@@ -43,9 +44,10 @@ export class EntryModalComponent implements OnInit, OnDestroy {
     public modal: NgbActiveModal,
     formBuilder: FormBuilder,
     private readonly authService: AuthService,
+    private readonly appService: AppService,
+    private readonly entriesService: EntriesService,
     private readonly assignmentOptionsGQL: AssignmentOptionsGQL,
-    private readonly createEntryGQL: CreateEntryGQL,
-    private readonly startEntryGQL: StartEntryGQL
+    private readonly createEntryGQL: CreateEntryGQL
   ) {
     this.form = formBuilder.group({
       startTime: [''],
@@ -108,7 +110,11 @@ export class EntryModalComponent implements OnInit, OnDestroy {
         this.modal.close('Entry saved');
         const entry = data?.createEntry;
         if (entry && !entry.startTime) {
-          this.startEntryGQL.mutate({ id: entry.id }).subscribe();
+          this.entriesService.startEntry$(entry.id).subscribe({
+            next: () => {
+              this.appService.setRunning();
+            },
+          });
         }
       },
       error: (error) => {
