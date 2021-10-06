@@ -45,11 +45,7 @@ export class AssignmentsService {
     private readonly assignmentRemovedGQL: AssignmentRemovedGQL,
     private readonly sortService: SortService
   ) {
-    this.assignmentsQuery = this.assignmentsViewGQL.watch(this.filters);
-    this.assignmentsQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.assignmentsView.total;
-      this.assignments = data.assignmentsView.result;
-    });
+    this.assignmentsQuery = this.assignmentsViewGQL.watch();
     this.statusOptionsGQL
       .fetch()
       .pipe(first())
@@ -83,7 +79,10 @@ export class AssignmentsService {
 
   applyFilters() {
     this.assignmentsQuery.setVariables(this.filters);
-    this.assignmentsQuery.refetch();
+    this.assignmentsQuery.refetch().then(({ data }) => {
+      this.total = data.assignmentsView.total;
+      this.assignments = data.assignmentsView.result;
+    });
   }
 
   private subscribeToAssignmentAdded() {
@@ -99,7 +98,7 @@ export class AssignmentsService {
         if (!subscriptionData) {
           return prev;
         }
-        this.assignmentsQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });
@@ -118,7 +117,7 @@ export class AssignmentsService {
         if (!subscriptionData) {
           return prev;
         }
-        this.assignmentsQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });

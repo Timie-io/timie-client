@@ -55,14 +55,8 @@ export class EntriesService {
     private readonly stopEntryGQL: StopEntryGQL,
     private readonly sortService: SortService
   ) {
-    this.entriesQuery = this.entriesViewGQL.watch(this.filters);
-    this.entriesQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.entriesView.total;
-      this.entries = data.entriesView.result;
-      this.totalTime = data.entriesView.totalTime;
-    });
+    this.entriesQuery = this.entriesViewGQL.watch();
     this.entriesRunningQuery = this.entriesOnlyGQL.watch({ isRunning: true });
-    this.checkRunningEntries();
     this.unsubscribeAdded = this.subscribeToEntryAdded();
     this.unsubscribeRemoved = this.subscribeToEntryRemoved();
     this.authService.user$.subscribe((user) => {
@@ -70,6 +64,8 @@ export class EntriesService {
         this.applyFilters();
       }
     });
+    this.applyFilters();
+    this.checkRunningEntries();
   }
 
   private get filters() {
@@ -90,7 +86,11 @@ export class EntriesService {
 
   applyFilters() {
     this.entriesQuery.setVariables(this.filters);
-    this.entriesQuery.refetch();
+    this.entriesQuery.refetch().then(({ data }) => {
+      this.total = data.entriesView.total;
+      this.entries = data.entriesView.result;
+      this.totalTime = data.entriesView.totalTime;
+    });
     this.unsubscribeAdded = this.subscribeToEntryAdded();
     this.unsubscribeRemoved = this.subscribeToEntryRemoved();
   }
@@ -104,7 +104,7 @@ export class EntriesService {
         if (!subscriptionData.data) {
           return prev;
         }
-        this.entriesQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });
@@ -119,7 +119,7 @@ export class EntriesService {
         if (!subscriptionData.data) {
           return prev;
         }
-        this.entriesQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });
@@ -137,7 +137,7 @@ export class EntriesService {
     this.stopEntry$(id).subscribe({
       next: async ({ data }) => {
         if (data?.stopEntry) {
-          this.entriesQuery.refetch();
+          this.applyFilters();
           this.checkRunningEntries();
         }
       },

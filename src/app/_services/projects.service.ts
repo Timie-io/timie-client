@@ -39,13 +39,10 @@ export class ProjectsService {
     private readonly removeProjectGQL: RemoveProjectGQL,
     private readonly sortService: SortService
   ) {
-    this.projectsQuery = this.projectsViewGQL.watch(this.filters);
-    this.projectsQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.projectsView.total;
-      this.projects = data.projectsView.result;
-    });
+    this.projectsQuery = this.projectsViewGQL.watch();
     this.unsubscribeAdded = this.subscribeToProjectAdded();
     this.unsubscribeRemoved = this.subscribeToProjectRemoved();
+    this.applyFilters();
   }
 
   private get filters() {
@@ -64,7 +61,10 @@ export class ProjectsService {
 
   applyFilters() {
     this.projectsQuery.setVariables(this.filters);
-    this.projectsQuery.refetch();
+    this.projectsQuery.refetch().then(({ data }) => {
+      this.total = data.projectsView.total;
+      this.projects = data.projectsView.result;
+    });
   }
 
   private subscribeToProjectAdded() {
@@ -75,7 +75,7 @@ export class ProjectsService {
         if (!subscriptionData) {
           return prev;
         }
-        this.projectsQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });
@@ -89,7 +89,7 @@ export class ProjectsService {
         if (!subscriptionData) {
           return prev;
         }
-        this.projectsQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });

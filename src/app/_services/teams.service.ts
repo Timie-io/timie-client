@@ -34,18 +34,18 @@ export class TeamsService {
     private readonly removeTeamGQL: RemoveTeamGQL,
     private readonly sortService: SortService
   ) {
-    this.teamsQuery = this.teamsViewGQL.watch(this.filters);
-    this.teamsQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.teamsView.total;
-      this.teams = data.teamsView.result;
-    });
+    this.teamsQuery = this.teamsViewGQL.watch();
     this.unsubscribeAdded = this.subscribeToTeamAdded();
     this.unsubscribeRemoved = this.subscribeToTeamRemoved();
+    this.applyFilters();
   }
 
   applyFilters() {
     this.teamsQuery.setVariables(this.filters);
-    this.teamsQuery.refetch();
+    this.teamsQuery.refetch().then(({ data }) => {
+      this.total = data.teamsView.total;
+      this.teams = data.teamsView.result;
+    });
     this.unsubscribeAdded = this.subscribeToTeamAdded();
     this.unsubscribeRemoved = this.subscribeToTeamRemoved();
   }
@@ -71,7 +71,7 @@ export class TeamsService {
         if (!subscriptionData.data) {
           return prev;
         }
-        this.teamsQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });
@@ -85,7 +85,7 @@ export class TeamsService {
         if (!subscriptionData.data) {
           return prev;
         }
-        this.teamsQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });

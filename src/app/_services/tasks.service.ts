@@ -41,16 +41,7 @@ export class TasksService {
     private readonly taskRemovedGQL: TaskRemovedGQL,
     private readonly sortService: SortService
   ) {
-    this.tasksQuery = this.tasksViewGQL.watch(this.filters);
-    this.tasksQuery.valueChanges.subscribe(({ data }) => {
-      this.total = data.tasksView.total;
-      this.tasks = data.tasksView.result;
-      for (let task of this.tasks) {
-        if (task.projectId) {
-          this.projects[task.projectId] = task.projectName;
-        }
-      }
-    });
+    this.tasksQuery = this.tasksViewGQL.watch();
     this.unsubscribeAdded = this.subscribeToTaskAdded(this.subscriptionInput);
     this.unsubscribeRemoved = this.subscribeToTaskRemoved(
       this.subscriptionInput
@@ -60,6 +51,7 @@ export class TasksService {
         this.applyFilters();
       }
     });
+    this.applyFilters();
   }
 
   private get filters() {
@@ -94,7 +86,15 @@ export class TasksService {
 
   applyFilters() {
     this.tasksQuery.setVariables(this.filters);
-    this.tasksQuery.refetch();
+    this.tasksQuery.refetch().then(({ data }) => {
+      this.total = data.tasksView.total;
+      this.tasks = data.tasksView.result;
+      for (let task of this.tasks) {
+        if (task.projectId) {
+          this.projects[task.projectId] = task.projectName;
+        }
+      }
+    });
     this.unsubscribeAdded = this.subscribeToTaskAdded(this.subscriptionInput);
     this.unsubscribeRemoved = this.subscribeToTaskRemoved(
       this.subscriptionInput
@@ -110,7 +110,7 @@ export class TasksService {
         if (!subscriptionData.data) {
           return prev;
         }
-        this.tasksQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });
@@ -125,7 +125,7 @@ export class TasksService {
         if (!subscriptionData.data) {
           return prev;
         }
-        this.tasksQuery.refetch();
+        this.applyFilters();
         return prev;
       },
     });
