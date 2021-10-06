@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AppService } from './_services/app.service';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +6,7 @@ import { AppService } from './_services/app.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  public constructor(private readonly appService: AppService) {}
+  public constructor() {}
 
   async ngOnInit() {}
 }
