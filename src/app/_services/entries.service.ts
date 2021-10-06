@@ -56,16 +56,15 @@ export class EntriesService {
     private readonly sortService: SortService
   ) {
     this.entriesQuery = this.entriesViewGQL.watch();
-    this.entriesRunningQuery = this.entriesOnlyGQL.watch({ isRunning: true });
+    this.entriesRunningQuery = this.entriesOnlyGQL.watch();
     this.unsubscribeAdded = this.subscribeToEntryAdded();
     this.unsubscribeRemoved = this.subscribeToEntryRemoved();
     this.authService.user$.subscribe((user) => {
-      if (user && this.onlyMyEntries) {
+      if (user && user.id) {
+        this.checkRunningEntries();
         this.applyFilters();
       }
     });
-    this.applyFilters();
-    this.checkRunningEntries();
   }
 
   private get filters() {
@@ -145,6 +144,10 @@ export class EntriesService {
   }
 
   checkRunningEntries() {
+    this.entriesRunningQuery.setVariables({
+      isRunning: true,
+      userId: this.authService.user?.id,
+    });
     this.entriesRunningQuery.refetch().then(({ data }) => {
       if (data.entries.result.length > 0) {
         this.appService.setRunning();
