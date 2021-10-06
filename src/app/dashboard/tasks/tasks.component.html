@@ -24,11 +24,8 @@
             (ngModelChange)="onProjectsChange()"
           >
             <option value="">All Projects</option>
-            <option
-              *ngFor="let project of projects | keyvalue"
-              value="{{ project.key }}"
-            >
-              {{ project.value }}
+            <option *ngFor="let project of projects" value="{{ project[0] }}">
+              {{ project[1] }}
             </option>
           </select>
         </div>

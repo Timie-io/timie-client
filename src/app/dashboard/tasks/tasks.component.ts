@@ -103,7 +103,16 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   get projects() {
-    return this.tasksService.projects;
+    const projects = Object.entries(this.tasksService.projects);
+    return projects.sort((a, b) => {
+      if (a[1] > b[1]) {
+        return 1;
+      }
+      if (a[1] < b[1]) {
+        return -1;
+      }
+      return 0;
+    });
   }
 
   get projectSelected() {
