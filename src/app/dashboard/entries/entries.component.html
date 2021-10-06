@@ -152,13 +152,13 @@
             <ng-template #entryAssignmentCol>
               <td>{{ entry.assignmentNote }}</td>
             </ng-template>
-            <td>{{ entry.startTime | date: "MMM d, y H:mm:ss" }}</td>
+            <td>{{ entry.startTime | date: "MMM d, y HH:mm:ss" }}</td>
             <div
               *ngIf="entry.finishTime; then finishTimeCol; else runningTimeCol"
             ></div>
             <ng-template #finishTimeCol>
               <td>
-                {{ entry.finishTime | date: "MMM d, y H:mm:ss" }}
+                {{ entry.finishTime | date: "MMM d, y HH:mm:ss" }}
               </td>
             </ng-template>
             <ng-template #runningTimeCol>
