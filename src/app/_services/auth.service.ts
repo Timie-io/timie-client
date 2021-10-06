@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -32,7 +31,6 @@ export class AuthService {
 
   constructor(
     private readonly apollo: Apollo,
-    private router: Router,
     private http: HttpClient,
     private graphQLModule: GraphQLModule,
     private storage: TokenStorageService
