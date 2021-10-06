@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Auth } from '../_models/auth.model';
 import { User } from '../_models/user.model';
@@ -64,9 +64,12 @@ export class AuthService {
       .watchQuery<any>({
         query: GET_USER,
       })
-      .valueChanges.pipe(first())
-      .subscribe(({ data }) => {
-        this.userSubject.next(data.loggedUser);
+      .refetch()
+      .then(({ data }) => {
+        if (data.loggedUser) {
+          console.log(data.loggedUser);
+          this.userSubject.next(data.loggedUser);
+        }
       });
   }
 

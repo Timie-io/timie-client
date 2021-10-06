@@ -97,9 +97,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
     this.assignmentsService.search = value;
   }
 
-  ngOnInit(): void {
-    this.assignmentsService.applyFilters();
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
