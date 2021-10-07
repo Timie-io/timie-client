@@ -67,7 +67,6 @@ export class AuthService {
       .refetch()
       .then(({ data }) => {
         if (data.loggedUser) {
-          console.log(data.loggedUser);
           this.userSubject.next(data.loggedUser);
         }
       });

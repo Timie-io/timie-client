@@ -78,7 +78,6 @@ export class AssignmentsService {
   }
 
   applyFilters() {
-    console.log(this.filters);
     this.assignmentsQuery.setVariables(this.filters);
     this.assignmentsQuery.refetch().then(({ data }) => {
       this.total = data.assignmentsView.total;

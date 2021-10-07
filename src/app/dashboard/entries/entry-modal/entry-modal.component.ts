@@ -64,9 +64,7 @@ export class EntryModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.assignmentOptionsQuery.valueChanges.subscribe(({ data }) => {
-      this.assignments = data.assignments.result;
-    });
+    this.refetchOptions();
   }
 
   ngOnDestroy() {
@@ -75,6 +73,16 @@ export class EntryModalComponent implements OnInit, OnDestroy {
 
   public get f() {
     return this.form.controls;
+  }
+
+  private refetchOptions() {
+    this.assignmentOptionsQuery.setVariables({
+      active: true,
+      userId: this.authService.user?.id,
+    });
+    this.assignmentOptionsQuery.refetch().then(({ data }) => {
+      this.assignments = data.assignments.result;
+    });
   }
 
   private finishTimeValidator(): ValidatorFn {

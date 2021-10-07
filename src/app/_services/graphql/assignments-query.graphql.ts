@@ -42,6 +42,7 @@ export class AssignmentsGQL extends Query<AssignmentsResponse> {
       $userId: ID
       $taskId: ID
       $statusCode: ID
+      $active: Boolean
     ) {
       assignments(
         skip: $skip
@@ -49,6 +50,7 @@ export class AssignmentsGQL extends Query<AssignmentsResponse> {
         userId: $userId
         taskId: $taskId
         statusCode: $statusCode
+        active: $active
       ) {
         total
         result {
@@ -160,6 +162,7 @@ export class AssignmentOptionsGQL extends Query<AssignmentsResponse> {
       $userId: ID
       $taskId: ID
       $statusCode: ID
+      $active: Boolean
     ) {
       assignments(
         skip: $skip
@@ -167,6 +170,7 @@ export class AssignmentOptionsGQL extends Query<AssignmentsResponse> {
         userId: $userId
         taskId: $taskId
         statusCode: $statusCode
+        active: $active
       ) {
         total
         result {
