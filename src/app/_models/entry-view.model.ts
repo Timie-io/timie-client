@@ -11,5 +11,7 @@ export interface EntryView {
   taskTitle: string;
   projectId: string;
   projectName: string;
+  teamId: string;
+  teamName: string;
   totalTime: number;
 }

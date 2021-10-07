@@ -48,9 +48,7 @@ export class EntriesComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnInit() {
-    this.entriesService.applyFilters();
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.searchSub.unsubscribe();
@@ -60,6 +58,18 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   get entries() {
     return this.entriesService.entries;
+  }
+
+  get userOptions() {
+    return this.entriesService.userOptions;
+  }
+
+  get projectOptions() {
+    return this.entriesService.projectOptions;
+  }
+
+  get teamOptions() {
+    return this.entriesService.teamOptions;
   }
 
   get error() {
@@ -78,12 +88,52 @@ export class EntriesComponent implements OnInit, OnDestroy {
     this.entriesService.search = value;
   }
 
+  get userId() {
+    return this.entriesService.userId;
+  }
+
+  set userId(value: string | undefined) {
+    this.entriesService.userId = value;
+  }
+
+  get projectId() {
+    return this.entriesService.projectId;
+  }
+
+  set projectId(value: string | undefined) {
+    this.entriesService.projectId = value;
+  }
+
+  get teamId() {
+    return this.entriesService.teamId;
+  }
+
+  set teamId(value: string | undefined) {
+    this.entriesService.teamId = value;
+  }
+
   get onlyMyEntries() {
     return this.entriesService.onlyMyEntries;
   }
 
   set onlyMyEntries(value: boolean) {
     this.entriesService.onlyMyEntries = value;
+  }
+
+  get fromTime() {
+    return this.entriesService.fromTime;
+  }
+
+  set fromTime(value: string | undefined) {
+    this.entriesService.fromTime = value;
+  }
+
+  get toTime() {
+    return this.entriesService.toTime;
+  }
+
+  set toTime(value: string | undefined) {
+    this.entriesService.toTime = value;
   }
 
   get total() {
@@ -116,6 +166,10 @@ export class EntriesComponent implements OnInit, OnDestroy {
 
   onMyEntriesChange() {
     this.onlyMyEntries = !this.onlyMyEntries;
+    this.entriesService.applyFilters();
+  }
+
+  onFilterChange() {
     this.entriesService.applyFilters();
   }
 

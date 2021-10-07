@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { EntryView } from '../_models/entry-view.model';
+import { Project } from '../_models/project.model';
+import { Team } from '../_models/team.model';
+import { User } from '../_models/user.model';
+import { fixTimeGap } from '../_utils/date.convert';
 import { AppService } from './app.service';
 import { AuthService } from './auth.service';
 import {
@@ -19,6 +23,9 @@ import {
   EntryChangedInput,
   EntryRemovedGQL,
 } from './graphql/entries-subscription.graphql';
+import { ProjectsOptionGQL } from './graphql/projects-query.graphql';
+import { TeamsOptionGQL } from './graphql/teams-query.graphql';
+import { AllUsersQueryGQL } from './graphql/users-query.graphql';
 import { SortService } from './sort.service';
 
 @Injectable({
@@ -33,6 +40,17 @@ export class EntriesService {
   entries: EntryView[] = [];
   private entriesQuery: QueryRef<EntriesViewResponse>;
   onlyMyEntries = true;
+
+  userOptions: User[] = [];
+  projectOptions: Project[] = [];
+  teamOptions: Team[] = [];
+
+  userId?: string;
+  projectId?: string;
+  teamId?: string;
+
+  fromTime?: string;
+  toTime?: string;
 
   total = 0;
   page = 1;
@@ -53,7 +71,10 @@ export class EntriesService {
     private readonly removeEntryGQL: RemoveEntryGQL,
     private readonly startEntryGQL: StartEntryGQL,
     private readonly stopEntryGQL: StopEntryGQL,
-    private readonly sortService: SortService
+    private readonly sortService: SortService,
+    private readonly allUsersGQL: AllUsersQueryGQL,
+    private readonly projectsOptionGQL: ProjectsOptionGQL,
+    private readonly teamsOptionGQL: TeamsOptionGQL
   ) {
     this.entriesQuery = this.entriesViewGQL.watch();
     this.entriesRunningQuery = this.entriesOnlyGQL.watch();
@@ -65,6 +86,24 @@ export class EntriesService {
         this.applyFilters();
       }
     });
+    this.allUsersGQL
+      .watch()
+      .refetch()
+      .then(({ data }) => {
+        this.userOptions = data.users;
+      });
+    this.projectsOptionGQL
+      .watch()
+      .refetch()
+      .then(({ data }) => {
+        this.projectOptions = data.projects.result;
+      });
+    this.teamsOptionGQL
+      .watch()
+      .refetch()
+      .then(({ data }) => {
+        this.teamOptions = data.teams.result;
+      });
   }
 
   private get filters() {
@@ -73,8 +112,17 @@ export class EntriesService {
       skip: (this.page - 1) * this.pageSize,
       take: this.pageSize,
     };
+    filters['userId'] = this.userId;
+    filters['projectId'] = this.projectId;
+    filters['teamId'] = this.teamId;
     if (this.onlyMyEntries) {
       filters['userId'] = this.authService.user?.id;
+    }
+    if (this.fromTime) {
+      filters['fromTime'] = fixTimeGap(this.fromTime, true);
+    }
+    if (this.toTime) {
+      filters['toTime'] = fixTimeGap(this.toTime, true);
     }
     const sortOptions = this.sortService.getSortOptions('entries');
     if (sortOptions.length > 0) {

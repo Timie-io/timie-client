@@ -42,6 +42,73 @@
       </button>
     </div>
   </div>
+  <div class="row mt-3">
+    <div class="col-8">
+      <div class="row">
+        <div class="col-auto">
+          <span>From:</span>
+        </div>
+        <div class="col">
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="fromTime"
+            (ngModelChange)="onFilterChange()"
+          />
+        </div>
+        <div class="col-auto">
+          <span>To:</span>
+        </div>
+        <div class="col">
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="toTime"
+            (ngModelChange)="onFilterChange()"
+          />
+        </div>
+        <div class="col">
+          <select
+            class="form-select"
+            [(ngModel)]="userId"
+            (ngModelChange)="onFilterChange()"
+          >
+            <option value="">All Users</option>
+            <option *ngFor="let user of userOptions" value="{{ user.id }}">
+              {{ user.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col">
+          <select
+            class="form-select"
+            [(ngModel)]="projectId"
+            (ngModelChange)="onFilterChange()"
+          >
+            <option value="">All Projects</option>
+            <option
+              *ngFor="let project of projectOptions"
+              value="{{ project.id }}"
+            >
+              {{ project.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col">
+          <select
+            class="form-select"
+            [(ngModel)]="teamId"
+            (ngModelChange)="onFilterChange()"
+          >
+            <option value="">All Teams</option>
+            <option *ngFor="let team of teamOptions" value="{{ team.id }}">
+              {{ team.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-10">
       <table class="table table-hover">
@@ -63,6 +130,16 @@
                 sortingAction
                 [sortedColumns]="sortedColumns"
                 columnName="user"
+              ></i>
+            </th>
+            <th>
+              Team
+              <i
+                class="fa fa-fw"
+                (click)="toggleSort('team')"
+                sortingAction
+                [sortedColumns]="sortedColumns"
+                columnName="team"
               ></i>
             </th>
             <th>
@@ -132,6 +209,7 @@
           <tr *ngFor="let entry of entries">
             <td>{{ entry.id }}</td>
             <td>{{ entry.userName }}</td>
+            <td>{{ entry.teamName }}</td>
             <td>{{ entry.projectName }}</td>
             <td>
               <button
