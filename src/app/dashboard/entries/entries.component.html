@@ -5,7 +5,7 @@
     &nbsp;
   </ngb-alert>
   <div class="row mt-3">
-    <div class="col-8">
+    <div class="col-10">
       <div class="row">
         <div class="col-4">
           <input
@@ -17,7 +17,7 @@
             (ngModelChange)="onSearchChange($event)"
           />
         </div>
-        <div class="col">
+        <div class="col-auto">
           <button
             type="button"
             class="btn"
@@ -42,75 +42,70 @@
       </button>
     </div>
   </div>
-  <div class="row mt-3">
-    <div class="col-8">
-      <div class="row">
-        <div class="col-auto">
-          <span>From:</span>
-        </div>
-        <div class="col">
-          <input
-            type="date"
-            class="form-control"
-            [(ngModel)]="fromTime"
-            (ngModelChange)="onFilterChange()"
-          />
-        </div>
-        <div class="col-auto">
-          <span>To:</span>
-        </div>
-        <div class="col">
-          <input
-            type="date"
-            class="form-control"
-            [(ngModel)]="toTime"
-            (ngModelChange)="onFilterChange()"
-          />
-        </div>
-        <div class="col">
-          <select
-            class="form-select"
-            [(ngModel)]="userId"
-            (ngModelChange)="onFilterChange()"
-          >
-            <option value="">All Users</option>
-            <option *ngFor="let user of userOptions" value="{{ user.id }}">
-              {{ user.name }}
-            </option>
-          </select>
-        </div>
-        <div class="col">
-          <select
-            class="form-select"
-            [(ngModel)]="projectId"
-            (ngModelChange)="onFilterChange()"
-          >
-            <option value="">All Projects</option>
-            <option
-              *ngFor="let project of projectOptions"
-              value="{{ project.id }}"
-            >
-              {{ project.name }}
-            </option>
-          </select>
-        </div>
-        <div class="col">
-          <select
-            class="form-select"
-            [(ngModel)]="teamId"
-            (ngModelChange)="onFilterChange()"
-          >
-            <option value="">All Teams</option>
-            <option *ngFor="let team of teamOptions" value="{{ team.id }}">
-              {{ team.name }}
-            </option>
-          </select>
-        </div>
-      </div>
+  <div class="row mt-3 align-items-center">
+    <div class="col-auto">
+      <label for="entryFromInput" class="col-form-label">From</label>
+    </div>
+    <div class="col-auto">
+      <input
+        id="entryFromInput"
+        type="date"
+        class="form-control"
+        [(ngModel)]="fromTime"
+        (ngModelChange)="onFilterChange()"
+      />
+    </div>
+    <div class="col-auto">
+      <label for="entryToInput" class="col-form-label">To</label>
+    </div>
+    <div class="col-auto">
+      <input
+        id="entryToInput"
+        type="date"
+        class="form-control"
+        [(ngModel)]="toTime"
+        (ngModelChange)="onFilterChange()"
+      />
+    </div>
+    <div class="col-auto">
+      <select
+        class="form-select"
+        [(ngModel)]="userId"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="">All Users</option>
+        <option *ngFor="let user of userOptions" value="{{ user.id }}">
+          {{ user.name }}
+        </option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <select
+        class="form-select"
+        [(ngModel)]="projectId"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="">All Projects</option>
+        <option *ngFor="let project of projectOptions" value="{{ project.id }}">
+          {{ project.name }}
+        </option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <select
+        class="form-select"
+        [(ngModel)]="teamId"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="">All Teams</option>
+        <option *ngFor="let team of teamOptions" value="{{ team.id }}">
+          {{ team.name }}
+        </option>
+      </select>
     </div>
   </div>
   <div class="row">
-    <div class="col-10">
+    <div class="col">
       <table class="table table-hover">
         <caption>
           {{
