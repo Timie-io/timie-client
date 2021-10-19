@@ -1,8 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { QueryRef } from 'apollo-angular';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Project } from '../../_models/project.model';
+import {
+  ProjectOptionsResponse,
+  ProjectsOptionGQL,
+} from './../../_services/graphql/projects-query.graphql';
 import { SortService, SortUpdate } from './../../_services/sort.service';
 import { TasksService } from './../../_services/tasks.service';
 import { TaskModalComponent } from './task-modal/task-modal.component';
@@ -25,15 +31,20 @@ export class TasksComponent implements OnInit, OnDestroy {
   private searchChanged: Subject<string> = new Subject<string>();
   private searchSub: Subscription;
 
+  projects: Project[] = [];
+  private projectsOptionQuery: QueryRef<ProjectOptionsResponse>;
+
   private sortedColumnsSub: Subscription;
   sortedColumns: { [column: string]: 'ASC' | 'DESC' | null } = {};
 
   constructor(
     private readonly tasksService: TasksService,
+    private readonly projectsOptionGQL: ProjectsOptionGQL,
     private readonly sortService: SortService,
     private readonly modalService: NgbModal,
     private readonly router: Router
   ) {
+    this.projectsOptionQuery = this.projectsOptionGQL.watch({ active: true });
     // Add debounce time for searching
     this.searchSub = this.searchChanged
       .pipe(debounceTime(300), distinctUntilChanged())
@@ -102,19 +113,6 @@ export class TasksComponent implements OnInit, OnDestroy {
     this.tasksService.onlyFollowing = value;
   }
 
-  get projects() {
-    const projects = Object.entries(this.tasksService.projects);
-    return projects.sort((a, b) => {
-      if (a[1] > b[1]) {
-        return 1;
-      }
-      if (a[1] < b[1]) {
-        return -1;
-      }
-      return 0;
-    });
-  }
-
   get projectSelected() {
     return this.tasksService.projectSelected;
   }
@@ -125,6 +123,9 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.tasksService.applyFilters();
+    this.projectsOptionQuery.refetch().then(({ data }) => {
+      this.projects = data.projects.result;
+    });
   }
 
   ngOnDestroy() {

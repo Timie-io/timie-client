@@ -123,6 +123,7 @@ export class ProjectsOptionGQL extends Query<ProjectOptionsResponse> {
       $name: String
       $ownerId: ID
       $teamId: ID
+      $active: Boolean
     ) {
       projects(
         skip: $skip
@@ -130,6 +131,7 @@ export class ProjectsOptionGQL extends Query<ProjectOptionsResponse> {
         name: $name
         ownerId: $ownerId
         teamId: $teamId
+        active: $active
       ) {
         result {
           id
